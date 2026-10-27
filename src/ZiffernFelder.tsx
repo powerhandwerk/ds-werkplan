@@ -7,6 +7,8 @@
 // erste Feld verteilen den Code auf alle Felder; Rücktaste und Pfeile springen
 // zwischen den Feldern. Kein `name`: abgeschickt wird ein verborgenes Feld, das
 // die App aus `ziffern` setzt.
+// Liest die Flächenrollen --wp-* und gehört deshalb in eine Fläche (.nacht,
+// .papier, .aufNacht, .aufPapier aus werkplan.module.css).
 
 import { useEffect, useRef, type ClipboardEvent, type CSSProperties, type KeyboardEvent } from "react";
 

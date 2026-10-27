@@ -1,5 +1,7 @@
 // @vitest-environment node
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { Massbalken } from "../src/Massbalken";
 import { BEWEGUNG, MASSE } from "../src/tokens";
 import { lies, werte } from "./css-hilfe";
 
@@ -15,8 +17,12 @@ describe("Maße und Bewegung im CSS folgen src/tokens.ts", () => {
     expect(werte(WP, flaeche)["background-size"]).toBe(`${MASSE.raster}px ${MASSE.raster}px`);
   });
 
-  it("Maßbalken", () => {
+  it("Maßbalken: Höhe, Linie und Füllung", () => {
     expect(werte(WP, ".massbalken").height).toBe(`${MASSE.massbalkenHoehe}px`);
+    expect(werte(WP, ".massbalkenLinie")["stroke-width"]).toBe(String(MASSE.linie));
+    const markup = renderToStaticMarkup(<Massbalken anteil={50} untergrund="papier" />);
+    expect(markup).toContain(`viewBox="0 0 100 ${MASSE.massbalkenHoehe}"`);
+    expect(markup).toMatch(new RegExp(`<rect[^>]*height="${MASSE.massbalkenFuellung}"`));
   });
 
   it("Sucher-Ecken", () => {

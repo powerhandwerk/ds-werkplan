@@ -42,7 +42,7 @@ export const FARBEN = {
     rolle: "Signalfarbe des Logos. Nur als Fläche mit dunkler Schrift (ink-950) darauf; auf Nacht auch Fokusring.",
   },
   "lime-deep": { hex: "#a3d137", rolle: "Gedrückter Zustand einer Lime-Fläche." },
-  "lime-soft": { hex: "#dcf2a0", rolle: "Marker-Wäsche, Fokus eines Eingabefelds." },
+  "lime-soft": { hex: "#dcf2a0", rolle: "Helle Lime-Fläche mit dunkler Schrift: Etikett, Icon im Kasten, Glanz der Lichtkante." },
   "lime-glow": { rgba: [181, 229, 69, 0.45], rolle: "Leuchten um Lime-Flächen." },
   danger: { hex: "#ce2324", rolle: "Fehler und Löschen als Fläche (Etikett, Hover). Rot gibt es nur dafür." },
   "danger-ink": { oklch: [0.5, 0.13, 30], rolle: "Fehlertext auf Papier." },
@@ -421,7 +421,7 @@ export const BEWEGUNG = {
 
 /**
  * Maße in Pixeln (Web) bzw. Punkten (PDF, gleiche Zahl). Dieselben Zahlen stehen
- * in werkplan.module.css und lichtkante.module.css; test/masse.test.ts hält sie gleich.
+ * in werkplan.module.css und lichtkante.module.css; test/masse.test.tsx hält sie gleich.
  */
 export const MASSE = {
   /** Maßlinie, Endstriche, Schriftfeld-Fugen. */

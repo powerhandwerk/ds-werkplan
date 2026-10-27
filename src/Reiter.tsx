@@ -6,6 +6,8 @@ import css from "./reiter.module.css";
 // Kundenseite im Admin: die Reiter-Leiste aus components/kundenseite/Kopfband.tsx
 // und das Handy-Menü aus components/kundenseite/HandyMenue.tsx. Logo, Pille
 // „Sicher angemeldet“ und der Weg zu „Wer hat Zugriff“ bleiben Sache der App.
+// Liest die Flächenrollen --wp-* und gehört deshalb in eine Fläche (.nacht,
+// .papier, .aufNacht, .aufPapier aus werkplan.module.css).
 
 /** Art des Stands neben einem Reiter im Menü. */
 export type ReiterStandArt = "hervor" | "fehler" | "ruhig";

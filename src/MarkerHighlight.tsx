@@ -50,7 +50,7 @@ export const MARKER_RADIUS_FACTOR = PILLE_FAKTOR;
 /** Luft über der Versal-Oberkante, × Versalhöhe. */
 export const MARKER_CLEARANCE_TOP = 0.196;
 
-/** Luft unter der Grundlinie, × Versalhöhe. Mehr Hub dürfen die Enden der Fläche
+/** Luft unter der BBox-Unterkante, × Versalhöhe. Mehr Hub dürfen die Enden der Fläche
  *  nicht bekommen, sonst schneidet sie die Buchstaben an. */
 export const MARKER_CLEARANCE_BOTTOM = 0.173;
 
@@ -144,7 +144,7 @@ const LIFT_MARGIN = 0.85;
  *
  * Die einzige Neigungsrechnung im Haus (WB-8a5b45b3). Die Neigung hebt die Enden der Fläche um
  * `(Breite/2) · sin(Winkel)`; überschreitet dieser Hub die Luft unter der
- * Grundlinie, schneidet die Fläche die Buchstaben an. Also
+ * BBox-Unterkante, schneidet die Fläche die Buchstaben an. Also
  * `Winkel = min(3,96°, asin(2 · 0,85 · Luft / Breite))`.
  *
  * Bezugsgröße ist die FLÄCHENbreite, nicht die Wortbreite: der Hub entsteht an

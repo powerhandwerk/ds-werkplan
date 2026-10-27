@@ -119,4 +119,11 @@ describe("Logo", () => {
     expect(eigen).toContain('data-eigen="ja"');
     expect(eigen).toContain('href="/start"');
   });
+
+  it("nennt den Link nach seinem Ziel, Standard ist die Startseite", () => {
+    expect(renderToStaticMarkup(<Logo href="/" />)).toContain('aria-label="powerhandwerk Startseite"');
+    const uebersicht = renderToStaticMarkup(<Logo href="/uebersicht" linkLabel="Zur Übersicht" />);
+    expect(uebersicht).toContain('aria-label="Zur Übersicht"');
+    expect(uebersicht).not.toContain("Startseite");
+  });
 });
