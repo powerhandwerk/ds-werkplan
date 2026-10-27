@@ -1,0 +1,57 @@
+{
+  "name": "@powerhandwerk/ds-werkplan",
+  "version": "2.0.0",
+  "description": "DS Werkplan 2.0, Design-System von powerhandwerk",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens": "./src/tokens.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./schriften.css": "./src/schriften.css",
+    "./werkplan.module.css": "./src/werkplan.module.css",
+    "./bausteine.module.css": "./src/bausteine.module.css",
+    "./lichtkante.module.css": "./src/lichtkante.module.css",
+    "./arbeitsflaeche.module.css": "./src/arbeitsflaeche.module.css",
+    "./Bausteine": "./src/Bausteine.tsx",
+    "./LichtkanteButton": "./src/LichtkanteButton.tsx",
+    "./Arbeitsflaeche": "./src/Arbeitsflaeche.tsx",
+    "./Textlink": "./src/Textlink.tsx",
+    "./Plankopf": "./src/Plankopf.tsx",
+    "./SucherEcken": "./src/SucherEcken.tsx",
+    "./Massbalken": "./src/Massbalken.tsx",
+    "./Masskette": "./src/Masskette.tsx",
+    "./BlattZeile": "./src/BlattZeile.tsx",
+    "./MarkerHighlight": "./src/MarkerHighlight.tsx",
+    "./icons": "./src/icons.tsx",
+    "./abo-icon": "./src/abo-icon.ts",
+    "./Logo": "./src/Logo.tsx",
+    "./werte": "./src/werte.ts",
+    "./fonts/*": "./fonts/*",
+    "./assets/*": "./assets/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "erzeuge": "bun scripts/erzeuge.ts"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
+}

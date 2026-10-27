@@ -1,0 +1,339 @@
+/*
+ * Kleine Werkplan-Bausteine für Arbeitsseiten (DS Werkplan 2.0, ADR-261):
+ * Knöpfe, Unterstrich, Etikett, Hinweisband, Tastenkappe, Toast. Entstanden
+ * für das Gründungsradar im Admin. Werte nur über Tokens aus src/tokens.css;
+ * Knöpfe mit fester Höhe runden wie die Logo-Pille (Höhe × --rund-pille-faktor).
+ */
+
+.seite {
+  --wb-warn: oklch(0.5 0.13 30);
+  --wb-warn-flaeche: oklch(0.96 0.025 55);
+  --wb-warn-linie: oklch(0.5 0.13 30 / 0.45);
+  --wb-linie: color-mix(in oklch, var(--ink-950) 40%, transparent);
+  --wb-linie-fein: color-mix(in oklch, var(--ink-950) 16%, transparent);
+}
+
+/* ---------- Lichtkante klein (40 px, Chip 28 px) ---------- */
+
+.lkKlein.lkKlein {
+  --lk-h: 40px;
+  padding: 0 6px 0 18px;
+  gap: 12px;
+  font-size: var(--grad-16);
+}
+
+.lkKlein.lkKlein > span:last-child {
+  width: 28px;
+  height: 28px;
+  border-radius: calc(28px * var(--rund-pille-faktor));
+}
+
+.lkKlein.lkKlein > span:last-child svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Am Handy füllt die Lichtkante ihre Spalte der festen Aktionsleiste. */
+.lkVoll.lkVoll {
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* Feste Höhe auch unter 480 px, wo die Lichtkante sonst mitwächst: gleich hoch wie der ruhige Knopf daneben. */
+.lkHandy.lkHandy {
+  --lk-h: 48px;
+  height: var(--lk-h);
+  padding-block: 0;
+}
+
+/* ---------- Ruhiger und fester Knopf ---------- */
+
+.ruhig,
+/* Doppelte Klasse: .fest sitzt über confirmProps auch auf dem DS-Knopf (.phw-btn) und muss dessen Maße schlagen. */
+.fest.fest {
+  --kn-h: 40px;
+  box-sizing: border-box;
+  height: var(--kn-h);
+  margin: 0;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-16);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: calc(var(--kn-h) * var(--rund-pille-faktor));
+  text-decoration: none;
+  transition: background-color 160ms ease-out;
+}
+
+.ruhig {
+  color: var(--ink-950);
+  background: transparent;
+  border: 1px solid color-mix(in oklch, var(--ink-950) 35%, transparent);
+}
+
+.ruhig:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ink-100), var(--ink-200));
+}
+
+.ruhigNacht {
+  color: var(--ink-050);
+  border-color: color-mix(in oklch, var(--ink-400) 50%, transparent);
+}
+
+.ruhigNacht:hover:not(:disabled) {
+  background: var(--ink-800);
+}
+
+.klein {
+  --kn-h: 34px;
+  padding: 0 12px;
+  font-size: var(--grad-14);
+}
+
+.handy {
+  --kn-h: 48px;
+  font-size: var(--grad-16);
+}
+
+/* Fester Knopf: nur als Bestätigung in Dialogen. Doppelte Klasse, weil er über
+   confirmProps auch auf dem DS-Knopf (.phw-btn) sitzt und dessen Lime-Fläche schlagen muss. */
+.fest.fest,
+.fest.fest:hover,
+.fest.fest:disabled {
+  color: var(--ink-050);
+  background: var(--ink-950);
+  border: 1px solid var(--ink-950);
+  box-shadow: none;
+  min-height: 0;
+}
+
+.fest.fest:hover:not(:disabled) {
+  background: var(--ink-800);
+}
+
+.ruhig:focus-visible,
+.fest:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.ruhigNacht:focus-visible {
+  outline-color: var(--focus-ring-on-dark);
+}
+
+.ruhig:disabled,
+.fest:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ---------- Etiketten ---------- */
+
+.etikett {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  border-radius: var(--rund-fein);
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.etikettLinie {
+  border: 1px solid color-mix(in oklch, var(--ink-950) 45%, transparent);
+  color: var(--ink-950);
+}
+
+.etikettGestrichelt {
+  border: 1px dashed color-mix(in oklch, var(--ink-950) 45%, transparent);
+  color: var(--ink-950);
+}
+
+.etikettVoll {
+  background: var(--ink-950);
+  color: var(--ink-050);
+  border: 1px solid var(--ink-950);
+}
+
+.etikettLead {
+  background: var(--lime-soft);
+  color: var(--ink-950);
+  border: 1px solid color-mix(in oklch, var(--ink-950) 30%, transparent);
+}
+
+.etikettWarn {
+  border: 1px solid var(--wb-warn-linie, oklch(0.5 0.13 30 / 0.45));
+  color: var(--wb-warn, oklch(0.5 0.13 30));
+  background: var(--wb-warn-flaeche, oklch(0.96 0.025 55));
+}
+
+.etikettStill {
+  border: 1px solid color-mix(in oklch, var(--ink-950) 16%, transparent);
+  color: var(--ink-600);
+}
+
+/* ---------- Hinweisband ---------- */
+
+.band {
+  display: flex;
+  /* Am Handy rutscht die Aktion unter den Text, statt über den Rand zu laufen. */
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 7px 12px;
+  background: var(--wb-warn-flaeche, oklch(0.96 0.025 55));
+  border: 1px solid var(--wb-warn-linie, oklch(0.5 0.13 30 / 0.45));
+  border-radius: var(--rund-eckig);
+  color: var(--ink-900);
+}
+
+.bandIcon {
+  color: var(--wb-warn, oklch(0.5 0.13 30));
+  font-size: var(--grad-14);
+  line-height: 1.45;
+}
+
+.bandText {
+  flex: 1;
+  margin: 0;
+  font-size: var(--grad-14);
+  line-height: 1.45;
+}
+
+.bandText strong {
+  color: var(--wb-warn, oklch(0.5 0.13 30));
+}
+
+.bandAktion {
+  flex: none;
+  align-self: center;
+}
+
+/* ---------- Tastenkappe ---------- */
+
+.kappe {
+  display: inline-block;
+  min-width: 18px;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 1px 5px;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  color: var(--ink-800);
+  background: #fff;
+  border: 1px solid color-mix(in oklch, var(--ink-950) 16%, transparent);
+  border-bottom-width: 2px;
+  border-radius: var(--rund-fein);
+}
+
+.kappeNacht {
+  color: var(--ink-050);
+  background: transparent;
+  border-color: color-mix(in oklch, var(--ink-400) 50%, transparent);
+}
+
+/* ---------- Toast ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  padding: 12px 14px 12px 16px;
+  background: var(--ink-950);
+  color: var(--ink-050);
+  border-radius: var(--rund-eckig);
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.6);
+}
+
+.toastHaken {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--rund-kreis);
+  background: var(--lime);
+  color: var(--ink-950);
+}
+
+.toastText {
+  font-size: var(--grad-14);
+  line-height: 1.4;
+}
+
+.toastAktion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-050);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-14);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}
+
+.toastAktion:hover {
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--lime);
+}
+
+.toastAktion:focus-visible {
+  outline: 3px solid var(--focus-ring-on-dark);
+  outline-offset: 3px;
+}
+
+@media (max-width: 879.98px) {
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 96px;
+    transform: none;
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruhig,
+  .fest {
+    transition: none;
+  }
+}
+
+/* Hervorhebung eines Wortes im Werkplan: Lime-Unterstrich statt der schrägen
+   Marker-Pille (Flo 24.10.2026, wie auf der Kundenseite seit 09.10.2026,
+   components/kundenseite/kundenseite.module.css .unterstrich). */
+.unterstrich {
+  text-decoration: underline;
+  text-decoration-color: var(--lime);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 4px;
+  text-decoration-skip-ink: none;
+}
