@@ -5,8 +5,8 @@ import React from "react";
 /**
  * Überstand und Rundung der Lime-Fläche, in em der Schriftgröße des markierten
  * Wortes. Die Voreinstellung GEOMETRY_DEFAULT ist die am Logo VERMESSENE
- * Geometrie (~/Projects/clients/keteso/CLAUDE.md, "Die Marker-Geometrie ist
- * vermessen"): die Fläche ist dieselbe Form wie die Pille im Logo, die Werte
+ * Geometrie (Wegweiser `CLAUDE.md` im keteso-Repo, „Die Marker-Geometrie ist
+ * vermessen“): die Fläche ist dieselbe Form wie die Pille im Logo, die Werte
  * hängen an der Versalhöhe von Big Shoulders Display (0,800em) — der Schrift
  * aller Marker-Stellen. Sie tragen nur, weil die Komponente ihren Kasten auf
  * `line-height: 1` festnagelt; Aufrufer brauchen dafür nichts zu tun.
@@ -80,7 +80,7 @@ export const MARKER_OVERSHOOT_EM = 0.005;
  * Die Bezugsgröße der Messtabelle, in em.
  *
  * ACHTUNG, hier steckt die Falle, die WB-af6cfb14 ausgelöst hat: „Versalhöhe"
- * meint in `~/Projects/clients/keteso/CLAUDE.md` NICHT die Cap-Height der
+ * meint im keteso-Wegweiser `CLAUDE.md` NICHT die Cap-Height der
  * Schrift, sondern die **Bounding-Box des Wortes** — Oberkante Versal bis
  * Unterkante der Rundungsüberschüsse. Am Logo gemessen: `13.79 … 50.39` = 36,60
  * Einheiten, nicht bis zur geometrischen Grundlinie der geraden Stämme

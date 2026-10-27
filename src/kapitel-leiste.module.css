@@ -1,0 +1,142 @@
+/*
+ * Inhaltsleiste mit Kapiteln (DS Werkplan 2.0, ADR-261). Herkunft ist das
+ * Erscheinungsbild der Kundenseite im Admin
+ * (components/kundenseite/erscheinungsbild.module.css): am Handy eine
+ * Chip-Leiste über den Kapiteln, ab 1024 px links neben den Kapiteln und
+ * mitlaufend. Das Raster daneben setzt die Seite. Die negativen Ränder am
+ * Handy gleichen die Seitenluft der Kundenseite aus (20 px, ab 768 px 32 px).
+ */
+
+.inhalt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-inline: -20px;
+  padding: 10px 20px;
+  border-block: 1px solid var(--wp-linie-fein);
+  background: var(--ink-100, var(--ink-050));
+}
+
+.inhaltTitel,
+.inhaltStand {
+  display: none;
+  margin: 0;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.3;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wp-gedaempft);
+}
+
+.inhaltStand {
+  font-size: var(--grad-12);
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+}
+
+.inhaltListe {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.inhaltListe a {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--wp-linie);
+  border-radius: var(--rund-kreis);
+  white-space: nowrap;
+  text-decoration: none;
+  font-size: var(--grad-16);
+  font-weight: 500;
+  color: var(--wp-text);
+}
+
+.inhaltListe a:focus-visible {
+  outline: 3px solid var(--wp-fokus, var(--focus-ring));
+  outline-offset: 2px;
+}
+
+.inhaltNr {
+  min-width: 20px;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1;
+  letter-spacing: 0.12em;
+  color: var(--wp-gedaempft);
+}
+
+.inhaltListe a[aria-current] {
+  background: var(--ink-950);
+  border-color: var(--ink-950);
+  color: var(--ink-050);
+}
+
+.inhaltListe a[aria-current] .inhaltNr {
+  color: var(--lime);
+}
+
+@media (min-width: 768px) {
+  .inhalt {
+    margin-inline: -32px;
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inhalt {
+    position: sticky;
+    top: 24px;
+    margin-inline: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .inhaltTitel,
+  .inhaltStand {
+    display: block;
+  }
+
+  .inhaltListe {
+    flex-direction: column;
+    gap: 0;
+    overflow: visible;
+    border-top: 1px solid var(--wp-linie);
+  }
+
+  .inhaltListe a {
+    gap: 12px;
+    padding: 10px 0;
+    border: 0;
+    border-bottom: 1px solid var(--wp-linie-fein);
+    border-radius: var(--rund-eckig);
+    white-space: normal;
+  }
+
+  .inhaltListe a[aria-current] {
+    background: none;
+    color: var(--wp-stark);
+    font-weight: 700;
+  }
+
+  .inhaltListe a[aria-current] .inhaltNr {
+    color: var(--wp-gedaempft);
+  }
+
+  .inhaltListe a[aria-current] .inhaltName {
+    text-decoration: underline;
+    text-decoration-color: var(--lime);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+}

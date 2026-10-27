@@ -1,0 +1,65 @@
+/*
+ * Eingabefeld (DS Werkplan 2.0, ADR-261). Herkunft sind die Formulare der
+ * Kundenseite im Admin: Feld und Label aus
+ * components/kundenseite/google-aktionen.module.css (`.feld`, `.feldLabel`,
+ * `.formular`), Hinweis wie `.quelle` und Fehlertext wie `.text` aus
+ * FehlerMelden. Das Feld ist weiß mit dunkler Schrift, auf Papier wie auf Nacht.
+ */
+
+.eingabe {
+  --ef-grund: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--grad-14);
+  font-weight: 600;
+  color: var(--wp-stark, currentColor);
+}
+
+.feld {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--wp-linie, currentColor);
+  border-radius: var(--rund-fein);
+  background: var(--ef-grund);
+  color: var(--ink-950);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--grad-16);
+  line-height: 1.4;
+}
+
+.feld:focus-visible {
+  outline: 2px solid var(--wp-fokus, var(--focus-ring));
+  outline-offset: 1px;
+}
+
+textarea.feld {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.hinweis {
+  margin: 0;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wp-quelle, currentColor);
+}
+
+.fehler {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--grad-16);
+  line-height: 1.5;
+  color: var(--wp-text, currentColor);
+}

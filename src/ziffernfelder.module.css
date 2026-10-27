@@ -1,0 +1,44 @@
+/*
+ * Ziffernfelder für einen Code (DS Werkplan 2.0, ADR-261). Herkunft ist der
+ * Abschnitt „Code-Eingabe“ in components/kundenseite/kundenseite.module.css
+ * im Admin (Anmeldung der Kundenseite, auf Nacht). Farben über die
+ * Flächenrollen --wp-*; das helle Rot am ungültigen Feld ist auf Nacht
+ * gesetzt und steht hier als eigene Variable.
+ */
+
+.ziffern {
+  --zf-anzahl: 6;
+  --zf-fehler: #ff9b8f;
+  display: grid;
+  grid-template-columns: repeat(var(--zf-anzahl), minmax(0, 1fr));
+  gap: 8px;
+  max-width: 420px;
+}
+
+.ziffer {
+  box-sizing: border-box;
+  width: 100%;
+  height: 58px;
+  padding: 0;
+  text-align: center;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 300;
+  font-size: var(--grad-32);
+  line-height: 1;
+  color: var(--wp-stark);
+  background: var(--wp-blatt, transparent);
+  border: 1px solid var(--wp-linie);
+  border-radius: var(--rund-fein);
+}
+
+/* Fokus über den Ring der Fläche (auf Nacht Lime, auf Papier dunkel) plus
+   Randwechsel, nie allein über einen Lime-Schein. */
+.ziffer:focus {
+  outline: 2px solid var(--wp-fokus);
+  outline-offset: 2px;
+  border-color: var(--wp-stark);
+}
+
+.ziffer[aria-invalid="true"] {
+  border-color: var(--zf-fehler);
+}

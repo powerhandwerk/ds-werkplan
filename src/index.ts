@@ -178,3 +178,30 @@ export {
   type Grad,
   type TypoRolle,
 } from "./tokens";
+export {
+  REITER_TEXTE,
+  Reiter,
+  type ReiterEintrag,
+  type ReiterStandArt,
+  type ReiterTexte,
+} from "./Reiter";
+export {
+  kapitelNummer,
+  KapitelLeiste,
+  type KapitelEintrag,
+} from "./KapitelLeiste";
+export {
+  CODE_LAENGE_STANDARD,
+  leereZiffern,
+  zifferLabelStandard,
+  ZiffernFelder,
+} from "./ZiffernFelder";
+export {
+  KOPIEREN_TEXTE,
+  KopierenKnopf,
+  type KopierenTexte,
+} from "./KopierenKnopf";
+export {
+  Eingabefeld,
+  type EingabefeldProps,
+} from "./Eingabefeld";
