@@ -19,8 +19,8 @@ dieses Paket mit fester Version (Git-Tag). Entscheidung: ADR-261 im Admin-Repo, 
   einer Fläche.
 - **Olivgrün ist gestrichen** (ADR-261 Nr. 6). Lime gibt es nur als Fläche mit dunkler
   Schrift darauf (Etikett, Punkt, Unterstrich). `test/olivgruen.test.ts` sperrt den
-  Hex-Wert und den alten Token-Namen in `src/`, `fonts/`, `assets/` und
-  `artifact/project/`.
+  Hex-Wert, den alten Token-Namen und `--lime-text` der Website in `src/`, `fonts/`,
+  `assets/`, `artifact/project/` und `test/`.
 - Die Ink-Rampe hat zehn Stufen. Zwischentöne entstehen mit `color-mix()` aus zwei
   Stufen, nicht mit neuen Stufen (Herleitung in `docs/inventur.md`).
 - Neue Farbwerte kommen als Token nach `src/tokens.ts`, nie als Hex- oder Farbfunktion ins
