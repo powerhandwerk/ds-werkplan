@@ -19,7 +19,9 @@ describe("Maße und Bewegung im CSS folgen src/tokens.ts", () => {
 
   it("Maßbalken: Höhe, Linie und Füllung", () => {
     expect(werte(WP, ".massbalken").height).toBe(`${MASSE.massbalkenHoehe}px`);
-    expect(werte(WP, ".massbalkenLinie")["stroke-width"]).toBe(String(MASSE.linie));
+    for (const linie of [".massbalkenLinie", ".massbalkenFuellung"]) {
+      expect(werte(WP, linie)["stroke-width"], linie).toBe(String(MASSE.linie));
+    }
     const markup = renderToStaticMarkup(<Massbalken anteil={50} untergrund="papier" />);
     expect(markup).toContain(`viewBox="0 0 100 ${MASSE.massbalkenHoehe}"`);
     expect(markup).toMatch(new RegExp(`<rect[^>]*height="${MASSE.massbalkenFuellung}"`));

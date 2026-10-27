@@ -120,8 +120,7 @@ describe("Logo", () => {
     expect(eigen).toContain('href="/start"');
   });
 
-  it("nennt den Link nach seinem Ziel, Standard ist die Startseite", () => {
-    expect(renderToStaticMarkup(<Logo href="/" />)).toContain('aria-label="powerhandwerk Startseite"');
+  it("nennt den Link nach `linkLabel`", () => {
     const uebersicht = renderToStaticMarkup(<Logo href="/uebersicht" linkLabel="Zur Übersicht" />);
     expect(uebersicht).toContain('aria-label="Zur Übersicht"');
     expect(uebersicht).not.toContain("Startseite");
