@@ -14,7 +14,7 @@
   margin-inline: -20px;
   padding: 10px 20px;
   border-block: 1px solid var(--wp-linie-fein);
-  background: var(--ink-100, var(--ink-050));
+  background: var(--ink-100);
 }
 
 .inhaltTitel,
@@ -31,7 +31,6 @@
 }
 
 .inhaltStand {
-  font-size: var(--grad-12);
   line-height: 1.5;
   letter-spacing: 0.12em;
 }

@@ -13,7 +13,7 @@ import {
   aboIconStage,
   type Paket,
 } from "./abo-icon";
-import { WERKPLAN_ICONS, type WerkplanIconName } from "./werte";
+import { ICON_VIEWBOX, ICON_STRICH, WERKPLAN_ICONS, type WerkplanIconName } from "./werte";
 
 type IconProps = Omit<SVGProps<SVGSVGElement>, "children"> & { size?: number };
 
@@ -22,10 +22,10 @@ function Icon({ size = 16, ...rest }: IconProps & { children: SVGProps<SVGSVGEle
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox={`0 0 ${ICON_VIEWBOX} ${ICON_VIEWBOX}`}
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={ICON_STRICH}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

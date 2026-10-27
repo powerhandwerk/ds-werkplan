@@ -1,13 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Eingabefeld } from "../src/Eingabefeld";
+import { dom } from "./dom-hilfe";
 
 // Eingabefeld im Stil der Kundenseiten-Formulare: Label am Feld, Hinweis und
 // Fehler per aria-describedby, Fehler setzt aria-invalid, Attribute gehen durch.
-
-function dom(markup: string): Document {
-  return new DOMParser().parseFromString(`<body>${markup}</body>`, "text/html");
-}
 
 describe("Eingabefeld", () => {
   it("Label zeigt aufs Feld, übrige Attribute gehen ans Feld", () => {

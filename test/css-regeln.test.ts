@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { FLAECHEN, GRADE, NACHT_HELL_GRUND, rolleCss, type WpRolle } from "../src/tokens";
+import { FLAECHEN, GRADE, NACHT_HELL_GRUND, RUNDUNGEN, rolleCss, type WpRolle } from "../src/tokens";
 import { cssDateien, lies, ohneKommentare, regeln, werte } from "./css-hilfe";
 
 // Regeln für das CSS im Paket: Jede Variable ist definiert, Schriftgrößen und
@@ -42,7 +42,7 @@ describe("Schriftgrade und Rundungen", () => {
   const GRAD = `var\\(--grad-(?:${Object.keys(GRADE).join("|")})\\)`;
   const SCHRIFTGROESSE = [new RegExp(`^${GRAD}$`), new RegExp(`^clamp\\(${GRAD}, [\\d.]+vw, ${GRAD}\\)$`), /^inherit$/, /^[\d.]+em$/];
   const RUNDUNG = [
-    /^var\(--rund-(?:eckig|fein|kreis)\)$/,
+    new RegExp(`^var\\(--rund-(?:${Object.keys(RUNDUNGEN).join("|")})\\)$`),
     /^calc\((?:[\d.]+px|var\(--[\w-]+\)) \* var\(--rund-pille-faktor\)\)$/,
     /^inherit$/,
   ];
@@ -59,6 +59,29 @@ describe("Schriftgrade und Rundungen", () => {
       .map((r) => r.deklarationen.get("border-radius"))
       .filter((wert): wert is string => wert !== undefined && !RUNDUNG.some((muster) => muster.test(wert)));
     expect(frei).toEqual([]);
+  });
+});
+
+describe("Farbwerte", () => {
+  // Farben gehören nach src/tokens.ts. Was die gehobenen Bausteine heute noch
+  // als festen Wert tragen (Weiß, Schatten, Warnfläche, Fehler auf Nacht), ist
+  // hier je Datei eingefroren und darf nur schrumpfen; neue Werte kommen als
+  // Token. Sinkt eine Zahl, die Liste nachziehen.
+  const LITERAL = /#[0-9a-f]{3,8}\b|\b(?:oklch|oklab|rgba?|hsla?)\(|\b(?:white|black)\b/gi;
+  const BESTAND: Record<string, number> = {
+    "src/arbeitsflaeche.module.css": 6,
+    "src/bausteine.module.css": 8,
+    "src/eingabefeld.module.css": 1,
+    "src/kapitel-leiste.module.css": 2,
+    "src/kopieren-knopf.module.css": 1,
+    "src/lichtkante.module.css": 7,
+    "src/reiter.module.css": 1,
+    "src/ziffernfelder.module.css": 1,
+  };
+
+  it.each(MODULE)("%s: keine neuen Farbwerte neben den Tokens", (pfad) => {
+    const zahl = ohneKommentare(lies(pfad)).match(LITERAL)?.length ?? 0;
+    expect(zahl).toBe(BESTAND[pfad] ?? 0);
   });
 });
 

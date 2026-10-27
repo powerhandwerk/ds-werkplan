@@ -11,8 +11,6 @@ import { Filterleiste, Listenzeile } from "../src/Arbeitsflaeche";
 // sind echte Links, ein einfacher Klick wählt ohne Neuladen, Klicks mit
 // Zusatztaste gehen an den Browser durch.
 
-(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-
 let root: Root | null = null;
 
 async function rendere(knoten: React.ReactNode): Promise<HTMLElement> {

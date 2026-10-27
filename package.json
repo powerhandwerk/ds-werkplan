@@ -31,6 +31,7 @@
     "./abo-icon": "./src/abo-icon.ts",
     "./Logo": "./src/Logo.tsx",
     "./werte": "./src/werte.ts",
+    "./standards": "./src/standards.ts",
     "./reiter.module.css": "./src/reiter.module.css",
     "./kapitel-leiste.module.css": "./src/kapitel-leiste.module.css",
     "./ziffernfelder.module.css": "./src/ziffernfelder.module.css",

@@ -9,7 +9,7 @@
 // auch in Client-Bundles, die Farbtabellen bleiben dort ungenutzt und dürfen
 // beim Tree-Shaking wegfallen.
 
-import { FARBEN, MASSE, hexVon, type FarbName, type Untergrund } from "./tokens";
+import { FARBEN, FLAECHEN, MASSE, hexVon, type FarbName, type Untergrund } from "./tokens";
 
 /* ---- Farben ---------------------------------------------------------- */
 
@@ -25,40 +25,29 @@ export function farbe(token: string): string {
 
 export type { Untergrund } from "./tokens";
 
-/**
- * Rollen einer Fläche als Token-Namen, Spiegel der `--wp-*`-Rollen aus
- * werkplan.module.css (`.nacht`/`.aufNacht` und `.papier`/`.aufPapier`). Ein
- * Test hält jeden Eintrag gleich `FLAECHEN` in ./tokens.
- */
-export const FLAECHEN_TOKENS = {
-  nacht: {
-    grund: "--ink-950",
-    stark: "--ink-050",
-    text: "--ink-200",
-    gedaempft: "--ink-400",
-    quelle: "--ink-300",
-  },
-  papier: {
-    grund: "--ink-100",
-    stark: "--ink-950",
-    text: "--ink-800",
-    gedaempft: "--ink-500",
-    quelle: "--ink-600",
-  },
-} as const satisfies Record<Untergrund, Record<string, string>>;
+/** Die Rollen einer Fläche, die Seitenrahmen und PDF brauchen. */
+const PDF_ROLLEN = ["grund", "stark", "text", "gedaempft", "quelle"] as const;
 
-export type FlaechenRolle = keyof (typeof FLAECHEN_TOKENS)["papier"];
+export type FlaechenRolle = (typeof PDF_ROLLEN)[number];
+
+type FlaechenTokens = {
+  readonly [U in Untergrund]: { readonly [R in FlaechenRolle]: `--${(typeof FLAECHEN)[U][R]["farbe"]}` };
+};
+
+function flaechenTokens(): FlaechenTokens {
+  const tokens = (u: Untergrund) => Object.fromEntries(PDF_ROLLEN.map((r) => [r, `--${FLAECHEN[u][r].farbe}`]));
+  return { nacht: tokens("nacht"), papier: tokens("papier") } as FlaechenTokens;
+}
+
+/**
+ * Rollen einer Fläche als Token-Namen (`--ink-…`), abgeleitet aus FLAECHEN in
+ * ./tokens; die `--wp-*`-Rollen in werkplan.module.css folgen derselben Tabelle.
+ */
+export const FLAECHEN_TOKENS = /* @__PURE__ */ flaechenTokens();
 
 /** Hex-Werte der Rollen einer Fläche, fürs PDF. */
 export function flaechenFarben(untergrund: Untergrund): Record<FlaechenRolle, string> {
-  const tokens = FLAECHEN_TOKENS[untergrund];
-  return {
-    grund: farbe(tokens.grund),
-    stark: farbe(tokens.stark),
-    text: farbe(tokens.text),
-    gedaempft: farbe(tokens.gedaempft),
-    quelle: farbe(tokens.quelle),
-  };
+  return Object.fromEntries(PDF_ROLLEN.map((r) => [r, hexVon(FLAECHEN[untergrund][r].farbe)])) as Record<FlaechenRolle, string>;
 }
 
 /* ---- Maße ------------------------------------------------------------ */

@@ -23,6 +23,11 @@ dieses Paket mit fester Version (Git-Tag). Entscheidung: ADR-261 im Admin-Repo, 
   `artifact/project/`.
 - Die Ink-Rampe hat zehn Stufen. Zwischentöne entstehen mit `color-mix()` aus zwei
   Stufen, nicht mit neuen Stufen (Herleitung in `docs/inventur.md`).
+- Neue Farbwerte kommen als Token nach `src/tokens.ts`, nie als Hex- oder Farbfunktion ins
+  Modul-CSS. Was die gehobenen Bausteine heute noch fest tragen, ist in
+  `test/css-regeln.test.ts` je Datei eingefroren und darf nur schrumpfen.
+- Werte, die Client-Komponenten (`"use client"`) als Standard nutzen, stehen in einem
+  Modul ohne `"use client"` (`src/standards.ts`), damit Server-Komponenten sie lesen können.
 
 ## Sprache und Text
 

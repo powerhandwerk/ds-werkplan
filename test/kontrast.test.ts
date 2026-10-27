@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { FLAECHEN, NACHT_HELL_GRUND, rgbVon, type FarbName, type RollenWert, type Untergrund, type WpRolle } from "../src/tokens";
+import { FLAECHEN, NACHT_HELL_GRUND, deckkraftVon, rgbVon, type FarbName, type RollenWert, type Untergrund, type WpRolle } from "../src/tokens";
 
 // Kontrast nach WCAG 2.2 für jede Rolle auf jedem Grund, auf dem sie steht:
 // Schrift mindestens 4,5:1, Fokusring 3:1. Was keine Schrift und kein
@@ -10,9 +10,8 @@ type Rgb = [number, number, number];
 
 /** Farbe über einem Grund; Deckkraft wie im Browser in sRGB verrechnet. */
 function auf(wert: RollenWert, grund: Rgb): Rgb {
-  const { rgb, deckkraft } = rgbVon(wert.farbe);
-  const alpha = deckkraft * (wert.anteil === undefined ? 1 : wert.anteil / 100);
-  return rgb.map((kanal, i) => Math.round(kanal * alpha + grund[i] * (1 - alpha))) as Rgb;
+  const alpha = deckkraftVon(wert.farbe, wert.anteil);
+  return rgbVon(wert.farbe).rgb.map((kanal, i) => Math.round(kanal * alpha + grund[i] * (1 - alpha))) as Rgb;
 }
 
 function leuchtdichte([rot, gruen, blau]: Rgb): number {

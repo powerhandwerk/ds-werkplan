@@ -11,13 +11,9 @@
 import { useEffect, useState } from "react";
 
 import css from "./kapitel-leiste.module.css";
+import { kapitelNummer } from "./standards";
 
 export type KapitelEintrag = { id: string; name: string };
-
-/** Nummer eines Kapitels, zweistellig: „01“. */
-export function kapitelNummer(nummer: number): string {
-  return String(nummer).padStart(2, "0");
-}
 
 export function KapitelLeiste({
   titel,

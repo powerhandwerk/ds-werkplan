@@ -1,33 +1,18 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act } from "react";
-import { createRoot, type Root } from "react-dom/client";
-import { KOPIEREN_TEXTE, KopierenKnopf } from "../src/KopierenKnopf";
+import { KopierenKnopf } from "../src/KopierenKnopf";
+import { KOPIEREN_TEXTE } from "../src/standards";
+import { zeige } from "./dom-hilfe";
 
 // Aus dem Admin umgezogen (test/kopieren-knopf.test.tsx zum früheren
 // DS-KopierenKnopf), ergänzt um die Fassung der Kundenseite. jsdom kennt
 // navigator.clipboard nicht: genau der Fall, in dem der Knopf den Text zum
 // Markieren zeigen muss (App-Ansichten, alte Browser).
 
-(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-
-const wurzeln: { root: Root; host: HTMLElement }[] = [];
 afterEach(() => {
-  for (const { root, host } of wurzeln.splice(0)) {
-    act(() => root.unmount());
-    host.remove();
-  }
   vi.unstubAllGlobals();
 });
-
-function zeige(element: React.ReactNode): HTMLElement {
-  const host = document.createElement("div");
-  document.body.appendChild(host);
-  const root = createRoot(host);
-  wurzeln.push({ root, host });
-  act(() => root.render(element));
-  return host;
-}
 
 describe("KopierenKnopf", () => {
   it("zeigt ohne Zwischenablage den Text zusätzlich in einem Feld und sagt das an", async () => {

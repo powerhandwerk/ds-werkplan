@@ -281,3 +281,20 @@ Sperr-Test ein; er darf nur schrumpfen.
    `.raster`) als Verkaufs- und Seitenbausteine ins Paket heben, wenn eine Seite sie braucht.
 9. `BlattZeile` auf Nacht und mit Text-Nummer.
 10. Website importiert das Paket statt ihrer Kopie unter `components/werkplan/`.
+
+## 9. Offen für Phase 1b
+
+Beim Aufräumen des Pakets bewusst nicht gelöst (Paket soll in Phase 1 nur heben):
+
+1. Feste Farbwerte der gehobenen Bausteine als Tokens: Weiß der Eingabefelder und
+   Karten (`#fff`), Warnfläche (`oklch(0.96 0.025 55)`), Fehler auf Nacht (`#ff9b8f`),
+   Schatten der Lichtkante, des Toasts und des Menüs. Bis dahin friert
+   `test/css-regeln.test.ts` den Bestand je Datei ein.
+2. `@keyframes marker-wisch` ins Paket; heute liefert sie das Portal (`app/globals.css`),
+   ohne sie wischt der Marker mit `animate` nicht ein.
+3. Kapitelleiste: Seitenluft (`-20px`, `-32px`, `top: 24px`) als Variable statt fest
+   aus der Kundenseite; Scroll-Messung pro Bild bündeln.
+4. Reiter: Die Menütafel braucht eine positionierte Zeile der App; als Hülle ins Paket
+   ziehen, wenn die Website den Reiter nutzt.
+5. Flächen- und Typo-Klassen aus `src/tokens.ts` erzeugen statt per Test abgleichen.
+

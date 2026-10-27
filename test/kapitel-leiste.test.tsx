@@ -9,8 +9,6 @@ import { KapitelLeiste } from "../src/KapitelLeiste";
 // letzte Kapitel, dessen Kopf das obere Drittel erreicht hat, auch beim
 // Zurückscrollen, und am Seitenende das letzte Kapitel.
 
-(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-
 const KAPITEL = [
   { id: "k-1", name: "Marke" },
   { id: "k-2", name: "Logo" },

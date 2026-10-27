@@ -1,36 +1,18 @@
 // @vitest-environment jsdom
 import { act, useState } from "react";
-import { createRoot, type Root } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { leereZiffern, ZiffernFelder } from "../src/ZiffernFelder";
+import { leereZiffern } from "../src/standards";
+import { ZiffernFelder } from "../src/ZiffernFelder";
+import { zeige } from "./dom-hilfe";
 
 // Code-Eingabe der Kundenseite (aus dem Admin): Namen, Fehlerbezug, Länge als
 // Prop und das Verteilen eines eingefügten Codes auf alle Felder.
 
-(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-
-const wurzeln: { root: Root; host: HTMLElement }[] = [];
-afterEach(() => {
-  for (const { root, host } of wurzeln.splice(0)) {
-    act(() => root.unmount());
-    host.remove();
-  }
-});
-
 function Probe({ laenge }: { laenge?: number }) {
   const [ziffern, setZiffern] = useState<string[]>(leereZiffern(laenge));
-  return <ZiffernFelder ziffern={ziffern} aendern={setZiffern} fehlerId={null} fokusAnlass={0} laenge={laenge} />;
-}
-
-function zeige(element: React.ReactNode): HTMLElement {
-  const host = document.createElement("div");
-  document.body.appendChild(host);
-  const root = createRoot(host);
-  wurzeln.push({ root, host });
-  act(() => root.render(element));
-  return host;
+  return <ZiffernFelder ziffern={ziffern} aendern={setZiffern} fehlerId={null} fokusAnlass={0} />;
 }
 
 describe("ZiffernFelder", () => {

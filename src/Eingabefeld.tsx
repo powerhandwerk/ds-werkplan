@@ -1,6 +1,7 @@
 import { useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
 
 import css from "./eingabefeld.module.css";
+import wp from "./werkplan.module.css";
 
 // Text- und Mehrzeilenfeld (DS Werkplan 2.0, ADR-261) im Stil der Formulare
 // der Kundenseite im Admin (Einwilligung in ZustimmungKarte, Fehler melden,
@@ -43,7 +44,7 @@ export function Eingabefeld(props: EingabefeldProps) {
         <input {...(feld as InputHTMLAttributes<HTMLInputElement>)} {...gemeinsam} />
       )}
       {hinweis ? (
-        <p id={hinweisId} className={css.hinweis}>
+        <p id={hinweisId} className={wp.quelle}>
           {hinweis}
         </p>
       ) : null}

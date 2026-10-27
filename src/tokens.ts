@@ -110,10 +110,14 @@ export function rgbVon(name: FarbName): { rgb: [number, number, number]; deckkra
  * `color-mix(in oklch, var(--name) <anteil>%, transparent)`.
  */
 export function hexVon(name: FarbName, anteil?: number): string {
-  const { rgb, deckkraft } = rgbVon(name);
-  const alpha = deckkraft * (anteil === undefined ? 1 : anteil / 100);
-  const hex = "#" + rgb.map(zweiStellen).join("");
+  const alpha = deckkraftVon(name, anteil);
+  const hex = "#" + rgbVon(name).rgb.map(zweiStellen).join("");
   return alpha >= 1 ? hex : hex + zweiStellen(alpha * 255);
+}
+
+/** Deckkraft einer Farbe, mit `anteil` (Prozent) wie bei `color-mix(…, transparent)`. */
+export function deckkraftVon(name: FarbName, anteil?: number): number {
+  return rgbVon(name).deckkraft * (anteil === undefined ? 1 : anteil / 100);
 }
 
 /** CSS-Wert einer Farbe, wie src/tokens.css ihn schreibt. */
@@ -194,11 +198,29 @@ export const SCHRIFTFAMILIEN = {
   },
   werkplan: {
     stapel: '"Barlow Semi Condensed"',
-    rolle: "Beschriftung, Quelle und Schriftfeld (600), Messwert (300). Die Rollen hängen var(--font-body) als Rückfall an.",
+    rueckfall: "body",
+    rolle: "Beschriftung, Quelle und Schriftfeld (600), Messwert (300).",
   },
 } as const;
 
 export type SchriftFamilie = keyof typeof SCHRIFTFAMILIEN;
+
+function rueckfallVon(familie: SchriftFamilie): SchriftFamilie | undefined {
+  const eintrag = SCHRIFTFAMILIEN[familie];
+  return "rueckfall" in eintrag ? eintrag.rueckfall : undefined;
+}
+
+/** Schriftfamilie als CSS-Wert der Typo-Rollen, mit Rückfall: `var(--font-werkplan), var(--font-body)`. */
+export function familieCss(familie: SchriftFamilie): string {
+  const rueckfall = rueckfallVon(familie);
+  return rueckfall ? `var(--font-${familie}), var(--font-${rueckfall})` : `var(--font-${familie})`;
+}
+
+/** Schriftfamilie als vollständiger Stapel mit Rückfall, etwa für tokens.json. */
+export function familieStapel(familie: SchriftFamilie): string {
+  const rueckfall = rueckfallVon(familie);
+  return rueckfall ? `${SCHRIFTFAMILIEN[familie].stapel}, ${SCHRIFTFAMILIEN[rueckfall].stapel}` : SCHRIFTFAMILIEN[familie].stapel;
+}
 
 /** Selbst gehostete Schriftdateien unter fonts/ (SIL OFL 1.1, Lizenztexte daneben). */
 export const SCHRIFTDATEIEN = [
@@ -226,10 +248,10 @@ export const GRADE = {
 
 export type Grad = keyof typeof GRADE;
 
-/** Eine Typo-Rolle; `klasse` ist die Klasse in src/werkplan.module.css. */
+/** Eine Typo-Rolle; ihre Klasse in src/werkplan.module.css heißt wie `name`, sonst steht sie in `klasse`. */
 export interface TypoRolle {
   readonly name: string;
-  readonly klasse: string;
+  readonly klasse?: string;
   readonly familie: SchriftFamilie;
   readonly gewicht: number;
   /** Schriftgrad; bei Überschriften der Richtwert, die Größe setzt dort die Seite. */
@@ -252,7 +274,6 @@ export interface TypoRolle {
 export const TYPO_ROLLEN: readonly TypoRolle[] = [
   {
     name: "h1",
-    klasse: "h1",
     familie: "display",
     gewicht: 800,
     grad: 48,
@@ -264,7 +285,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "h2",
-    klasse: "h2",
     familie: "display",
     gewicht: 800,
     grad: 32,
@@ -276,7 +296,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "h3",
-    klasse: "h3",
     familie: "display",
     gewicht: 800,
     grad: 24,
@@ -288,7 +307,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "lead",
-    klasse: "lead",
     familie: "body",
     gewicht: 400,
     grad: 18,
@@ -298,7 +316,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "text",
-    klasse: "text",
     familie: "body",
     gewicht: 400,
     grad: 16,
@@ -308,7 +325,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "beschriftung",
-    klasse: "beschriftung",
     familie: "werkplan",
     gewicht: 600,
     grad: 12,
@@ -321,7 +337,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "messwert",
-    klasse: "messwert",
     familie: "werkplan",
     gewicht: 300,
     grad: 80,
@@ -333,7 +348,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "quelle",
-    klasse: "quelle",
     familie: "werkplan",
     gewicht: 600,
     grad: 12,
@@ -345,7 +359,6 @@ export const TYPO_ROLLEN: readonly TypoRolle[] = [
   },
   {
     name: "textlink",
-    klasse: "textlink",
     familie: "body",
     gewicht: 600,
     grad: 16,
@@ -407,8 +420,8 @@ export const BEWEGUNG = {
 } as const;
 
 /**
- * Maße in Pixeln (Web) bzw. Punkten (PDF, gleiche Zahl), Quelle der Werte in
- * werkplan.module.css und lichtkante.module.css.
+ * Maße in Pixeln (Web) bzw. Punkten (PDF, gleiche Zahl). Dieselben Zahlen stehen
+ * in werkplan.module.css und lichtkante.module.css; test/masse.test.ts hält sie gleich.
  */
 export const MASSE = {
   /** Maßlinie, Endstriche, Schriftfeld-Fugen. */

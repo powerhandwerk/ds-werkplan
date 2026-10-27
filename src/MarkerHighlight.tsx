@@ -2,6 +2,8 @@
 // dieselbe Form wie die Pille im Logo.
 import React from "react";
 
+import { PILLE_FAKTOR } from "./tokens";
+
 /**
  * Überstand und Rundung der Lime-Fläche, in em der Schriftgröße des markierten
  * Wortes. Die Voreinstellung GEOMETRY_DEFAULT ist die am Logo VERMESSENE
@@ -43,7 +45,7 @@ export const MARKER_TILT_DEG = -3.96;
 
 /** Rundung der Logo-Pille: 0,433 × Flächenhöhe (rx=21.7 bei height=50.1).
  *  Die volle Pille (--radius-marker, 999px = 50 %) ist sichtbar zu rund. */
-export const MARKER_RADIUS_FACTOR = 0.433;
+export const MARKER_RADIUS_FACTOR = PILLE_FAKTOR;
 
 /** Luft über der Versal-Oberkante, × Versalhöhe. */
 export const MARKER_CLEARANCE_TOP = 0.196;
@@ -221,7 +223,7 @@ export function MarkerHighlight({
             display: "block",
             width: "100%",
             height: "100%",
-            background: color || "var(--marker, #b5e545)",
+            background: color || "var(--lime)",
             transformOrigin: "left center",
             animation: animate
               ? "marker-wisch var(--dur-marker, 520ms) var(--ease-marker, cubic-bezier(0.22,0.61,0.36,1)) both"
@@ -229,7 +231,7 @@ export function MarkerHighlight({
           }}
         />
       </span>
-      <span style={{ position: "relative", color: "var(--on-accent, #2b2823)" }}>{children}</span>
+      <span style={{ position: "relative", color: "var(--ink-950)" }}>{children}</span>
     </span>
   );
 }

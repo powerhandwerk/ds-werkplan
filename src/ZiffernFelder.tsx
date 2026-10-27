@@ -10,20 +10,8 @@
 
 import { useEffect, useRef, type ClipboardEvent, type CSSProperties, type KeyboardEvent } from "react";
 
+import { CODE_LAENGE_STANDARD, zifferLabelStandard } from "./standards";
 import css from "./ziffernfelder.module.css";
-
-/** Länge des Codes auf der Kundenseite. */
-export const CODE_LAENGE_STANDARD = 6;
-
-/** Leere Ziffern für einen Code der Länge `laenge`. */
-export function leereZiffern(laenge: number = CODE_LAENGE_STANDARD): string[] {
-  return Array.from({ length: laenge }, () => "");
-}
-
-/** Name eines Feldes: „Ziffer 1 von 6“. */
-export function zifferLabelStandard(nummer: number, laenge: number): string {
-  return `Ziffer ${nummer} von ${laenge}`;
-}
 
 function nurZiffern(wert: string): string {
   return wert.replace(/\D/g, "");
@@ -34,7 +22,6 @@ export function ZiffernFelder({
   aendern,
   fehlerId,
   fokusAnlass,
-  laenge = CODE_LAENGE_STANDARD,
   zifferLabel = zifferLabelStandard,
 }: {
   ziffern: readonly string[];
@@ -43,10 +30,9 @@ export function ZiffernFelder({
   fehlerId: string | null;
   /** Jede neue Antwort der Action: Fokus ins erste Feld, Inhalt markiert. */
   fokusAnlass: unknown;
-  /** Zahl der Ziffern; `ziffern` hat dieselbe Länge (siehe `leereZiffern`). */
-  laenge?: number;
   zifferLabel?: (nummer: number, laenge: number) => string;
 }) {
+  const laenge = ziffern.length;
   const felder = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -72,6 +58,15 @@ export function ZiffernFelder({
     felder.current[Math.min(ab + ziffernText.length, laenge - 1)]?.focus();
   }
 
+  /** Ein ganzer Code beginnt vorn, ein Teil ab Feld `i`. */
+  function verteileCode(i: number, z: string) {
+    verteile(z.length >= laenge ? 0 : i, z.slice(0, laenge));
+  }
+
+  function weiter(i: number) {
+    if (i < laenge - 1) felder.current[i + 1]?.focus();
+  }
+
   function beiEingabe(i: number, wert: string) {
     const z = nurZiffern(wert);
     // Gefülltes Feld ohne Markierung: der Browser hängt die neue Ziffer vor oder
@@ -80,23 +75,23 @@ export function ZiffernFelder({
     if (z.length === 2 && alt) {
       const neu = z[0] === alt ? z[1]! : z[0]!;
       setze(i, neu);
-      if (i < laenge - 1) felder.current[i + 1]?.focus();
+      weiter(i);
       return;
     }
     if (z.length > 1) {
-      // Autofill oder Einfügen ohne Paste-Ereignis: ein ganzer Code beginnt vorn.
-      verteile(z.length >= laenge ? 0 : i, z.slice(0, laenge));
+      // Autofill oder Einfügen ohne Paste-Ereignis.
+      verteileCode(i, z);
       return;
     }
     setze(i, z);
-    if (z && i < laenge - 1) felder.current[i + 1]?.focus();
+    if (z) weiter(i);
   }
 
   function beiEinfuegen(i: number, e: ClipboardEvent<HTMLInputElement>) {
     const z = nurZiffern(e.clipboardData.getData("text"));
     if (!z) return;
     e.preventDefault();
-    verteile(z.length >= laenge ? 0 : i, z.slice(0, laenge));
+    verteileCode(i, z);
   }
 
   function beiTaste(i: number, e: KeyboardEvent<HTMLInputElement>) {

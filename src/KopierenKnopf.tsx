@@ -13,25 +13,7 @@
 import { useEffect, useState } from "react";
 
 import css from "./kopieren-knopf.module.css";
-
-export interface KopierenTexte {
-  kopieren: string;
-  kopiert: string;
-  /** Hinweis am gesperrten Knopf. */
-  ohneFunktion: string;
-  /** Ansage, wenn das Kopieren scheitert. */
-  manuell: string;
-  /** Name des Rückfall-Felds. */
-  feld: string;
-}
-
-export const KOPIEREN_TEXTE: KopierenTexte = {
-  kopieren: "Kopieren",
-  kopiert: "Kopiert",
-  ohneFunktion: "In der Kundenansicht ohne Funktion",
-  manuell: "Kopieren ging nicht. Markieren Sie den Text im Feld und kopieren Sie ihn selbst.",
-  feld: "Text zum Kopieren",
-};
+import { KOPIEREN_TEXTE, type KopierenTexte } from "./standards";
 
 type Zustand = "bereit" | "kopiert" | "manuell";
 

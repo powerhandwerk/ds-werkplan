@@ -6,9 +6,9 @@
  */
 
 .seite {
-  --wb-warn: oklch(0.5 0.13 30);
+  --wb-warn: var(--danger-ink);
   --wb-warn-flaeche: oklch(0.96 0.025 55);
-  --wb-warn-linie: oklch(0.5 0.13 30 / 0.45);
+  --wb-warn-linie: color-mix(in oklch, var(--danger-ink) 45%, transparent);
   --wb-linie: color-mix(in oklch, var(--ink-950) 40%, transparent);
   --wb-linie-fein: color-mix(in oklch, var(--ink-950) 16%, transparent);
 }
@@ -173,8 +173,8 @@
 }
 
 .etikettWarn {
-  border: 1px solid var(--wb-warn-linie, oklch(0.5 0.13 30 / 0.45));
-  color: var(--wb-warn, oklch(0.5 0.13 30));
+  border: 1px solid var(--wb-warn-linie, color-mix(in oklch, var(--danger-ink) 45%, transparent));
+  color: var(--wb-warn, var(--danger-ink));
   background: var(--wb-warn-flaeche, oklch(0.96 0.025 55));
 }
 
@@ -193,13 +193,13 @@
   gap: 12px;
   padding: 7px 12px;
   background: var(--wb-warn-flaeche, oklch(0.96 0.025 55));
-  border: 1px solid var(--wb-warn-linie, oklch(0.5 0.13 30 / 0.45));
+  border: 1px solid var(--wb-warn-linie, color-mix(in oklch, var(--danger-ink) 45%, transparent));
   border-radius: var(--rund-eckig);
   color: var(--ink-900);
 }
 
 .bandIcon {
-  color: var(--wb-warn, oklch(0.5 0.13 30));
+  color: var(--wb-warn, var(--danger-ink));
   font-size: var(--grad-14);
   line-height: 1.45;
 }
@@ -212,7 +212,7 @@
 }
 
 .bandText strong {
-  color: var(--wb-warn, oklch(0.5 0.13 30));
+  color: var(--wb-warn, var(--danger-ink));
 }
 
 .bandAktion {

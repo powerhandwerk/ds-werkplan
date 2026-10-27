@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { REITER_TEXTE, Reiter, type ReiterEintrag } from "../src/Reiter";
+import { dom } from "./dom-hilfe";
 
 // Navigation der Kundenseite, gehoben aus dem Admin (Kopfband und HandyMenue;
 // dort geprüft in test/kundenseite-bereiche.test.tsx). Neutrale Beispielreiter.
@@ -14,10 +15,6 @@ const EINTRAEGE: ReiterEintrag[] = [
 
 const LEISTE = `nav[aria-label="${REITER_TEXTE.leiste}"]`;
 const MENUE = `nav[aria-label="${REITER_TEXTE.menueListe}"]`;
-
-function dom(markup: string): Document {
-  return new DOMParser().parseFromString(`<body>${markup}</body>`, "text/html");
-}
 
 describe("Reiter", () => {
   it("die Leiste zeigt alle Reiter in Reihenfolge; ohne Ziel ein span statt Link", () => {

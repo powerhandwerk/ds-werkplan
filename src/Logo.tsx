@@ -26,16 +26,11 @@ export function Logo({ variant = "light", height = 34, className, style, href, a
   // Next.js liefert beim SVG-Import ein Objekt mit `src`, Vite und Bun eine URL.
   const src = typeof bild === "string" ? bild : bild.src;
   const img = <img src={src} alt="powerhandwerk" style={{ height, width: "auto", display: "block" }} />;
-  if (href === undefined) {
-    return (
-      <span className={className} style={{ display: "inline-flex", ...style }}>
-        {img}
-      </span>
-    );
-  }
+  const Huelle = href === undefined ? "span" : Element;
+  const link = href === undefined ? {} : { href, "aria-label": "powerhandwerk Startseite" };
   return (
-    <Element href={href} aria-label="powerhandwerk Startseite" className={className} style={{ display: "inline-flex", ...style }}>
+    <Huelle {...link} className={className} style={{ display: "inline-flex", ...style }}>
       {img}
-    </Element>
+    </Huelle>
   );
 }

@@ -17,7 +17,6 @@
 /* ---------- Seite und Schrift ---------- */
 
 .seite {
-  --font-werkplan: "Barlow Semi Condensed";
   font-family: var(--font-body);
 }
 

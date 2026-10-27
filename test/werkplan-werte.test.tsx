@@ -17,10 +17,9 @@ import {
   WERKPLAN_ICONS,
   type WerkplanIconName,
   farbe,
-  WERKPLAN_MASSE,
   flaechenFarben,
 } from "../src/werte";
-import { FARBEN, FLAECHEN, MASSE, hexVon, type FarbName } from "../src/tokens";
+import { FARBEN, hexVon, type FarbName } from "../src/tokens";
 
 // Gemeinsame Werte für Web und PDF (Monatsbericht v3, Z1, WB-4402e476): keine
 // eigene Hex-Tabelle, Farben und Maße aus src/tokens.ts, Icon-Pfade an einer
@@ -39,17 +38,11 @@ describe("Werkplan-Farben", () => {
     expect(() => farbe("--ink-450")).toThrow(/--ink-450 steht nicht in src\/tokens\.ts/);
   });
 
-  it("jeder Eintrag in FLAECHEN_TOKENS entspricht FLAECHEN aus src/tokens.ts", () => {
-    for (const untergrund of ["nacht", "papier"] as const) {
-      for (const [rolle, token] of Object.entries(FLAECHEN_TOKENS[untergrund])) {
-        const quelle = FLAECHEN[untergrund][rolle as keyof (typeof FLAECHEN)["papier"]];
-        expect(token, `${untergrund}.${rolle}`).toBe(`--${quelle.farbe}`);
-      }
-    }
-  });
-
-  it("WERKPLAN_MASSE sind die Maße aus src/tokens.ts", () => {
-    expect(WERKPLAN_MASSE).toBe(MASSE);
+  it("FLAECHEN_TOKENS behält die Form, die das Admin liest", () => {
+    expect(FLAECHEN_TOKENS).toEqual({
+      nacht: { grund: "--ink-950", stark: "--ink-050", text: "--ink-200", gedaempft: "--ink-400", quelle: "--ink-300" },
+      papier: { grund: "--ink-100", stark: "--ink-950", text: "--ink-800", gedaempft: "--ink-500", quelle: "--ink-600" },
+    });
   });
 
   it("jede Flächen-Rolle ist ein Hex-Wert aus src/tokens.ts", () => {

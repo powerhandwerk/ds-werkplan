@@ -18,10 +18,13 @@ import {
   SCHRIFTFAMILIEN,
   TYPO_ROLLEN,
   cssVon,
+  familieStapel,
   hexVon,
+  type Farbe,
   type FarbName,
   type Grad,
   type RollenWert,
+  type SchriftFamilie,
   type WpRolle,
 } from "../src/tokens";
 
@@ -34,7 +37,11 @@ const gradNamen = Object.keys(GRADE).map(Number) as Grad[];
 
 export function tokensCss(): string {
   const zeilen: string[] = [KOPF, "", ":root {"];
-  const gruppe = (titel: string) => zeilen.push(zeilen.at(-1) === ":root {" ? `  /* ${titel} */` : `\n  /* ${titel} */`);
+  let ersteGruppe = true;
+  const gruppe = (titel: string) => {
+    zeilen.push(`${ersteGruppe ? "" : "\n"}  /* ${titel} */`);
+    ersteGruppe = false;
+  };
 
   gruppe("Farben (Ink-Rampe, Lime nur als Fläche, Rot nur für Fehler, Fokus)");
   for (const name of farbNamen) {
@@ -100,9 +107,9 @@ const ROLLEN_TEXT: Record<WpRolle, string> = {
 
 export function tokensJson(): string {
   const farbTokens: { name: string; value: ThemaWert; usage: string }[] = farbNamen.map((name) => {
-    const farbe = FARBEN[name] as { alias?: string; oklch?: readonly number[]; rolle: string };
-    const herkunft = farbe.oklch ? ` oklch(${farbe.oklch.join(" ")}).` : "";
-    return { name, value: farbe.alias ? `{${farbe.alias}}` : hexVon(name), usage: farbe.rolle + herkunft };
+    const farbe: Farbe = FARBEN[name];
+    const herkunft = "oklch" in farbe ? ` oklch(${farbe.oklch.join(" ")}).` : "";
+    return { name, value: "alias" in farbe ? `{${farbe.alias}}` : hexVon(name), usage: farbe.rolle + herkunft };
   });
 
   for (const rolle of Object.keys(FLAECHEN.papier) as WpRolle[]) {
@@ -118,12 +125,8 @@ export function tokensJson(): string {
     usage: "Grund von .nachtHell (Nacht eine Stufe heller); auf Papier gleich wp-grund.",
   });
 
-  const familienSchluessel = Object.keys(SCHRIFTFAMILIEN) as (keyof typeof SCHRIFTFAMILIEN)[];
   const familien = Object.fromEntries(
-    familienSchluessel.map((k) => [
-      k,
-      k === "werkplan" ? `${SCHRIFTFAMILIEN.werkplan.stapel}, ${SCHRIFTFAMILIEN.body.stapel}` : SCHRIFTFAMILIEN[k].stapel,
-    ]),
+    (Object.keys(SCHRIFTFAMILIEN) as SchriftFamilie[]).map((k) => [k, familieStapel(k)]),
   );
 
   const json = {
@@ -149,7 +152,7 @@ export function tokensJson(): string {
         {
           name: "Grade",
           family: "body",
-          note: "Acht Grade von 12 bis 64 plus Messwert-Stufe 80. In CSS var(--grad-<n>).",
+          note: `Schriftgrade ${gradNamen.join(", ")} px; der größte ist für Messwerte. In CSS var(--grad-<n>).`,
           styles: gradNamen.map((grad) => ({ name: `grad-${grad}`, fontSize: `${grad}px`, usage: GRADE[grad] })),
         },
         {
@@ -174,7 +177,7 @@ export function tokensJson(): string {
       tokens: ABSTAENDE.map((px) => ({ name: `abstand-${px}`, value: `${px}px`, usage: `${px} px.` })),
     },
     radius: {
-      note: "Vier Rollen: eckig, fein, Kreis und die Logo-Pille (0,433 × Höhe, siehe abmessungen).",
+      note: `Rollen ${Object.keys(RUNDUNGEN).join(", ")}; Knöpfe und Chips mit fester Höhe runden mit Höhe × ${String(PILLE_FAKTOR).replace(".", ",")} wie die Pille im Logo (rund-pille-faktor).`,
       tokens: Object.entries(RUNDUNGEN).map(([name, { wert, rolle }]) => ({ name: `rund-${name}`, value: wert, usage: rolle })),
     },
     abmessungen: {
