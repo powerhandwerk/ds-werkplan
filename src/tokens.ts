@@ -412,11 +412,51 @@ export const PILLE_FAKTOR = 0.433;
 /** Abstände im 4-px-Raster. */
 export const ABSTAENDE = [4, 8, 12, 16, 24, 32, 48, 64, 96, 128] as const;
 
-/** Bewegung: Übergänge, Lichtumlauf der Lichtkante. `prefers-reduced-motion` schaltet beides ab. */
+/**
+ * Bewegung: Übergänge, Lichtumlauf der Lichtkante, Leistungskarte.
+ * `prefers-reduced-motion` schaltet alles ab.
+ */
 export const BEWEGUNG = {
   uebergangMs: 180,
   kurve: "ease-out",
   lichtUmlaufS: 3.2,
+  /** Leistungskarte: Farbwechsel beim Aktivieren. */
+  karteMs: 320,
+  /** Leistungskarte: Kippen und Anheben. */
+  kippenMs: 380,
+  /** Kurve der Leistungskarte für Farbe und Kippen (auf der Website `--ease-marker`). */
+  kurveKarte: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+} as const;
+
+/**
+ * Grafikstile (ADR-262): Striche der Zeichnungen in SVG-Einheiten, Zustand der
+ * aktiven Leistungskarte, Ablauf der Iso-Szene. `leistungskarten.module.css` und
+ * die Standardwerte von `Leistungskarten` und `IsoSzene` tragen dieselben Zahlen;
+ * `test/grafik-werte.test.ts` hält sie gleich.
+ */
+export const GRAFIK = {
+  /** Kontur der Zeichnung. */
+  strich: 1.1,
+  /** Feine Linien: Fugen, Schraffur, Nebenlinien. */
+  strichFein: 0.7,
+  /** Lime-Linie. */
+  strichLime: 1.6,
+  /** Zeiger einer Uhr oder Messnadel. */
+  strichZeiger: 2,
+  /** Leuchtsaum um Lime-Teile der aktiven Karte, in px. */
+  leuchtsaumPx: 6,
+  /** Aktive Karte: Neigung in Grad, Anheben in px, Vergrößerung. */
+  kippGrad: -1.6,
+  hebenPx: 6,
+  skalierung: 1.02,
+  /** Aktive breite Karte (Querformat): flacher, weniger angehoben, ohne Vergrößerung. */
+  kippGradBreit: -0.6,
+  hebenPxBreit: 4,
+  /** Leistungskarte ohne Hover (Handy): Sichtanteil, ab dem die Geste einmal abläuft. */
+  handyStartAnteil: 0.6,
+  /** Iso-Szene: Sichtanteil für den Start und Takt, in dem die Stufen einrasten. */
+  isoStartAnteil: 0.5,
+  isoTaktMs: 700,
 } as const;
 
 /**

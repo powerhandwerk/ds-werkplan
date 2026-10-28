@@ -1107,11 +1107,50 @@ export declare const RUNDUNGEN: {
 export declare const PILLE_FAKTOR = 0.433;
 /** Abstände im 4-px-Raster. */
 export declare const ABSTAENDE: readonly [4, 8, 12, 16, 24, 32, 48, 64, 96, 128];
-/** Bewegung: Übergänge, Lichtumlauf der Lichtkante. `prefers-reduced-motion` schaltet beides ab. */
+/**
+ * Bewegung: Übergänge, Lichtumlauf der Lichtkante, Leistungskarte.
+ * `prefers-reduced-motion` schaltet alles ab.
+ */
 export declare const BEWEGUNG: {
     readonly uebergangMs: 180;
     readonly kurve: "ease-out";
     readonly lichtUmlaufS: 3.2;
+    /** Leistungskarte: Farbwechsel beim Aktivieren. */
+    readonly karteMs: 320;
+    /** Leistungskarte: Kippen und Anheben. */
+    readonly kippenMs: 380;
+    /** Kurve der Leistungskarte für Farbe und Kippen (auf der Website `--ease-marker`). */
+    readonly kurveKarte: "cubic-bezier(0.22, 0.61, 0.36, 1)";
+};
+/**
+ * Grafikstile (ADR-262): Striche der Zeichnungen in SVG-Einheiten, Zustand der
+ * aktiven Leistungskarte, Ablauf der Iso-Szene. `leistungskarten.module.css` und
+ * die Standardwerte von `Leistungskarten` und `IsoSzene` tragen dieselben Zahlen;
+ * `test/grafik-werte.test.ts` hält sie gleich.
+ */
+export declare const GRAFIK: {
+    /** Kontur der Zeichnung. */
+    readonly strich: 1.1;
+    /** Feine Linien: Fugen, Schraffur, Nebenlinien. */
+    readonly strichFein: 0.7;
+    /** Lime-Linie. */
+    readonly strichLime: 1.6;
+    /** Zeiger einer Uhr oder Messnadel. */
+    readonly strichZeiger: 2;
+    /** Leuchtsaum um Lime-Teile der aktiven Karte, in px. */
+    readonly leuchtsaumPx: 6;
+    /** Aktive Karte: Neigung in Grad, Anheben in px, Vergrößerung. */
+    readonly kippGrad: -1.6;
+    readonly hebenPx: 6;
+    readonly skalierung: 1.02;
+    /** Aktive breite Karte (Querformat): flacher, weniger angehoben, ohne Vergrößerung. */
+    readonly kippGradBreit: -0.6;
+    readonly hebenPxBreit: 4;
+    /** Leistungskarte ohne Hover (Handy): Sichtanteil, ab dem die Geste einmal abläuft. */
+    readonly handyStartAnteil: 0.6;
+    /** Iso-Szene: Sichtanteil für den Start und Takt, in dem die Stufen einrasten. */
+    readonly isoStartAnteil: 0.5;
+    readonly isoTaktMs: 700;
 };
 /**
  * Maße in Pixeln (Web) bzw. Punkten (PDF, gleiche Zahl). Dieselben Zahlen stehen

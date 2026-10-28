@@ -170,6 +170,7 @@ export {
   PILLE_FAKTOR,
   ABSTAENDE,
   BEWEGUNG,
+  GRAFIK,
   MASSE,
   type Oklch,
   type Farbe,
