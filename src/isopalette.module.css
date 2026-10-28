@@ -1,0 +1,38 @@
+/*
+ * Iso-Palette der Nachtgrafiken (Stil B, Iso-Szene). `IsoSzene` setzt
+ * `.palette` neben die Klasse der Zeichnung ans SVG; die Module der
+ * Zeichnungen (etwa explosion.module.css) lesen nur diese Namen.
+ *
+ * Farben nur aus den Tokens, Abstufungen per color-mix (ab Safari 16.2;
+ * relative Farbsyntax bewusst nicht). Ohne Farbwerte neben den Tokens:
+ * Wo die Vorlage mit Schwarz abdunkelt, steht hier die dunkelste Ink-Stufe.
+ */
+
+.palette {
+  --accent: var(--lime);
+  --accent-hi: var(--lime-soft);
+  --line: var(--ink-500);
+  /* Ersatz für Ink-700 (docs/inventur.md, Abschnitt 3). */
+  --detail: color-mix(in oklch, var(--ink-800) 55%, var(--ink-600));
+  --body: var(--ink-900);
+  --deck: color-mix(in oklch, var(--ink-800) 42%, var(--ink-900));
+  /* Vorlage: Ink-950 mit 12 % Schwarz (L 0,15); dunkler als Ink-950 gibt die Rampe nicht her. */
+  --recess: var(--ink-950);
+  --glass: var(--recess);
+  /*
+   * Vorlage: 29 % Lime in Schwarz (L 0,25, C 0,055, Farbton der Lime).
+   * In oklab statt oklch, damit der Farbton nicht zum Ocker der Ink-Rampe
+   * wandert; 12 % ergibt L 0,25, C 0,031, Farbton 110. Ändern sich die
+   * Tokens, nachrechnen.
+   */
+  --glass-on: color-mix(in oklab, var(--lime) 12%, var(--ink-950));
+  --ink: color-mix(in oklch, var(--ink-300), var(--ink-400));
+  --ink-hi: var(--ink-100);
+}
+
+/* Bühne der Szene: Zeichnung und Unterschrift untereinander. */
+.buehne {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
