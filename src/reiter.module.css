@@ -1,0 +1,236 @@
+/*
+ * Reiter der Kundenseite (DS Werkplan 2.0, ADR-261): ab 1024 px die
+ * Reiter-Leiste, darunter das Handy-Menü als <details>. Herkunft ist der
+ * Abschnitt „Navigation (Paket 15c, ADR-226)“ und das Kopfband in
+ * components/kundenseite/kundenseite.module.css im Admin.
+ *
+ * Die Zeile drumherum (Logo, Pille, Trennlinie) setzt die App. Sie muss
+ * positioniert sein (`position: relative`), denn die Menütafel legt sich
+ * darunter über die volle Breite. Werte nur über Tokens: Schriftgrößen
+ * var(--grad-*), Rundungen als Pille (Höhe × --rund-pille-faktor).
+ */
+
+/* ---------- Reiter-Leiste (ab 1024 px) ---------- */
+
+.reiterLeiste {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .reiterLeiste {
+    display: block;
+    flex: 1 1 auto;
+  }
+}
+
+/* Acht Reiter brauchen rund 784 px: bis 1279 px eine eigene Zeile unter Logo
+   und Pille, ab 1280 px alles in einer Zeile (gemessen, ADR-229). */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .reiterLeiste {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
+.reiter {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+}
+
+/* 13 + 18 + 13 = 44 px Zielfläche. */
+.reiterAktiv,
+.reiterLink {
+  display: inline-block;
+  padding: 13px 0;
+  font-family: var(--font-body);
+  font-size: var(--grad-16);
+  line-height: 18px;
+}
+
+.reiterAktiv {
+  font-weight: 600;
+  color: var(--wp-stark);
+  text-decoration: underline;
+  text-decoration-color: var(--lime);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+
+/* Nicht aktive Reiter: gedämpft, ohne Unterstrich, beim Zeigen hell. */
+.reiterLink {
+  font-weight: 500;
+  color: var(--ink-300);
+  text-decoration: none;
+}
+
+a.reiterLink:hover {
+  color: var(--wp-stark);
+}
+
+.reiterAktiv:focus-visible,
+.reiterLink:focus-visible,
+.menueKnopf:focus-visible {
+  outline: 3px solid var(--wp-fokus);
+  outline-offset: 2px;
+}
+
+/* ---------- Handy-Menü (unter 1024 px) ---------- */
+
+/* <details> und <summary> ohne Client-JavaScript. Bis zu acht Zeilen: auf
+   einem niedrigen Bildschirm (Handy quer) scrollt die Tafel, statt unter den
+   Rand zu laufen. */
+.menue {
+  flex: none;
+}
+
+.menue > summary {
+  list-style: none;
+}
+
+.menue > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Menü rechts neben der Pille statt mittig zwischen Logo und Pille. */
+  .menue {
+    margin-left: auto;
+  }
+}
+
+.menueKnopf {
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 0 12px 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--wp-linie);
+  border-radius: calc(44px * var(--rund-pille-faktor));
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-16);
+  line-height: 1.2;
+  color: var(--wp-stark);
+  cursor: pointer;
+}
+
+.menueZahl {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  border-radius: calc(22px * var(--rund-pille-faktor));
+  background: var(--lime);
+  color: var(--ink-950);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--grad-14);
+  line-height: 1;
+}
+
+.menuePfeil {
+  transition: transform 0.15s ease-out;
+}
+
+.menue[open] .menuePfeil {
+  transform: rotate(180deg);
+}
+
+.menueTafel {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 8px 20px 16px;
+  background: var(--ink-950);
+  border-bottom: 1px solid var(--wp-linie);
+  box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.8);
+  max-height: calc(100dvh - 80px);
+  overflow-y: auto;
+}
+
+.menueListe {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menueListe > li + li {
+  border-top: 1px solid var(--wp-linie-fein);
+}
+
+/* Zeile mit Name links und Stand rechts. */
+.menueZeile {
+  min-height: 48px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px;
+  text-decoration: none;
+  color: var(--ink-200);
+}
+
+.menueName {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--grad-18);
+  line-height: 1.3;
+}
+
+.menueAktiv {
+  color: var(--wp-stark);
+}
+
+.menueAktiv .menueName {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--lime);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+@media (min-width: 1024px) {
+  .menue {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuePfeil {
+    transition: none;
+  }
+}
+
+/* Stand eines Reiters im Menü (auf Nacht: Lime als Schrift erlaubt). */
+.blickStand {
+  flex: none;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.standRuhig {
+  color: var(--wp-gedaempft);
+}
+
+.standHervor {
+  color: var(--lime);
+}
+
+.standFehler {
+  color: var(--wp-text);
+}

@@ -1,0 +1,217 @@
+/*
+ * Lichtkante: der Hauptknopf des DS Werkplan 2.0 (ADR-261), entstanden als
+ * Studie „.lk“ auf der Innungsseite der Website. Dunkler Körper mit 1 px Kante; ein Lime-Licht läuft per conic-gradient über
+ * registrierte Winkel NUR bei :hover und :focus-visible um die Kante, im
+ * Lichtkegel Lime-Millimeterpunkte (::before), dazu ein Glühen von unten.
+ * Reduzierte Bewegung: das Licht steht still, keine Animation, keine Transition.
+ *
+ * Die registrierten Eigenschaften tragen das Präfix --lk-, weil @property
+ * global gilt und ein CSS-Modul Eigenschaftsnamen nicht kapselt.
+ */
+
+@property --lk-ga {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --lk-gao {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --lk-gp {
+  syntax: "<percentage>";
+  initial-value: 5%;
+  inherits: false;
+}
+
+@property --lk-gs {
+  syntax: "<color>";
+  initial-value: white;
+  inherits: false;
+}
+
+.lk {
+  --lk-h: 54px;
+  --lk-bg: var(--ink-950);
+  --lk-sub: color-mix(in oklch, var(--ink-800) 55%, var(--ink-600));
+  --lk-hl: var(--lime);
+  --lk-hls: var(--lime-soft);
+  --lk-schatten: 0 12px 26px -14px rgb(0 0 0 / 0.8);
+  --lk-ga: 210deg;
+  --lk-gp: 5%;
+  --lk-gs: var(--ink-050);
+
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: var(--lk-h);
+  margin: 0;
+  padding: 0 8px 0 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-16);
+  line-height: 1;
+  color: var(--ink-050);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: calc(var(--lk-h) * var(--rund-pille-faktor));
+  background:
+    linear-gradient(var(--lk-bg), var(--lk-bg)) padding-box,
+    conic-gradient(
+        from calc(var(--lk-ga) - var(--lk-gao)),
+        transparent,
+        var(--lk-hl) var(--lk-gp),
+        var(--lk-gs) calc(var(--lk-gp) * 2),
+        var(--lk-hl) calc(var(--lk-gp) * 3),
+        transparent calc(var(--lk-gp) * 4)
+      )
+      border-box;
+  box-shadow:
+    inset 0 0 0 1px var(--lk-sub),
+    var(--lk-schatten);
+  transition:
+    --lk-gao 800ms cubic-bezier(0.25, 1, 0.5, 1),
+    --lk-gp 800ms cubic-bezier(0.25, 1, 0.5, 1),
+    --lk-gs 800ms cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 800ms cubic-bezier(0.25, 1, 0.5, 1);
+  animation: lichtUmlauf 3.2s linear infinite paused;
+}
+
+/* Lime-Millimeterpunkte, nur im Lichtkegel sichtbar. */
+.lk::before {
+  --lk-ga: 210deg;
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  background: radial-gradient(circle at 2px 2px, var(--lk-hl) 0.55px, transparent 0) padding-box;
+  background-size: 4px 4px;
+  background-repeat: space;
+  mask-image: conic-gradient(from calc(var(--lk-ga) + 45deg), black, transparent 10% 90%, black);
+  border-radius: inherit;
+  opacity: 0.4;
+  animation: lichtUmlauf 3.2s linear infinite paused;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+}
+
+/* Schmale Handys: Ein langer Knopftext (Formular: „Kostenlosen
+   Kompakt-Check anfordern“) darf umbrechen, statt über den Rand zu ragen.
+   Die Höhe wird zur Mindesthöhe, die Rundung bleibt die des Logo-Markers. */
+@media (max-width: 480px) {
+  .lk {
+    max-width: 100%;
+    height: auto;
+    min-height: var(--lk-h);
+    padding-block: 8px;
+    white-space: normal;
+    line-height: 1.25;
+  }
+}
+
+.chip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: calc(38px * var(--rund-pille-faktor));
+  background: var(--lime);
+  color: var(--ink-950);
+}
+
+.chip svg {
+  display: block;
+  transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.lk:is(:hover, :focus-visible):not(:disabled, [aria-disabled="true"]) {
+  --lk-gp: 18%;
+  --lk-gao: 95deg;
+  --lk-gs: var(--lk-hls);
+  box-shadow:
+    inset 0 0 0 1px var(--lk-sub),
+    inset 0 -14px 26px -16px var(--lk-hl),
+    var(--lk-schatten);
+}
+
+.lk:is(:hover, :focus-visible):not(:disabled, [aria-disabled="true"]),
+.lk:is(:hover, :focus-visible):not(:disabled, [aria-disabled="true"])::before {
+  animation-play-state: running;
+}
+
+.lk:hover:not(:disabled, [aria-disabled="true"]) .chip svg {
+  transform: translateX(3px);
+}
+
+.lk:active:not(:disabled, [aria-disabled="true"]) {
+  translate: 0 1px;
+}
+
+.lk:focus-visible {
+  outline: 3px solid var(--focus-ring-on-dark);
+  outline-offset: 3px;
+}
+
+/* Papier: der Körper bleibt dunkel, die Innenkante verschwindet, der Schatten wird weicher. */
+.papier {
+  --lk-sub: var(--ink-950);
+  --lk-schatten: 0 10px 22px -12px rgb(0 0 0 / 0.45);
+}
+
+/* Auf hellem Grund trägt Lime als Fokusring nicht; dunkler Ring wie im DS. */
+.papier:focus-visible {
+  outline-color: var(--focus-ring);
+}
+
+.lk:disabled,
+.lk[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  animation: none;
+}
+
+.lk:disabled::before,
+.lk[aria-disabled="true"]::before {
+  display: none;
+}
+
+@keyframes lichtUmlauf {
+  from {
+    --lk-ga: 210deg;
+  }
+  to {
+    --lk-ga: 570deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lk,
+  .lk::before,
+  .chip svg {
+    animation: none;
+    transition: none;
+  }
+
+  .lk:hover:not(:disabled, [aria-disabled="true"]) .chip svg {
+    transform: none;
+  }
+}

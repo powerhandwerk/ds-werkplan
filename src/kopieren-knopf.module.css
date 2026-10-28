@@ -1,0 +1,118 @@
+/*
+ * Kopierfeld (DS Werkplan 2.0, ADR-261). Herkunft ist die Bereichsseite
+ * Zugänge der Kundenseite im Admin (components/kundenseite/zugaenge.module.css):
+ * Wert in Festbreite, Knopf rechts, am Handy darunter. Mit Rückfallwerten,
+ * damit es auch außerhalb einer Werkplan-Fläche rendert. `kompakt`: Wert und
+ * Knopf in einer Zeile, Wert ohne Rahmen, Knopf als kleine Pille.
+ */
+
+.kopieren {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.wert {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--wp-linie, currentColor);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-weight: 500;
+  font-size: var(--grad-16);
+  line-height: 1.4;
+  color: var(--wp-stark, currentColor);
+  overflow-wrap: anywhere;
+}
+
+.knopf {
+  flex: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: calc(44px * var(--rund-pille-faktor));
+  border: 1px solid var(--wp-stark, currentColor);
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-14);
+  line-height: 1;
+  color: var(--wp-stark, currentColor);
+  cursor: pointer;
+}
+
+.knopf:focus-visible,
+.knopfKompakt:focus-visible,
+.feld:focus-visible {
+  outline: 3px solid var(--wp-fokus, var(--focus-ring));
+  outline-offset: 2px;
+}
+
+.knopf:disabled,
+.knopfKompakt:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.kopierenKompakt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+}
+
+.wertKompakt {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 400;
+  font-size: var(--grad-18);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--wp-stark, currentColor);
+}
+
+.knopfKompakt {
+  margin-left: auto;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--wp-linie, currentColor);
+  border-radius: calc(32px * var(--rund-pille-faktor));
+  background: transparent;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp-text, currentColor);
+  cursor: pointer;
+}
+
+.knopfKompakt:hover:not(:disabled) {
+  background: var(--ink-950);
+  color: var(--ink-050);
+}
+
+/* Rückfall, wenn das Kopieren scheitert: der Wert zum Markieren in einem
+   Feld unter Wert und Knopf (aus dem früheren DS-KopierenKnopf). */
+.feld {
+  flex: 1 1 100%;
+  box-sizing: border-box;
+  width: min(36rem, 100%);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: var(--grad-14);
+}
+
+/* Für Augen unsichtbar, für Screenreader da. */
+.versteckt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

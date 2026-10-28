@@ -1,0 +1,331 @@
+/*
+ * Werkplan: Flächen, Typo-Rollen, Textlink, Schriftfeld, Maßbalken und
+ * Sucher-Ecken des DS Werkplan 2.0 (ADR-261). Herkunft ist die Fassung der
+ * Kundenseite im Admin; die Innungsseite der Website zieht in Phase 2 nach
+ * (Abweichungen in docs/inventur.md).
+ *
+ * Werte nur über Tokens aus src/tokens.css: Schriftgrößen var(--grad-*),
+ * Rundungen var(--rund-*). Die Flächenrollen --wp-* stehen nur in den
+ * Flächenklassen, nie auf :root, und folgen FLAECHEN in src/tokens.ts; die
+ * Typo-Rollen folgen TYPO_ROLLEN (beides prüfen die Tests).
+ *
+ * Das Schriftfeld (.plankopf) folgt dem Entwurf „Plan-Blatt“: Linien als
+ * 1-px-Fugen, Werte in normaler Schreibung, damit Namen und Adressen lesbar
+ * bleiben.
+ */
+
+/* ---------- Seite und Schrift ---------- */
+
+.seite {
+  font-family: var(--font-body);
+}
+
+/* ---------- Fläche Nacht ---------- */
+
+.nacht,
+.nachtHell,
+.aufNacht {
+  --wp-stark: var(--ink-050);
+  --wp-text: var(--ink-200);
+  --wp-gedaempft: var(--ink-400);
+  --wp-quelle: var(--ink-300);
+  --wp-linie: color-mix(in oklch, var(--ink-400) 50%, transparent);
+  --wp-linie-fein: color-mix(in oklch, var(--ink-400) 22%, transparent);
+  --wp-fokus: var(--focus-ring-on-dark);
+  --wp-blatt: color-mix(in oklch, var(--ink-900) 60%, transparent);
+}
+
+.nacht,
+.nachtHell {
+  --wp-raster: color-mix(in oklch, var(--ink-400) 7%, transparent);
+  background-color: var(--ink-950);
+  color: var(--ink-050);
+  background-image:
+    linear-gradient(var(--wp-raster) 1px, transparent 1px),
+    linear-gradient(90deg, var(--wp-raster) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.nachtHell {
+  background-color: var(--ink-900);
+}
+
+/* ---------- Fläche Papier ---------- */
+
+.papier,
+.aufPapier {
+  --wp-stark: var(--ink-950);
+  --wp-text: var(--ink-800);
+  --wp-gedaempft: var(--ink-500);
+  --wp-quelle: var(--ink-600);
+  --wp-linie: color-mix(in oklch, var(--ink-950) 40%, transparent);
+  --wp-linie-fein: color-mix(in oklch, var(--ink-950) 20%, transparent);
+  --wp-fokus: var(--focus-ring);
+  --wp-blatt: var(--ink-050);
+}
+
+.papier {
+  --wp-raster: color-mix(in oklch, var(--ink-950) 6%, transparent);
+  background-color: var(--ink-100);
+  color: var(--ink-950);
+  background-image:
+    linear-gradient(var(--wp-raster) 1px, transparent 1px),
+    linear-gradient(90deg, var(--wp-raster) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ---------- Typo-Rollen ---------- */
+
+.h1,
+.h2,
+.h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--wp-stark, currentColor);
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  max-width: 34em;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--grad-18);
+  line-height: 1.5;
+  color: var(--wp-text, currentColor);
+}
+
+.text {
+  margin: 0;
+  max-width: 62ch;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--grad-16);
+  line-height: 1.55;
+  color: var(--wp-text, currentColor);
+}
+
+.beschriftung,
+.pos,
+.blattZeile,
+.plankopfLabel {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wp-gedaempft, currentColor);
+}
+
+@media (min-width: 768px) {
+  .beschriftung,
+  .pos,
+  .blattZeile {
+    font-size: var(--grad-14);
+  }
+}
+
+.beschriftung,
+.blattZeile {
+  margin: 0;
+}
+
+.pos {
+  display: inline-block;
+}
+
+.messwert {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 300;
+  line-height: 0.82;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums proportional-nums;
+  color: var(--wp-stark, currentColor);
+}
+
+/* Farbe Papier ink-600 (ca. 6,3:1), über 4,5:1. */
+.quelle {
+  margin: 0;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wp-quelle, currentColor);
+}
+
+.quelle strong {
+  font-weight: 600;
+  color: var(--wp-stark, currentColor);
+}
+
+/* ---------- Zweitaktion ---------- */
+
+.textlink {
+  display: inline-block;
+  padding: 14px 2px;
+  border: 0;
+  background-color: transparent;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-16);
+  line-height: 1;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 calc(100% - 8px);
+  background-size: 100% 1px;
+  border-radius: var(--rund-fein);
+  transition: background-size 180ms ease-out;
+}
+
+.textlink:hover,
+.textlink:focus-visible {
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-size: 100% 3px;
+}
+
+.textlink:focus-visible {
+  outline: 2px solid var(--wp-fokus, currentColor);
+  outline-offset: 4px;
+}
+
+.textlink:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ---------- Plankopf (Schriftfeld) ---------- */
+
+.plankopf {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--wp-linie);
+  border: 1px solid var(--wp-linie);
+}
+
+.plankopfFeld {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px 9px;
+  background: var(--ink-050);
+}
+
+.plankopfBreit {
+  grid-column: 1 / -1;
+}
+
+/* Auf Nacht: Felder in der Nachtfarbe, damit die Fugen hell bleiben und der
+   helle Wert lesbar ist (die Feldfläche ink-050 gilt nur auf Papier). */
+.plankopf.aufNacht > .plankopfFeld {
+  background: var(--ink-950);
+}
+
+.plankopfLabel {
+  font-size: var(--grad-12);
+}
+
+.plankopfWert {
+  margin: 0;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-16);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  font-variant-numeric: lining-nums proportional-nums;
+  color: var(--wp-stark, currentColor);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Maßbalken und Maßkette ---------- */
+
+.massbalken {
+  display: block;
+  width: 100%;
+  height: 14px;
+  overflow: visible;
+  color: var(--wp-stark, currentColor);
+}
+
+.massbalkenLinie {
+  stroke: currentColor;
+  stroke-width: 1;
+  fill: none;
+}
+
+/* Teilstrich einer Position innerhalb eines Abschnitts: kürzer und leiser. */
+.teilung {
+  stroke-opacity: 0.7;
+}
+
+.massbalkenFuellung {
+  fill: var(--lime);
+  stroke: currentColor;
+  stroke-width: 1;
+  transition: width 180ms ease-out, x 180ms ease-out;
+}
+
+/* ---------- Sucher-Ecken ---------- */
+
+.ecken {
+  position: relative;
+}
+
+.eckeOl,
+.eckeOr,
+.eckeUl,
+.eckeUr {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0 solid var(--wp-stark, currentColor);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.eckeOl {
+  top: 0;
+  left: 0;
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.eckeOr {
+  top: 0;
+  right: 0;
+  border-top-width: 1.5px;
+  border-right-width: 1.5px;
+}
+
+.eckeUl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.eckeUr {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1.5px;
+  border-right-width: 1.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .massbalkenFuellung,
+  .textlink {
+    transition: none;
+  }
+}

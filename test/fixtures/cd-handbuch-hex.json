@@ -1,0 +1,21 @@
+{
+  "_quelle": "Druckwerte des CD-Handbuchs, powerhandwerk-admin app/(portal)/assets/cd-daten.ts, origin/main 9efcec507 (27.10.2026). Das PDF druckt diese Werte; das Paket muss sie exakt treffen.",
+  "hex": {
+    "lime": "#b5e545",
+    "ink-900": "#1c1812",
+    "ink-100": "#f4f1ed",
+    "ink-950": "#120f0a",
+    "lime-deep": "#a3d137",
+    "lime-soft": "#dcf2a0",
+    "ink-800": "#2a261f",
+    "ink-700": "#3e3a34",
+    "ink-600": "#5b5751",
+    "ink-500": "#67635c",
+    "ink-400": "#9b9891",
+    "ink-300": "#c0bdb7",
+    "ink-200": "#dddad5",
+    "ink-150": "#eae8e3",
+    "ink-050": "#f9f6f2",
+    "ink-000": "#fcfaf6"
+  }
+}

@@ -1,0 +1,45 @@
+/* Erzeugt aus src/tokens.ts mit `bun run erzeuge`. Nicht von Hand ändern. */
+
+:root {
+  /* Farben (Ink-Rampe, Lime nur als Fläche, Rot nur für Fehler, Fokus) */
+  --ink-950: oklch(0.17 0.012 78); /* #120f0a */
+  --ink-900: oklch(0.21 0.013 78); /* #1c1812 */
+  --ink-800: oklch(0.27 0.013 78); /* #2a261f */
+  --ink-600: oklch(0.46 0.011 80); /* #5b5751 */
+  --ink-500: oklch(0.5 0.011 80); /* #67635c */
+  --ink-400: oklch(0.68 0.01 82); /* #9b9891 */
+  --ink-300: oklch(0.8 0.009 83); /* #c0bdb7 */
+  --ink-200: oklch(0.89 0.008 84); /* #dddad5 */
+  --ink-100: oklch(0.96 0.006 85); /* #f4f1ed */
+  --ink-050: oklch(0.975 0.006 85); /* #f9f6f2 */
+  --lime: #b5e545;
+  --lime-deep: #a3d137;
+  --lime-soft: #dcf2a0;
+  --lime-glow: rgba(181, 229, 69, 0.45);
+  --danger: #ce2324;
+  --danger-ink: oklch(0.5 0.13 30); /* #a04034 */
+  --focus-ring: var(--ink-950);
+  --focus-ring-on-dark: var(--lime);
+
+  /* Schriftfamilien */
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-werkplan: "Barlow Semi Condensed";
+
+  /* Schriftgrade */
+  --grad-12: 12px;
+  --grad-14: 14px;
+  --grad-16: 16px;
+  --grad-18: 18px;
+  --grad-24: 24px;
+  --grad-32: 32px;
+  --grad-48: 48px;
+  --grad-64: 64px;
+  --grad-80: 80px;
+
+  /* Rundungen */
+  --rund-eckig: 0;
+  --rund-fein: 2px;
+  --rund-kreis: 999px;
+  --rund-pille-faktor: 0.433;
+}

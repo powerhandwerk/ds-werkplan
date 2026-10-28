@@ -1,0 +1,510 @@
+/*
+ * Werkplan-Arbeitsfläche: Liste links, Detail rechts (Leinwand Gründungsradar,
+ * Variante 1 „Liste links, Brief rechts“), im DS Werkplan 2.0 (ADR-261).
+ * Werte nur über Tokens aus src/tokens.css.
+ *
+ * Liest --wb-linie, --wb-linie-fein und --wb-warn (WERKPLAN_BAUSTEINE_SEITE)
+ * sowie --font-werkplan (werkplan.module.css .seite); beide Klassen gehören an
+ * die Seite. Ab 880 px abwärts gilt der Handy-Ablauf unten.
+ */
+
+.besch {
+  margin: 0;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-600);
+}
+
+.beschGross {
+  font-size: var(--grad-12);
+}
+
+.beschStark {
+  color: var(--ink-950);
+}
+
+.messwert {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 300;
+  line-height: 0.85;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums proportional-nums;
+  color: var(--ink-950);
+}
+
+.textlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-14);
+  line-height: 1.3;
+  color: var(--ink-950);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.textlink:hover {
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--lime);
+}
+
+.textlink:focus-visible,
+.filterKnopf:focus-visible,
+.iconKnopf:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.info {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--grad-14);
+  line-height: 1.45;
+  color: var(--ink-600);
+}
+
+.info > span {
+  flex: 1;
+}
+
+.infoGross {
+  font-size: var(--grad-14);
+  color: color-mix(in oklch, var(--ink-800) 55%, var(--ink-600));
+}
+
+.filter {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--wb-linie);
+  border-radius: calc(44px * var(--rund-pille-faktor));
+  background: var(--ink-050);
+}
+
+.filterKnopf {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: calc(36px * var(--rund-pille-faktor));
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: var(--grad-14);
+  font-weight: 500;
+  background: transparent;
+  color: var(--ink-800);
+  text-decoration: none;
+}
+
+.filterKnopf[aria-current="page"] {
+  font-weight: 700;
+  background: var(--ink-950);
+  color: var(--ink-050);
+}
+
+.filterZahl {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-14);
+  color: var(--ink-500);
+}
+
+.filterKnopf[aria-current="page"] .filterZahl {
+  color: var(--lime);
+}
+
+.fortschritt {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fortschrittKopf {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.gruppe {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 12px 6px;
+  border-bottom: 1px solid var(--wb-linie);
+}
+
+.zeileLi {
+  position: relative;
+}
+
+.zeile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  text-decoration: none;
+  color: var(--ink-950);
+  border-bottom: 1px solid var(--wb-linie-fein);
+}
+
+.zeile:hover {
+  background: var(--ink-050);
+}
+
+/* Fokus fällt mit dem Auswahlrahmen zusammen, sonst entsteht nach dem Weiterspringen ein doppelter Rahmen. */
+.zeile:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.zeile[aria-current="true"] {
+  background: #fff;
+  box-shadow: inset 0 0 0 2px var(--ink-950);
+}
+
+.zeileGedimmt {
+  color: var(--ink-500);
+}
+
+.zeileText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.zeileTitel {
+  font-size: var(--grad-16);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zeileUnter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--grad-14);
+  color: var(--ink-600);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.zeileUnterText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zeileUnterWarn {
+  color: var(--wb-warn);
+}
+
+.zeileUnterHaken {
+  color: color-mix(in oklch, var(--ink-800) 55%, var(--ink-600));
+}
+
+.zeileRechts {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Rückgängig in einer Zeile: eigener Knopf neben dem Link, keine verschachtelten Links. */
+.zeileRueck {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--grad-14);
+}
+
+.leer {
+  margin: 0;
+  padding: 18px 12px;
+  font-size: var(--grad-14);
+  color: var(--ink-600);
+  border-top: 1px solid var(--wb-linie);
+}
+
+.detail {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 24px;
+  padding: 20px 22px;
+  background: var(--ink-050);
+  border: 1px solid var(--wb-linie);
+  border-radius: var(--rund-eckig);
+  box-sizing: border-box;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.detailSpalte {
+  flex-direction: column;
+}
+
+.iconKnopf {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--wb-linie-fein);
+  border-radius: calc(32px * var(--rund-pille-faktor));
+  background: transparent;
+  color: var(--ink-950);
+  cursor: pointer;
+}
+
+.iconKnopf:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ink-100), var(--ink-200));
+}
+
+.iconKnopf:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.plankopf {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  border-top: 1px solid var(--wb-linie);
+  border-left: 1px solid var(--wb-linie);
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.plankopfVoll {
+  align-self: stretch;
+}
+
+.plankopfFeld {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 7px 12px;
+  border-right: 1px solid var(--wb-linie);
+  border-bottom: 1px solid var(--wb-linie);
+}
+
+.plankopfVoll .plankopfFeld {
+  flex: 1 1 0;
+}
+
+/* Doppelte Klasse: schlägt .plankopfVoll .plankopfFeld unabhängig von der Reihenfolge. */
+.plankopfVoll.plankopfLetzteBreit .plankopfFeld {
+  flex: 0 0 auto;
+}
+
+.plankopfVoll.plankopfLetzteBreit .plankopfFeld:last-child {
+  flex: 1 1 auto;
+}
+
+.plankopfFeld dt {
+  margin: 0;
+}
+
+.plankopfFeld dd {
+  margin: 0;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-14);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-950);
+}
+
+/* Kasten mit Icon (Lead, Sperre): feiner Rahmen rundum, keine Seitenkante. */
+.kasten {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid var(--ink-950);
+  border-radius: var(--rund-eckig);
+}
+
+.kastenIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: calc(36px * var(--rund-pille-faktor));
+  background: var(--lime-soft);
+  border: 1px solid color-mix(in oklch, var(--ink-950) 30%, transparent);
+}
+
+.kastenIconDunkel {
+  background: var(--ink-950);
+  color: var(--ink-050);
+  border-color: var(--ink-950);
+}
+
+.kastenText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.kastenTitel {
+  font-size: var(--grad-16);
+  font-weight: 700;
+}
+
+.kastenUnter {
+  font-size: var(--grad-14);
+  color: color-mix(in oklch, var(--ink-800) 55%, var(--ink-600));
+}
+
+.schritte {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schritt {
+  display: flex;
+  gap: 12px;
+}
+
+.schrittNr {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  box-sizing: border-box;
+  border-radius: var(--rund-kreis);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--ink-950);
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+}
+
+.schrittNrGross {
+  width: 24px;
+  height: 24px;
+}
+
+.schrittText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--grad-14);
+  line-height: 1.45;
+  color: var(--ink-800);
+}
+
+.iconKnopfNacht:focus-visible {
+  outline: 3px solid var(--focus-ring-on-dark);
+  outline-offset: 2px;
+}
+
+.iconKnopfNacht {
+  border-color: color-mix(in oklch, var(--ink-400) 50%, transparent);
+  color: var(--ink-050);
+}
+
+.iconKnopfNacht:hover:not(:disabled) {
+  background: var(--ink-800);
+}
+
+/* ---------- Handy (unter 880 px) ---------- */
+
+@media (max-width: 879.98px) {
+  .filter {
+    border: 0;
+    padding: 0;
+    gap: 6px;
+    overflow-x: auto;
+    background: transparent;
+  }
+
+  .filter .filterKnopf {
+    flex: none;
+    padding: 7px 11px;
+    min-height: 0;
+    border: 1px solid var(--wb-linie);
+    background: var(--ink-050);
+  }
+
+  .filter .filterKnopf[aria-current="page"] {
+    border-color: var(--ink-950);
+    background: var(--ink-950);
+  }
+
+  .liste {
+    overflow: visible;
+    margin: 0 -16px;
+  }
+
+  /* In einer Karte mit Rahmen bleibt die Liste innerhalb (Prop `inKarte`). */
+  .liste.listeInKarte {
+    margin-inline: 0;
+  }
+
+  .detail {
+    flex-direction: column;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+    gap: 14px;
+  }
+
+  .plankopf {
+    align-self: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zeile {
+    transition: none;
+  }
+}

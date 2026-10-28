@@ -1,0 +1,39 @@
+# CI: Typecheck, Tests und Aktualität der erzeugten Dateien auf jedem PR und auf main.
+#
+# `check` ist Required Status Check auf main (mit enforce_admins). Job-ID und
+# Name müssen deshalb „check“ bleiben, und es gibt kein `paths-ignore`: Ein
+# übersprungener oder umbenannter Check bliebe „expected“ und sperrte jeden Merge.
+
+name: CI
+
+on:
+  pull_request:
+    # „edited“ fängt das Umstellen der Base ab (wie im Admin-Repo).
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          # Wie im Admin-Repo (ci.yml): latest statt fester Version.
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun x vitest run
+      - name: Erzeugte Dateien aktuell
+        run: |
+          bun run erzeuge
+          git diff --exit-code -- src/tokens.css artifact/project/tokens.json
