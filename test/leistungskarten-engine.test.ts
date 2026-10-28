@@ -5,6 +5,7 @@ import {
   ebeneAusBild,
   naehere,
   ruheWert,
+  TAU,
   TEXT_ZEICHENBREITE,
   vermesse,
   werkzeug,
@@ -85,6 +86,52 @@ describe("naehere", () => {
     const wert: SzenenWert = { t: 0 };
     naehere(wert, { t: 1 }, false);
     expect(wert.t).toBeCloseTo(0.1, 10);
+  });
+
+  describe("der Uhrzeiger nimmt den kürzeren Weg", () => {
+    const STUNDE = TAU / 24;
+    const uhr = (stunde: number) => A0 + stunde * STUNDE;
+    /** Abstand zweier Winkel auf dem Kreis, 0 bis π. */
+    const abstand = (a: number, b: number) => {
+      const d = (((a - b) % TAU) + TAU) % TAU;
+      return Math.min(d, TAU - d);
+    };
+
+    it.each([
+      ["23 → 0 Uhr", 23, 0, 1],
+      ["0 → 23 Uhr", 0, 23, -1],
+    ] as const)("%s: eine Stunde in die richtige Richtung, nicht fast eine Runde zurück", (_, von, nach, richtung) => {
+      const wert: SzenenWert = { t: 0, ang: uhr(von) };
+      const ziel: SzenenWert = { t: 0, ang: uhr(nach) };
+      naehere(wert, ziel, false);
+      expect(wert.ang).toBeCloseTo(uhr(von) + richtung * 0.16 * STUNDE, 10);
+
+      // Jeder weitere Schritt verkürzt den Abstand, am Ende steht genau das Ziel.
+      let vorher = abstand(wert.ang ?? NaN, uhr(nach));
+      let schritte = 0;
+      while (naehere(wert, ziel, false)) {
+        const jetzt = abstand(wert.ang ?? NaN, uhr(nach));
+        expect(jetzt).toBeLessThan(vorher);
+        vorher = jetzt;
+        expect(++schritte).toBeLessThan(100);
+      }
+      expect(wert.ang).toBe(uhr(nach));
+    });
+
+    it("bei genau einer halben Runde dreht er vorwärts: Differenz auf (−π, π]", () => {
+      for (const soll of [A0 + Math.PI, A0 - Math.PI]) {
+        const wert: SzenenWert = { t: 0, ang: A0 };
+        naehere(wert, { t: 0, ang: soll }, false);
+        expect(wert.ang, String(soll)).toBeCloseTo(A0 + 0.16 * Math.PI, 10);
+      }
+    });
+
+    it("nur ang läuft im Kreis, andere Werte ziehen geradlinig", () => {
+      const wert: SzenenWert = { t: 0, px: 0 };
+      naehere(wert, { t: 10, px: -10 }, false);
+      expect(wert.t).toBeCloseTo(1, 10);
+      expect(wert.px).toBeCloseTo(-1, 10);
+    });
   });
 });
 

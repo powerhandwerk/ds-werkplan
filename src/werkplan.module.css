@@ -279,6 +279,8 @@
 
 /* ---------- Sucher-Ecken ---------- */
 
+/* Farbe: die Stellschraube --ecken-farbe an einem umgebenden Element (etwa die
+   Linienfarbe der Leistungskarte), sonst die Flächenrolle --wp-stark. */
 .ecken {
   position: relative;
 }
@@ -290,7 +292,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  border: 0 solid var(--wp-stark, currentColor);
+  border: 0 solid var(--ecken-farbe, var(--wp-stark, currentColor));
   opacity: 0.55;
   pointer-events: none;
 }

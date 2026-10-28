@@ -4,6 +4,7 @@ Die Sucher-Ecken setzen vier 10-px-Winkel in die Ecken eines Rahmens, wie im Kam
 
 - Für die Hauptkarte einer Fläche.
 - Die Ecken zeichnen in `wp-stark` mit 1,5 px und sind rein dekorativ (`aria-hidden`). Sie stehen auf Papier und Nacht.
+- Eine eigene Farbe kommt über die Stellschraube `--ecken-farbe` an einem umgebenden Element, nicht über die Flächenrolle. So folgen die Ecken der Leistungskarte ihrer Linienfarbe.
 - Sie umschließen ihren Inhalt; `as` wählt das Element, damit auch ein Formular den Rahmen tragen kann. Das Polster setzt der Verbraucher.
 
 ## Was der Verbraucher liefert

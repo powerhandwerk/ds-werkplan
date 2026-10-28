@@ -226,9 +226,17 @@ const RUHIG = 0.0015;
  */
 const OHNE_ZIEL: ReadonlySet<SzenenSchluessel> = new Set(["clk", "gepr"]);
 
+/** Winkeldifferenz auf (−π, π]: der kürzere Weg auf dem Kreis. */
+const kreisDiff = (d: number) => d - TAU * Math.ceil((d - Math.PI) / TAU);
+
 /**
  * Zieht jeden Wert einen Schritt in Richtung Ziel. Bei reduzierter Bewegung
  * springt er sofort. Liefert, ob sich etwas bewegt hat.
+ *
+ * Der Zeigerwinkel `ang` nimmt den kürzeren Weg auf dem Kreis (von 23 auf 0 Uhr
+ * eine Stunde vorwärts, nicht fast eine Runde zurück). Unterwegs kann er
+ * deshalb kurz außerhalb des Bereichs von `uhrWinkel` liegen; am Ziel steht
+ * wieder genau der Zielwert.
  */
 export function naehere(wert: SzenenWert, ziel: SzenenWert, reduziert: boolean): boolean {
   let bewegt = false;
@@ -237,9 +245,10 @@ export function naehere(wert: SzenenWert, ziel: SzenenWert, reduziert: boolean):
     const soll = ziel[key];
     if (soll === undefined) continue;
     const ist = wert[key] ?? soll;
-    const diff = soll - ist;
+    const kreis = key === "ang";
+    const diff = kreis ? kreisDiff(soll - ist) : soll - ist;
     if (Math.abs(diff) > RUHIG) {
-      wert[key] = reduziert ? soll : ist + diff * (key === "ang" ? 0.16 : 0.1);
+      wert[key] = reduziert ? soll : ist + diff * (kreis ? 0.16 : 0.1);
       bewegt = true;
     } else wert[key] = soll;
   }
