@@ -45,3 +45,7 @@ jobs:
         run: |
           bun run bundle
           git diff --exit-code -- artifact/project/components/
+      - name: Lesefassung aktuell
+        run: |
+          bun run artifact
+          git diff --exit-code -- artifact/project/

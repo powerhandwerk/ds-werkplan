@@ -1,0 +1,242 @@
+/* DS Werkplan — generated from tokens.json */
+
+:root, [data-theme="papier"] {
+  --ink-950: #120f0a;
+  --ink-900: #1c1812;
+  --ink-800: #2a261f;
+  --ink-600: #5b5751;
+  --ink-500: #67635c;
+  --ink-400: #9b9891;
+  --ink-300: #c0bdb7;
+  --ink-200: #dddad5;
+  --ink-100: #f4f1ed;
+  --ink-050: #f9f6f2;
+  --lime: #b5e545;
+  --lime-deep: #a3d137;
+  --lime-soft: #dcf2a0;
+  --lime-glow: #b5e54573;
+  --danger: #ce2324;
+  --danger-ink: #a04034;
+  --focus-ring: var(--ink-950);
+  --focus-ring-on-dark: var(--lime);
+  --wp-grund: var(--ink-100);
+  --wp-stark: var(--ink-950);
+  --wp-text: var(--ink-800);
+  --wp-gedaempft: var(--ink-500);
+  --wp-quelle: var(--ink-600);
+  --wp-linie: #120f0a66;
+  --wp-linie-fein: #120f0a33;
+  --wp-fokus: var(--focus-ring);
+  --wp-blatt: var(--ink-050);
+  --wp-raster: #120f0a0f;
+  --wp-grund-hell: var(--ink-100);
+}
+
+[data-theme="nacht"] {
+  --focus-ring: var(--ink-950);
+  --focus-ring-on-dark: var(--lime);
+  --wp-grund: var(--ink-950);
+  --wp-stark: var(--ink-050);
+  --wp-text: var(--ink-200);
+  --wp-gedaempft: var(--ink-400);
+  --wp-quelle: var(--ink-300);
+  --wp-linie: #9b989180;
+  --wp-linie-fein: #9b989138;
+  --wp-fokus: var(--focus-ring-on-dark);
+  --wp-blatt: #1c181299;
+  --wp-raster: #9b989112;
+  --wp-grund-hell: var(--ink-900);
+}
+
+:root {
+  --abstand-4: 4px;
+  --abstand-8: 8px;
+  --abstand-12: 12px;
+  --abstand-16: 16px;
+  --abstand-24: 24px;
+  --abstand-32: 32px;
+  --abstand-48: 48px;
+  --abstand-64: 64px;
+  --abstand-96: 96px;
+  --abstand-128: 128px;
+  --rund-eckig: 0;
+  --rund-fein: 2px;
+  --rund-kreis: 999px;
+  --rund-pille-faktor: 0.433;
+  --mass-linie: 1px;
+  --mass-ecke: 10px;
+  --mass-raster: 24px;
+  --mass-massbalken: 14px;
+  --mass-lichtkante: 54px;
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-werkplan: "Barlow Semi Condensed", "Hanken Grotesk", system-ui, sans-serif;
+  --grad-12: 12px;
+  --grad-14: 14px;
+  --grad-16: 16px;
+  --grad-18: 18px;
+  --grad-24: 24px;
+  --grad-32: 32px;
+  --grad-48: 48px;
+  --grad-64: 64px;
+  --grad-80: 80px;
+}
+
+.grad-12 {
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.grad-14 {
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.grad-16 {
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+
+.grad-18 {
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+
+.grad-24 {
+  font-family: var(--font-body);
+  font-size: 24px;
+}
+
+.grad-32 {
+  font-family: var(--font-body);
+  font-size: 32px;
+}
+
+.grad-48 {
+  font-family: var(--font-body);
+  font-size: 48px;
+}
+
+.grad-64 {
+  font-family: var(--font-body);
+  font-size: 64px;
+}
+
+.grad-80 {
+  font-family: var(--font-body);
+  font-size: 80px;
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.lead {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.beschriftung {
+  font-family: var(--font-werkplan);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.messwert {
+  font-family: var(--font-werkplan);
+  font-size: 80px;
+  line-height: 0.82;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+.quelle {
+  font-family: var(--font-werkplan);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.textlink {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.schriftfeld-label {
+  font-family: var(--font-werkplan);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.schriftfeld-wert {
+  font-family: var(--font-werkplan);
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@font-face {
+  font-family: "Big Shoulders Display";
+  src: url("fonts/big-shoulders-display.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("fonts/hanken-grotesk.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  src: url("fonts/barlow-semi-condensed-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  src: url("fonts/barlow-semi-condensed-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}

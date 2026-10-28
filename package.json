@@ -50,7 +50,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "erzeuge": "bun scripts/erzeuge.ts",
-    "bundle": "bun scripts/bundle.ts"
+    "bundle": "bun scripts/bundle.ts",
+    "artifact": "bun scripts/artifact.ts"
   },
   "peerDependencies": {
     "react": "^18 || ^19",

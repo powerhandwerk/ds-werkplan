@@ -1,0 +1,53 @@
+<!-- @dsCard group="Fakten" height=200 -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Massbalken</title>
+<style>
+  html, body { margin: 0; }
+  body { background: var(--wp-grund); color: var(--wp-text); font-family: var(--font-body); }
+  .flaeche { box-sizing: border-box; min-height: 100vh; padding: var(--abstand-24); }
+  .beide { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); min-height: 100vh; }
+  .titel { margin: 0 0 var(--abstand-16); }
+  .stapel { display: flex; flex-direction: column; gap: var(--abstand-16); }
+  .stapel.eng { gap: var(--abstand-8); }
+  .schmal { max-width: 560px; }
+  .reihe { display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-12); }
+  .mitIcon { display: inline-flex; align-items: center; gap: var(--abstand-8); }
+  .schwebe { position: relative; transform: translateZ(0); height: 128px; }
+  .sucher { padding: var(--abstand-24); max-width: 560px; }
+  .seitenluft { padding-inline: var(--abstand-8); }
+  .kopfzeile { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-32); }
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); }
+  .icon { margin: 0; display: flex; align-items: center; gap: var(--abstand-12); padding: var(--abstand-12) var(--abstand-8); border-bottom: 1px solid var(--wp-linie-fein); color: var(--wp-stark); }
+  .icon figcaption { font-family: var(--font-werkplan); font-weight: 600; font-size: var(--grad-12); letter-spacing: 0.06em; color: var(--wp-text); }
+</style>
+</head>
+<body>
+<div id="wurzel"></div>
+<script>
+(function () {
+  "use strict";
+  var h = React.createElement;
+  var D = window.DsWerkplan;
+  var W = {"aufNacht":"aufNacht_piK1_A","aufPapier":"aufPapier_piK1_A","beschriftung":"beschriftung_piK1_A","blattZeile":"blattZeile_piK1_A","eckeOl":"eckeOl_piK1_A","eckeOr":"eckeOr_piK1_A","eckeUl":"eckeUl_piK1_A","eckeUr":"eckeUr_piK1_A","ecken":"ecken_piK1_A","h1":"h1_piK1_A","h2":"h2_piK1_A","h3":"h3_piK1_A","lead":"lead_piK1_A","massbalken":"massbalken_piK1_A","massbalkenFuellung":"massbalkenFuellung_piK1_A","massbalkenLinie":"massbalkenLinie_piK1_A","messwert":"messwert_piK1_A","nacht":"nacht_piK1_A","nachtHell":"nachtHell_piK1_A","papier":"papier_piK1_A","plankopf":"plankopf_piK1_A","plankopfBreit":"plankopfBreit_piK1_A","plankopfFeld":"plankopfFeld_piK1_A","plankopfLabel":"plankopfLabel_piK1_A","plankopfWert":"plankopfWert_piK1_A","pos":"pos_piK1_A","quelle":"quelle_piK1_A","seite":"seite_piK1_A","teilung":"teilung_piK1_A","text":"text_piK1_A","textlink":"textlink_piK1_A"};
+  var BS = D.WERKPLAN_BAUSTEINE_SEITE;
+  function nichts() {}
+  function Beispiel(p) {
+    return h("div", { className: "stapel" },
+      h(D.Massbalken, { untergrund: p.u, anteil: 0, label: "0 Prozent" }),
+      h(D.Massbalken, { untergrund: p.u, anteil: 40, label: "40 Prozent" }),
+      h(D.Massbalken, { untergrund: p.u, anteil: 100, label: "100 Prozent" }));
+  }
+
+  function Flaeche(p) {
+    return h("div", { className: [p.klasse, W.seite, BS, "flaeche"].join(" ") },
+      p.titel ? h("p", { className: W.beschriftung + " titel" }, p.titel) : null,
+      h(Beispiel, { u: p.u }));
+  }
+  ReactDOM.createRoot(document.getElementById("wurzel")).render(h("div", { className: "beide" }, h(Flaeche, { klasse: W.papier, u: "papier", titel: "Papier" }), h(Flaeche, { klasse: W.nacht, u: "nacht", titel: "Nacht" })));
+})();
+</script>
+</body>
+</html>
