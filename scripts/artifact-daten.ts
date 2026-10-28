@@ -13,11 +13,13 @@
 // (artifact/project/README.md). Keine Gedankenstriche, echte Umlaute. Werte
 // wie Neigung und Maße kommen aus src/, nicht von Hand.
 
+import { ABO_ICON_STROKE_WIDTH } from "../src/abo-icon";
+import { EXPLOSION_STUFEN } from "../src/explosion";
 import { MARKER_TILT_DEG } from "../src/MarkerHighlight";
-import { MASSE } from "../src/tokens";
+import { GRAFIK, MASSE } from "../src/tokens";
 import { komma } from "./erzeuge";
 
-const GRUPPEN = ["Aktionen", "Status", "Hervorhebung", "Fakten", "Rahmen", "Listen", "Kundenseite", "Marke"] as const;
+const GRUPPEN = ["Aktionen", "Status", "Hervorhebung", "Fakten", "Rahmen", "Listen", "Kundenseite", "Marke", "Grafik"] as const;
 export type Gruppe = (typeof GRUPPEN)[number];
 
 /** Wie die Vorschau ihre Fläche bekommt. */
@@ -1086,18 +1088,148 @@ function Beispiel(p) {
     ],
     lassen: ["Das Logo nachzeichnen.", "Die helle Fassung auf Nacht oder die dunkle auf Papier."],
   },
+
+  /* ---------------- Grafik ---------------- */
+  {
+    name: "Leistungskarten",
+    gruppe: "Grafik",
+    hoehe: 740,
+    flaeche: "beide",
+    skript: `
+function Beispiel(p) {
+  var szene = p.nacht ? "sanierung" : "profil";
+  var karten = D.LEISTUNGSKARTEN_MUSTER.filter(function (k) { return k.szene === szene; });
+  return h("div", { className: "stapel schmal" },
+    h(D.Leistungskarten, { karten: karten, szenen: D.LEISTUNGSKARTEN_BEISPIELE, untergrund: p.u }),
+    h("p", { className: W.beschriftung }, "Muster, keine echten Daten."));
+}`,
+    zusammenfassung:
+      "Die Leistungskarte erklärt eine Leistung mit einer animierten isometrischen Figur auf einer Bühne mit Sucher-Ecken, darüber Titel und Nummer, darunter der Text (Grafikstil A).",
+    wann: [
+      "Um Leistungen und Angebote zu erklären, auf Papier oder auf Nacht.",
+      "Jede Figur hat eine Geste: Der Wert `t` läuft von 0 (Ruhe) bis 1 (Geste fertig).",
+      `Aktiv wird eine Karte bei Hover, bei Tastaturfokus und am Handy einmal beim Hineinscrollen. Dann kippt sie um ${komma(GRAFIK.kippGrad)}°, hebt sich ohne Schatten um ${GRAFIK.hebenPx} px an und wechselt auf die Gegenfläche.`,
+      "Im Server-HTML steht jede Szene im Ruhezustand. Bei reduzierter Bewegung, ohne `matchMedia` oder ohne `IntersectionObserver` steht die Geste sofort am Ende.",
+      "Szenen sind Funktionen und überqueren die Grenze zwischen Server und Client nicht. Das Szenen-Register liegt deshalb in einem eigenen Client-Modul (`\"use client\"`) als feste Modulkonstante; die Seite reicht nur `karten` weiter.",
+      "Karten, deren `szene` im Register fehlt, fallen weg. Vier Karten stehen 2 × 2 oder in einer Reihe; `breit` legt eine einzelne Karte quer über die volle Breite.",
+      "Neue Szenen zeichnen mit dem Werkzeug `w` der Engine (`leistungskarten-engine`) und den Formen-Helfern (`leistungskarten-formen`). Beispiele: `LEISTUNGSKARTEN_BEISPIELE` mit `profil` und `sanierung`, Musterkarten `LEISTUNGSKARTEN_MUSTER`.",
+    ],
+    props: [
+      ["karten", "readonly LeistungsKarte[]", "Pflicht", "Karten mit `szene`, `titel`, `teaser` und optional `nr` und `schliesst`."],
+      ["szenen", "SzenenRegister", "Pflicht", "Szenen-Register: Schlüssel aus `szene` auf die Szene, als feste Referenz."],
+      ["untergrund", "\"papier\" \\| \"nacht\"", "Pflicht", "Fläche, auf der die Karten stehen."],
+      ["breit", "boolean", "false", "Eine Karte quer über die volle Breite, Bühne links, Text rechts."],
+    ],
+    lassen: [
+      "Mehr als ein Lime-Motiv in einer Figur. Ein Motiv darf aus mehreren Flächen bestehen, wenn sie zusammen eine Aussage tragen, etwa fünf Sterne.",
+      "Eine Figur ohne Geste.",
+      "Eine Szene freihand statt mit Engine und Formen-Helfern.",
+      "Text an `w.text()` vorbei: Eigenes Markup mit Text umginge das Escapen, das Markup geht per `innerHTML` ins SVG.",
+    ],
+  },
+  {
+    name: "IsoSzene",
+    gruppe: "Grafik",
+    hoehe: 600,
+    flaeche: "nacht",
+    skript: `
+var ZEICHNUNG = D.explosionProfil({ idPraefix: "vorschau-" });
+function Beispiel() {
+  return h("div", { className: "schmal" },
+    h(D.IsoSzene, {
+      zeichnung: ZEICHNUNG,
+      stufen: D.EXPLOSION_STUFEN,
+      beschreibung: "Explosionszeichnung eines Profils: vier Bauteile rasten nacheinander in die Profil-Tafel ein.",
+      unterschrift: "Muster, keine echten Daten."
+    }));
+}`,
+    zusammenfassung:
+      "Die Iso-Szene erklärt einen Ablauf in Stufen: eine isometrische Zeichnung auf Nacht, deren Teile nacheinander einrasten und leuchten (Grafikstil B).",
+    wann: [
+      "Um Abläufe und Zerlegungen zu erklären, etwa die Explosionszeichnung eines Profils (`explosionProfil`, " + EXPLOSION_STUFEN + " Stufen in `EXPLOSION_STUFEN`).",
+      `Ist die Zeichnung zu ${GRAFIK.isoStartAnteil * 100} % im Bild, rastet einmal Stufe 1 bis \`stufen\` im Takt von ${GRAFIK.isoTaktMs} ms ein (\`data-stand\` 0 bis \`stufen\`).`,
+      "Im Server-HTML steht `data-stand=\"0\"`. Bei reduzierter Bewegung, ohne `matchMedia` oder ohne `IntersectionObserver` stehen sofort alle Stufen.",
+      "Die Zeichnung ist nur Daten (`viewBox`, `knoten`, `klasse`, `stil`): Eine Server-Komponente rechnet sie und reicht sie an `IsoSzene`. `idPraefix` beim Rechnen macht die Filter-IDs je Seite eindeutig, im Client liefert es `useSvgPraefix`.",
+      "Lime heißt „eingeschaltet“ und darf an mehreren Teilen leuchten. `fokus` hebt eine Stufe hervor, ohne den Ablauf zu ändern.",
+    ],
+    props: [
+      ["zeichnung", "IsoZeichnung", "Pflicht", "`{ viewBox, knoten, klasse?, stil? }`, etwa aus `explosionProfil()`."],
+      ["stufen", "number", "Pflicht", "So viele Stufen rasten nacheinander ein."],
+      ["beschreibung", "string", "Pflicht", "Was die Grafik zeigt, für Vorleser (`aria-label`)."],
+      ["unterschrift", KINDER, "ohne", "Unterschrift unter der Zeichnung."],
+      ["fokus", "number", "ohne", "Hebt eine Stufe hervor (`data-fokus`)."],
+      ["className", "string", "ohne", "Zusätzliche Klasse der Bühne."],
+    ],
+    lassen: [
+      "Lime ohne Bedeutung: Lime heißt „eingeschaltet“.",
+      "Text als Attribut. Texte stehen als Kinder im Knotenbaum, React escapt sie.",
+      "Eine Grafik ohne Beschreibung.",
+    ],
+  },
+  {
+    name: "IsoKnoten",
+    gruppe: "Grafik",
+    hoehe: 300,
+    flaeche: "nacht",
+    skript: `
+var E = D.isoElement;
+var KERN = D.isoKernel({ rot: -0.35, cx: 60, cy: 60 });
+KERN.merk([0, 0, 0], [120, 0, 0], [0, 120, 0], [120, 120, 0]);
+var KNOTEN = [
+  E("style", null, ".face { fill: var(--ink-900); stroke: var(--ink-500); stroke-width: 1; } .top { fill: var(--ink-800); } .platte { fill: none; stroke: var(--ink-500); stroke-dasharray: 3 3; } .an { fill: var(--lime); }"),
+  KERN.auf(KERN.TOP(0, 0, 0), E("rect", { className: "platte", width: 120, height: 120 })),
+  KERN.box(30, 30, 0, 60, 60, 44),
+  KERN.auf(KERN.TOP(50, 50, 44), E("rect", { className: "an", width: 20, height: 20 }))
+];
+var RAHMEN = KERN.bbox(8);
+function Beispiel() {
+  return h("figure", { className: "stapel eng" },
+    h("svg", { viewBox: RAHMEN.viewBox, width: 280, role: "img", "aria-label": "Quader mit Lime-Fläche auf einer Grundplatte" },
+      h(D.IsoKnoten, { knoten: KNOTEN })),
+    h("figcaption", { className: W.beschriftung }, "Grundplatte und Quader aus dem Iso-Kern."));
+}`,
+    zusammenfassung:
+      "Der Renderer `IsoKnoten` macht aus dem Knotenbaum des Iso-Kerns SVG-Elemente, auf dem Server wie im Browser und ohne Zustand.",
+    wann: [
+      "So zeichnet man mit dem Kern: `isoKernel({ rot, cx, cy, K })` liefert je Zeichnung die Projektion `P`, die Flächen `TOP`, `FRONT` und `SIDE`, Quader mit `box`, Pfade mit `path3` und aus allen gemerkten Punkten mit `bbox()` die viewBox.",
+      "Knoten baut `isoElement(tag, attrs, ...kinder)` wie `createElement`, nur ohne React. Attribute stehen in React-Schreibweise (`className`, `strokeWidth`).",
+      "`K` bildet Klassennamen auf die Namen des eigenen CSS-Moduls ab. Die Farben liefert die Iso-Palette (`isopalette.module.css`), die `IsoSzene` ans SVG setzt.",
+      "Leuchtfilter mit `filterDefs`, Sterne mit `sternPfad`. Knoten mit `tag: \"slot\"` ersetzt `IsoKnoten` durch `slots[name]`, für Inhalte, die erst zur Laufzeit feststehen.",
+    ],
+    props: [
+      ["knoten", "Knoten \\| string \\| readonly (Knoten \\| string)[]", "Pflicht", "Knotenbaum `{ tag, attrs, kids }` aus dem Iso-Kern."],
+      ["slots", "Readonly<Record<string, ReactNode>>", "ohne", "Inhalte für die Knoten mit `tag: \"slot\"`."],
+    ],
+    lassen: [
+      "Eine Figur freihand als SVG statt mit dem Iso-Kern.",
+      "Text als Attribut statt als Kind.",
+      "Feste Filter-IDs: Sie bekommen ein Präfix je Seite.",
+    ],
+  },
 ];
 
+/** Schaukarte ohne README und ohne Export des Bündels; Vorschau wie bei einem Baustein. */
+export interface Schaukarte {
+  /** Ordnername unter components/, nur Buchstaben. */
+  name: string;
+  gruppe: Gruppe;
+  hoehe: number;
+  untertitel?: string;
+  flaeche: Flaeche;
+  skript: string;
+}
+
 /**
- * Schaukarte der Icons (Gruppe Marke, `page`): kein Export des Bündels, ohne
- * README. Im Skript steht zusätzlich `NAMEN`, alle `*Icon`-Exporte; `AboIcon`
- * zeigt die Karte je Paket statt einmal.
+ * Schaukarten (`page`). Im Skript steht zusätzlich `NAMEN`, alle `*Icon`-
+ * Exporte. Die Icons-Karte zeigt `AboIcon` je Paket statt einmal.
  */
-export const ICONS_KARTE: { name: string; gruppe: Gruppe; hoehe: number; skript: string } = {
-  name: "Icons",
-  gruppe: "Marke",
-  hoehe: 600,
-  skript: `
+export const SCHAUKARTEN: Schaukarte[] = [
+  {
+    name: "Icons",
+    gruppe: "Marke",
+    hoehe: 600,
+    flaeche: "thema",
+    skript: `
 function Beispiel() {
   return h("div", { className: "icons" },
     NAMEN.filter(function (n) { return n !== "AboIcon"; }).map(function (n) {
@@ -1107,4 +1239,24 @@ function Beispiel() {
       return h("figure", { key: "abo-" + paket, className: "icon" }, h(D.AboIcon, { paket: paket, size: 24 }), h("figcaption", null, "AboIcon " + paket));
     }));
 }`,
-};
+  },
+  {
+    name: "PaketEmbleme",
+    gruppe: "Grafik",
+    hoehe: 340,
+    untertitel: "Paket-Embleme",
+    flaeche: "beide",
+    skript: `
+var GROESSEN = [44, 28, 20, 16];
+function Beispiel() {
+  return h("div", { className: "stapel" },
+    D.PAKETE.map(function (paket) {
+      return h("div", { key: paket, className: "reihe" },
+        GROESSEN.map(function (g) { return h(D.AboIcon, { key: g, paket: paket, size: g }); }),
+        h("span", { className: W.beschriftung }, paket));
+    }),
+    h("p", { className: W.text + " schmal" },
+      "Ein Abo-Name steht nie ohne sein Emblem. Die Ringe nehmen die Schriftfarbe der Fläche, der Schwenk ist Lime. Der Strich misst ${komma(ABO_ICON_STROKE_WIDTH)} im 24er-Raster (ABO_ICON_STROKE_WIDTH), so bleibt er auch bei 16 px über einem Pixel."));
+}`,
+  },
+];

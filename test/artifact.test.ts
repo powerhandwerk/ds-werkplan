@@ -37,7 +37,7 @@ const VERBOTENE_NAMEN = new Set([
 
 describe("Lesefassung", () => {
   it("jeder Baustein aus dem Kopf von bundle.js hat README.md und preview.html", () => {
-    expect(bausteine).toHaveLength(35);
+    expect(bausteine).toHaveLength(38);
     for (const name of bausteine) {
       expect(dateien, name).toContain(`components/${name}/README.md`);
       expect(dateien, name).toContain(`components/${name}/preview.html`);

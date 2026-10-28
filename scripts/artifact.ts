@@ -1,7 +1,8 @@
 // Erzeugt die Lesefassung unter artifact/project/ für den Artifact-Typ
 // „Design System“: tokens.css aus tokens.json, fonts/, assets/Logos/ und je
 // Baustein aus dem Kopf von bundle.js components/<Name>/README.md und
-// components/<Name>/preview.html, dazu die Schaukarte components/Icons/.
+// components/<Name>/preview.html, dazu die Schaukarten (components/Icons/,
+// components/PaketEmbleme/) und der Lizenztext von iso-glow.
 // Aufruf: `bun run artifact` (nach `bun run erzeuge` und `bun run bundle`).
 // Markenbuch (README.md), Cover und Bündel schreibt dieses Skript nicht.
 // Die Funktionen sind rein, damit test/artifact.test.ts sie ohne
@@ -11,7 +12,7 @@ import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } fro
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SCHRIFTDATEIEN } from "../src/tokens";
-import { BAUSTEINE, ICONS_KARTE, type Baustein, type Prop } from "./artifact-daten";
+import { BAUSTEINE, SCHAUKARTEN, type Baustein, type Prop, type Schaukarte } from "./artifact-daten";
 import { iconNamen, moduleJeName } from "./bundle";
 
 export const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -27,6 +28,9 @@ export const SCHRIFTEN = [
 ];
 
 export const LOGOS = ["logo-powerhandwerk.svg", "logo-powerhandwerk-dark.svg", "pin.svg"] as const;
+
+/** MIT-Lizenz von iso-glow (Iso-Kern und Explosionszeichnung), liegt wie die OFL-Texte bei. */
+export const LIZENZ_ISO_GLOW = "LICENSE-iso-glow.txt";
 
 const lies = (pfad: string) => readFileSync(join(WURZEL, pfad), "utf8");
 
@@ -198,15 +202,15 @@ export function vorschau(b: Baustein): string {
   return dokument(marker(b), b.name, skript);
 }
 
-/** Schaukarte der Icons: `NAMEN` sind alle `*Icon`-Exporte, das Beispiel steht in den Daten der Karte. */
-export function iconsVorschau(namen: string[]): string {
+/** Vorschau einer Schaukarte: `NAMEN` sind alle `*Icon`-Exporte, das Beispiel steht in den Daten der Karte. */
+export function schaukarteVorschau(karte: Schaukarte, namen: string[]): string {
   const skript = [
     VORSPANN,
     `  var NAMEN = ${JSON.stringify(namen)};`,
-    ICONS_KARTE.skript.trim().replace(/^/gm, "  "),
-    ABSPANN.replace("INHALT", INHALT.thema),
+    karte.skript.trim().replace(/^/gm, "  "),
+    ABSPANN.replace("INHALT", INHALT[karte.flaeche]),
   ].join("\n");
-  return dokument(marker({ ...ICONS_KARTE, page: true }), ICONS_KARTE.name, skript);
+  return dokument(marker({ ...karte, page: true }), karte.untertitel ?? karte.name, skript);
 }
 
 /* ---- Leitlinien ------------------------------------------------------- */
@@ -271,7 +275,10 @@ export function textDateien(): Map<string, string> {
     dateien.set(`components/${name}/preview.html`, vorschau(b));
   }
   for (const b of BAUSTEINE) if (!dateien.has(`components/${b.name}/README.md`)) throw new Error(`${b.name} steht nicht im Kopf von bundle.js`);
-  dateien.set(`components/${ICONS_KARTE.name}/preview.html`, iconsVorschau(iconNamen(indexTs)));
+  for (const karte of SCHAUKARTEN) {
+    if (tabelle.has(karte.name)) throw new Error(`Schaukarte ${karte.name} heißt wie ein Baustein`);
+    dateien.set(`components/${karte.name}/preview.html`, schaukarteVorschau(karte, iconNamen(indexTs)));
+  }
   return dateien;
 }
 
@@ -280,6 +287,7 @@ export function kopien(): Map<string, string> {
   return new Map([
     ...SCHRIFTEN.map((d) => [`fonts/${d}`, `fonts/${d}`] as const),
     ...LOGOS.map((d) => [`assets/Logos/${d}`, `assets/${d}`] as const),
+    [LIZENZ_ISO_GLOW, LIZENZ_ISO_GLOW] as const,
   ]);
 }
 

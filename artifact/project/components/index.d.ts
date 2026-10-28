@@ -1300,6 +1300,460 @@ export type EingabefeldProps = (Gemeinsam & {
 } & TextareaHTMLAttributes<HTMLTextAreaElement>);
 export declare function Eingabefeld(props: EingabefeldProps): import("react").JSX.Element;
 
+/* ---- Leistungskarten ---- */
+
+/** Szenen-Register: Schlüssel aus `LeistungsKarte.szene` auf die Szene. */
+export type SzenenRegister = Readonly<Record<string, Szene>>;
+/**
+ * Raster animierter Leistungskarten. Im Server-HTML steht jede Szene im
+ * Ruhezustand, mit Bildausschnitt aus den vermessenen Proben; der Motor im
+ * Client übernimmt Hover, Tastaturfokus und auf dem Handy das einmalige
+ * Abspielen. Die Karten sind fokussierbar, aber kein Link. `breit` legt eine
+ * einzelne Karte quer über die volle Breite (Bühne links, Text rechts).
+ *
+ * `szenen` ist das Szenen-Register; Karten, deren `szene` dort fehlt, fallen
+ * weg. Das Register sollte eine feste Referenz sein (Modulkonstante): ein neues
+ * Objekt startet den Motor neu. Next.js-Verbraucher legen ein eigenes
+ * Client-Modul (`"use client"`) an, das `Leistungskarten` mit ihrem Register
+ * rendert, denn Szenen sind Funktionen und überqueren die Server-Client-Grenze
+ * nicht. Beispiele: `LEISTUNGSKARTEN_BEISPIELE`.
+ */
+export declare function Leistungskarten({ karten, szenen, untergrund, breit, }: {
+    karten: readonly LeistungsKarte[];
+    szenen: SzenenRegister;
+    untergrund: "papier" | "nacht";
+    breit?: boolean;
+}): import("react").JSX.Element;
+
+/* ---- leistungskarten-engine ---- */
+
+/**
+ * Zeichen-Engine der animierten Leistungskarten (Grafikstil A, ADR-262).
+ * Port aus powerhandwerk-website, lib/werkplan/leistungskarten/engine.ts (keteso 923a5c4).
+ *
+ * Alles hier ist reine Funktion: kein DOM, kein globaler Zustand. Die
+ * Ausdehnung einer Szene steckt in einem expliziten Mess-Objekt, das
+ * `werkzeug()` gebunden bekommt. So rechnet der Server den Bildausschnitt aus
+ * den projizierten Proben-Punkten, ohne Layout (Layout-Messungen liefern in
+ * versteckten Rahmen und beim Server-Rendern nur Nullen).
+ *
+ * Neu gegenüber der Website: `flaeche()`, `linie()` und `text()` escapen die
+ * Klasse (`text()` auch den Inhalt) und lassen als `stil` nur harmlose
+ * Attribute zu. Im Paket sind Szenen Eingabe des Verbrauchers, und das Markup
+ * geht per `innerHTML` ins SVG.
+ */
+declare const C: number;
+export declare const TAU: number;
+/** Ein Punkt im Szenenraum: x nach rechts unten, y nach links unten, z nach oben. */
+export type Pkt = readonly number[];
+/** Ausdehnung einer Szene in Bildkoordinaten, gesammelt beim Vermessen. */
+type Mess = {
+    x0: number;
+    x1: number;
+    y0: number;
+    y1: number;
+};
+/** Parameter einer Szene. `t` ist der Fortschritt der Geste (0 Ruhe, 1 Ende). */
+export type SzenenWert = {
+    t: number;
+    /** Zeigerposition waagerecht, 0 bis 1. */
+    px?: number;
+    /** Zeigerposition waagerecht, -1 bis 1. */
+    mx?: number;
+    /** Zeigerwinkel einer Uhr (siehe `uhrWinkel` in leistungskarten-formen). */
+    ang?: number;
+    /** Laufende Uhr in Sekunden für Szenen mit Dauerbewegung. */
+    clk?: number;
+    /** Bitmaske abgehakter Punkte, wird beim Zeichnen fortgeschrieben. */
+    gepr?: number;
+};
+export type SzenenSchluessel = keyof SzenenWert;
+export type Szene = {
+    /** Szene bewegt sich dauerhaft, solange die Karte aktiv ist. */
+    laufend?: boolean;
+    /** Startwerte beim Einblenden. */
+    start: () => SzenenWert;
+    /** Ruhezustand, wie ihn der Server rendert. Muss deterministisch sein. */
+    ruhe: SzenenWert;
+    /** Ruhezustand, den nur der Client kennt (Uhrzeit), überschreibt `ruhe` nach dem Laden. */
+    ruheImClient?: () => Partial<SzenenWert>;
+    /** Extremzustände für die Vermessung des Bildausschnitts. */
+    proben: readonly SzenenWert[];
+    /**
+     * Liefert das SVG-Innen-Markup. Darf `s.gepr` fortschreiben.
+     *
+     * Szenen liefern Geometrie, also Pfade und Kreise aus dem Werkzeug `w`.
+     * Text kommt nur über `w.text()` ins Bild: das escapt Inhalt und Klasse.
+     * Eigenes Markup mit Text darin umginge das Escapen, denn das Ergebnis geht
+     * per `innerHTML` ins SVG.
+     */
+    zeichne: (s: SzenenWert, w: Werkzeug) => string;
+};
+/**
+ * Eine Karte im Raster von `Leistungskarten`. `szene` ist ein Schlüssel im
+ * Szenen-Register, das der Verbraucher übergibt.
+ */
+export type LeistungsKarte = {
+    szene: string;
+    titel: string;
+    /** Kartentext unter der Bühne. */
+    teaser: string;
+    /** Laufende Nummer, etwa „001“, optional. */
+    nr?: string;
+    /** Bezug unter dem Text, etwa „schließt Pos. 01 und 02“, optional. */
+    schliesst?: string;
+};
+export declare const klemm: (v: number, a?: number, b?: number) => number;
+export declare const plus: (p: Pkt, v: Pkt, f?: number) => number[];
+export declare const kreis: (cx: number, cy: number, z: number, r: number, n?: number) => number[][];
+/** Deckkraft als Attribut-Zusatz für `flaeche`, `linie` und `text`. */
+export declare const deck: (o: number) => string;
+/** Escapt `& < > " '` für Text und Attributwerte im Markup. */
+export declare const maskiere: (wert: string) => string;
+/** Textanker im SVG. */
+export type Anker = "start" | "middle" | "end";
+/**
+ * Zeichenwerkzeug, gebunden an ein Mess-Objekt (oder `null` beim normalen
+ * Zeichnen). Jede Projektion erweitert beim Vermessen die Ausdehnung.
+ */
+declare function werkzeug(mess: Mess | null): {
+    P: (x: number, y: number, z: number) => [number, number];
+    pfad: (arr: readonly Pkt[], zu: boolean) => string;
+    flaeche: (arr: readonly Pkt[], cls: string, stil?: string) => string;
+    linie: (arr: readonly Pkt[], cls: string, stil?: string) => string;
+    staub: (liste: readonly Pkt[]) => string;
+    text: (p: Pkt, dx: number, dy: number, inhalt: string, cls: string, stil?: string, anker?: Anker) => string;
+};
+export type Werkzeug = ReturnType<typeof werkzeug>;
+/** Grundwerte einer Szene: Start, überschrieben vom Ruhezustand des Servers. */
+declare function ruheWert(szene: Szene): SzenenWert;
+/** Bildausschnitt einer Szene als viewBox-String, allein aus den Proben gerechnet. */
+declare function vermesse(szene: Szene): string;
+/** SVG-Innen-Markup einer Szene im Zustand `wert` (der Motor übergibt seinen eigenen Wert, `gepr` bleibt so erhalten). */
+declare function zeichne(szene: Szene, wert: SzenenWert): string;
+/** Ruhezustand für das Server-HTML: deterministisch, auf einer Kopie gezeichnet. */
+declare function zeichneRuhe(szene: Szene): string;
+/**
+ * Zieht jeden Wert einen Schritt in Richtung Ziel. Bei reduzierter Bewegung
+ * springt er sofort. Liefert, ob sich etwas bewegt hat.
+ */
+declare function naehere(wert: SzenenWert, ziel: SzenenWert, reduziert: boolean): boolean;
+/** Zeigerparameter aus der relativen Zeigerposition in der Karte (0 bis 1). */
+declare function zeigerZiel(ziel: SzenenWert, relX: number): void;
+/** Kippwinkel der Karte (Grad) aus der relativen Zeigerposition. */
+declare function kippung(relX: number, relY: number): {
+    rx: number;
+    ry: number;
+};
+/** Umkehrung der Projektion auf die Ebene z = 0: Bildpunkt zu Szenenpunkt (x, y). */
+declare function ebeneAusBild(bx: number, by: number): [number, number];
+
+/* ---- leistungskarten-formen ---- */
+
+/**
+ * Formen-Helfer für neue Szenen der Leistungskarten (Grafikstil A, ADR-262).
+ * Port aus powerhandwerk-website, lib/werkplan/leistungskarten/szenen.ts (keteso 923a5c4).
+ *
+ * Jede neue Figur entsteht mit diesen Helfern und dem Werkzeug der Engine,
+ * nie freihand: so bleiben Isometrie (30°), Strichstärken und Klassen gleich.
+ * Klassen im Markup (Stil im CSS-Modul der Karten): f Fläche, l Linie,
+ * d gestrichelt, th fein, a Lime-Fläche, al Lime-Linie, ag Lime ohne Kontur,
+ * gl Schein, zeiger, pt Staubpunkt, lbl Beschriftung, uhr Zeitanzeige.
+ */
+/** Abbildung einer senkrechten Ebene: a entlang x, b nach oben, Ergebnis ein Szenenpunkt. */
+export type Ebene = (a: number, b: number) => number[];
+/**
+ * Punkt in einer senkrechten Ebene y = konstant: a entlang x, b nach oben.
+ * Für alles, was wie ein Blatt, Schild oder Bildschirm zum Betrachter steht.
+ */
+export declare const inEbene: (y: number) => Ebene;
+/** Rechteck in einer Ebene, etwa ein Bildfeld, ein Knopf oder ein Fenster. */
+export declare const rechteck: (E: Ebene, a0: number, a1: number, b0: number, b1: number) => number[][];
+/**
+ * Zackenfigur in einer Ebene: n Spitzen, Innenradius als Anteil von r. Liefert
+ * eine Funktion für Mittelpunkt und Radius; Grundlage von `stern`.
+ */
+export declare const zacken: (n: number, innen: number) => (E: Ebene, ca: number, cb: number, r: number) => number[][];
+/** Stern mit fünf Zacken in einer Ebene, etwa für Bewertungen. */
+export declare const stern: (E: Ebene, ca: number, cb: number, r: number) => number[][];
+/** Sprechblase mit abgerundeten Ecken und Zipfel an der Unterkante, für Nachrichten und Antworten. */
+export declare const blase: (E: Ebene, a0: number, a1: number, b0: number, b1: number, zipfel: number, r?: number) => number[][];
+/**
+ * Senkrechte Platte mit sichtbarer Stirnseite rechts und Oberkante, etwa eine
+ * Profilkarte, ein Bildschirm oder ein Schild mit Tiefe.
+ */
+export declare const platte: (w: Werkzeug, y: number, a0: number, a1: number, b0: number, b1: number, tiefe: number, cls?: string, stil?: string) => string;
+/** Maße eines Hauses: Länge X, Tiefe Y, Traufhöhe H, Firsthöhe F, Dachüberstand ue, Versatz ox/oy. */
+export type HausMasse = {
+    X: number;
+    Y: number;
+    H: number;
+    F: number;
+    ue?: number;
+    ox?: number;
+    oy?: number;
+    oeffnungen?: boolean;
+};
+/**
+ * Satteldach-Haus, First parallel zu x, für Szenen rund um Dach und Gebäude.
+ * Liefert die Hülle als Markup (`o`), die vordere Dachfläche als Funktion
+ * (`dach`) und Hilfen, um Teile auf das Dach zu setzen (`vorn`, `zDach`).
+ */
+export declare function haus(w: Werkzeug, { X, Y, H, F, ue, ox, oy, oeffnungen }: HausMasse): {
+    o: string;
+    vorn: (u: number, x: number) => number[];
+    zDach: (y: number) => number;
+    ym: number;
+    zE: number;
+    Q: (x: number, y: number, z: number) => number[];
+    dach: () => string;
+};
+/** Winkel von 0 Uhr auf einem 24-Stunden-Zifferblatt: zeigt im Bild nach oben. */
+export declare const A0: number;
+/**
+ * Winkel der aktuellen Uhrzeit, für `ruheImClient` einer Szene mit Uhr. Nur
+ * im Client aufrufen: im Server-HTML wiche die Hydration je nach Minute ab,
+ * dort steht ein fester Winkel in `ruhe`.
+ */
+export declare function jetztWinkel(d: Date): number;
+/**
+ * Zeigerwinkel aus einem Punkt der Zifferblatt-Ebene (z = 0), auf volle
+ * Stunden gerastert. Der Motor ruft das mit `ebeneAusBild` der Zeigerposition,
+ * sobald eine Szene `ang` trägt.
+ */
+export declare function uhrWinkel(x: number, y: number): number;
+
+/* ---- leistungskarten-beispiele ---- */
+
+/**
+ * Zwei Beispielszenen der Leistungskarten (Grafikstil A, ADR-262) und
+ * Musterkarten dazu. Port aus powerhandwerk-website,
+ * lib/werkplan/leistungskarten/szenen.ts (keteso 923a5c4): `profil` ist dort
+ * `googleProfil`, `sanierung` heißt gleich.
+ *
+ * Bewusst ohne "use client": Server-Komponenten lesen die Musterkarten als
+ * Werte. Die Szenen sind Funktionen und überqueren die Server-Client-Grenze
+ * nicht; ein Verbraucher in Next.js reicht sie deshalb aus einem eigenen
+ * Client-Modul an `Leistungskarten` (siehe dort).
+ *
+ * Jede Szene zeigt eine Geste (`t` von 0 nach 1) und ein Lime-Motiv, das aus
+ * mehreren Flächen bestehen darf (fünf Sterne; Eindeckung und Ziegel).
+ */
+/** Beispielszenen der Leistungskarten: `profil` für Papier, `sanierung` für Nacht. */
+export declare const LEISTUNGSKARTEN_BEISPIELE: Readonly<Record<"profil" | "sanierung", Szene>>;
+/** Musterkarten zu den Beispielszenen, neutral getextet. */
+export declare const LEISTUNGSKARTEN_MUSTER: readonly LeistungsKarte[];
+
+/* ---- iso ---- */
+
+/*!
+ * Iso-Kern des Design-Systems, Projektion nach iso-glow.
+ * Copyright (c) 2026 April Zhu (iso-glow: lighting, palettes, gallery shell, examples)
+ * Copyright (c) 2026 Tolga Cohce (iso-figure, on which iso-glow is based)
+ * MIT-Lizenz, voller Text in LICENSE-iso-glow.txt (Wurzel des Pakets).
+ * Port aus powerhandwerk-website, lib/grafiken/iso.ts (keteso 923a5c4).
+ */
+/**
+ * Isometrische Projektion als reine Funktionen, Ausgabe als Knotenbaum
+ * `{ tag, attrs, kids }`. Kein DOM, keine Zufallszahlen: Die Komponente
+ * `IsoKnoten` macht daraus React-Elemente, auf dem Server wie im Browser.
+ *
+ * Projektion wie in der Vorlage (siehe Kopf), zusätzlich mit Drehung der ganzen
+ * Platte um die Hochachse (`rot` in Bogenmaß; negativ = Fronten drehen zum
+ * Betrachter).
+ *
+ * Attribute stehen in React-Schreibweise (`className`, `strokeWidth`,
+ * `textAnchor`, …), damit der Renderer sie unverändert durchreichen kann.
+ */
+export type AttrWert = string | number | Record<string, string> | undefined;
+export type Knoten = {
+    tag: string;
+    attrs: Record<string, AttrWert>;
+    kids: (Knoten | string)[];
+};
+/** Was `h()` als Kind annimmt: verschachtelte Listen werden flachgeklopft, Leeres fällt weg. */
+export type Kind = Knoten | string | number | null | undefined | false | readonly Kind[];
+export type Punkt2 = [number, number];
+export type Punkt3 = [number, number, number];
+/** Auf zwei Nachkommastellen gerundet, damit das SVG kurz und stabil bleibt. */
+declare const f: (n: number) => number;
+/** Kinder flachklopfen wie `h()`: verschachtelte Listen auflösen, Leeres weglassen, Zahlen als Text. */
+declare function flach(kids: readonly Kind[], aus: (Knoten | string)[]): (Knoten | string)[];
+/** Knoten bauen wie `createElement`, nur ohne React. */
+declare function h(tag: string, attrs?: Record<string, AttrWert> | null, ...kids: Kind[]): Knoten;
+/** Fünfzackiger Stern um (x, y) als Pfad, Spitze oben; Innenradius 45 % von r. */
+export declare function sternPfad(x: number, y: number, r: number): string;
+/**
+ * Leuchtfilter einer Zeichnung, in Nutzerkoordinaten mit `rand` um die
+ * bbox: `soft` (Blur 2,2 plus Original), `bloom` (nur Blur) und, wenn
+ * `glow` und seine ID gesetzt sind, davor `glow` (Blur doppelt plus Original).
+ */
+export declare function filterDefs(bb: {
+    x0: number;
+    y0: number;
+    w: number;
+    h: number;
+}, ids: {
+    soft: string;
+    bloom: string;
+    glow?: string;
+}, { rand, bloom, glow }: {
+    rand: number;
+    bloom: number;
+    glow?: number;
+}): Knoten[];
+export type IsoKernel = ReturnType<typeof isoKernel>;
+/**
+ * Ein Kernel je Zeichnung: `rot` dreht die Platte um (cx, cy), `K` bildet
+ * Klassennamen auf CSS-Modul-Namen ab (unbekannte bleiben, wie sie sind).
+ * `merk`/`merkSchirm` sammeln Punkte für `bbox()`.
+ */
+export declare function isoKernel({ rot, cx, cy, K, }?: {
+    rot?: number;
+    cx?: number;
+    cy?: number;
+    K?: Readonly<Record<string, string>>;
+}): {
+    P: (x: number, y: number, z: number) => Punkt2;
+    D: (x: number, y: number, z: number) => Punkt2;
+    merk: (...p: Punkt3[]) => void;
+    merkSchirm: (...p: Punkt2[]) => void;
+    cls: (...ns: (string | false | null | undefined)[]) => string;
+    mat: (O: Punkt3, U: Punkt3, V: Punkt3) => string;
+    matInv: (U: Punkt3, V: Punkt3) => (dx: number, dy: number) => Punkt2;
+    TOP: (x: number, y: number, z: number) => string;
+    FRONT: (x: number, y: number, z: number) => string;
+    SIDE: (x: number, y: number, z: number) => string;
+    d2: (pts: readonly Punkt2[]) => string;
+    path3: (arr: readonly Punkt3[]) => string;
+    auf: (t: string, ...kids: Kind[]) => Knoten;
+    rect: (t: string, w: number, hh: number, r?: number, c?: string) => Knoten;
+    ring: (x: number, y: number, w: number, d: number, r: number, n?: number) => Punkt2[];
+    huelle: (pts: readonly Punkt2[]) => Punkt2[];
+    box: (x: number, y: number, z: number, w: number, d: number, hh: number, r?: number, c?: string) => Knoten[];
+    bbox: (rand?: number) => {
+        x0: number;
+        y0: number;
+        w: number;
+        h: number;
+        viewBox: string;
+    };
+    f: (n: number) => number;
+    h: typeof h;
+};
+
+export { h as isoElement };
+/* ---- IsoKnoten ---- */
+
+/**
+ * Renderer für den Knotenbaum aus `iso.ts`: macht aus `{ tag, attrs, kids }`
+ * rekursiv SVG-Elemente. Server-tauglich, kein Zustand.
+ *
+ * Knoten mit `tag: "slot"` ersetzt er durch `slots[attrs.name]`; so setzt der
+ * Verbraucher Inhalte ein, die erst zur Laufzeit feststehen (etwa getippter
+ * Text). Texte kommen als Kinder an und werden von React escapt, nie als
+ * Attribut. Zahlenattribute bleiben Zahlen, `style`-Objekte mit
+ * CSS-Variablen reicht er unverändert durch.
+ */
+export declare function IsoKnoten({ knoten, slots, }: {
+    knoten: Knoten | string | readonly (Knoten | string)[];
+    slots?: Readonly<Record<string, ReactNode>>;
+}): import("react").JSX.Element;
+
+/* ---- useSvgPraefix ---- */
+
+/**
+ * Präfix für Filter-, Clip- und Verlaufs-IDs eines SVGs: `useId` ohne die
+ * Zeichen, die in `url(#…)` und CSS-Selektoren stören. So kommen sich
+ * mehrere Grafiken auf einer Seite nicht in die Quere.
+ */
+export declare function useSvgPraefix(): string;
+
+/* ---- IsoSzene ---- */
+
+/**
+ * Zeichnung für `IsoSzene`, nur serialisierbare Daten: So kann eine
+ * Server-Komponente sie rechnen (etwa mit `explosionProfil`) und an die
+ * Client-Komponente geben.
+ */
+export type IsoZeichnung = {
+    viewBox: string;
+    knoten: readonly (Knoten | string)[];
+    /** Klasse der Zeichnung aus ihrem CSS-Modul; steht neben der Palette am SVG. */
+    klasse?: string;
+    /** CSS-Variablen am SVG, etwa die Filter-URLs mit dem Präfix des Verbrauchers. */
+    stil?: Readonly<Record<string, string>>;
+};
+export type IsoSzeneProps = {
+    zeichnung: IsoZeichnung;
+    /** So viele Stufen rasten nacheinander ein (`data-stand` 0 bis `stufen`). */
+    stufen: number;
+    /** Was die Grafik zeigt, für Vorleser (`aria-label`). Pflicht. */
+    beschreibung: string;
+    /** Unterschrift unter der Zeichnung. */
+    unterschrift?: ReactNode;
+    /** Hebt eine Stufe hervor (`data-fokus`), ohne den Ablauf zu ändern. */
+    fokus?: number;
+    className?: string;
+};
+/**
+ * Ablauf der Iso-Szene (Stil B): Zeichnung auf Nacht, die Stufe für Stufe
+ * einrastet. Das Server-HTML zeigt `data-stand="0"`. Ist die Zeichnung zum
+ * Anteil `GRAFIK.isoStartAnteil` im Bild, rastet einmal Stufe 1 bis
+ * `stufen` im Takt `GRAFIK.isoTaktMs` ein. Bei reduzierter Bewegung, ohne
+ * `matchMedia` oder ohne `IntersectionObserver` stehen sofort alle Stufen.
+ *
+ * Eindeutige Filter-IDs liefert der Verbraucher beim Rechnen der Zeichnung
+ * über ihr `idPraefix` (im Client per `useSvgPraefix`).
+ */
+export declare function IsoSzene({ zeichnung, stufen, beschreibung, unterschrift, fokus, className }: IsoSzeneProps): import("react").JSX.Element;
+
+/* ---- explosion ---- */
+
+/*!
+ * Explosionszeichnung (Stil B, Iso-Szene), gezeichnet mit dem Iso-Kern nach iso-glow.
+ * Copyright (c) 2026 April Zhu (iso-glow: lighting, palettes, gallery shell, examples)
+ * Copyright (c) 2026 Tolga Cohce (iso-figure, on which iso-glow is based)
+ * MIT-Lizenz, voller Text in LICENSE-iso-glow.txt (Wurzel des Pakets).
+ * Port aus powerhandwerk-website, lib/grafiken/befund-profil.ts (keteso 923a5c4).
+ */
+/** Musterinhalte der Explosionszeichnung. */
+export declare const EXPLOSION_MUSTER: {
+    readonly name: "Betrieb Muster";
+    readonly kategorie: "Gewerk · Musterstadt";
+    readonly wertung: "4,8";
+    readonly anzahl: "38";
+};
+/** So viele Stufen hat der Ablauf: vier Teile rasten nacheinander ein. */
+export declare const EXPLOSION_STUFEN = 4;
+export type ExplosionEingabe = {
+    name?: string;
+    kategorie?: string;
+    wertung?: string;
+    anzahl?: string;
+    /** Vorsatz für Filter-IDs, damit zwei Zeichnungen auf einer Seite sich nicht stören. */
+    idPraefix?: string;
+    /** Drehung der Platte in Grad; negativ dreht die Front zum Betrachter. */
+    rot?: number;
+};
+export type ExplosionProfil = {
+    viewBox: string;
+    /** Klasse der Zeichnung aus explosion.module.css, gehört neben die Palette ans SVG. */
+    klasse: string;
+    /**
+     * IDs der beiden Filter. `stil` setzt sie als `url(#…)` in die
+     * CSS-Variablen `--f-bp-soft` und `--f-bp-bloom`; das CSS-Modul nennt nie
+     * eine feste ID.
+     */
+    ids: {
+        soft: string;
+        bloom: string;
+    };
+    stil: Readonly<Record<string, string>>;
+    knoten: Knoten[];
+};
+export declare function explosionProfil({ name, kategorie, wertung, anzahl, idPraefix, rot, }?: ExplosionEingabe): ExplosionProfil;
+
 /* ---- nur im Bündel ---- */
 
 /** Klassen aus werkplan.module.css: lokaler Name auf den Namen in bundle.css. Kein Export des Pakets. */
