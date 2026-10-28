@@ -1,8 +1,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { h, isoKernel } from "../src/iso";
 import { IsoKnoten } from "../src/IsoKnoten";
-import { dom } from "./dom-hilfe";
+import { dom, zeige } from "./dom-hilfe";
 
 // IsoKnoten macht aus dem Knotenbaum des Iso-Kerns SVG-Elemente, ohne Zustand
 // und ohne "use client". Texte kommen nur als Kinder an und werden escapt.
@@ -72,5 +72,37 @@ describe("IsoKnoten", () => {
     const html = svg(knoten);
     expect(dom(html).querySelectorAll("path, rect").length).toBe(5);
     expect(html).not.toMatch(/NaN|Infinity/);
+  });
+});
+
+describe("IsoKnoten verwirft, was Skript ins Bild brächte", () => {
+  it("dangerouslySetInnerHTML fällt weg", () => {
+    const html = svg(h("g", { className: "huelle", dangerouslySetInnerHTML: { __html: "<img src=x onerror=alert(1)>" } }));
+    expect(html).not.toContain("<img");
+    expect(dom(html).querySelector("g.huelle")?.innerHTML).toBe("");
+  });
+
+  it("on…-Attribute fallen weg: nichts im Markup, kein Listener im Browser", () => {
+    const html = svg(h("rect", { width: 4, onclick: "alert(1)", ONLOAD: "alert(1)", onMouseOver: "alert(1)" }));
+    expect(html).not.toMatch(/\son\w*=/i);
+    expect(html).toContain('width="4"');
+
+    // Zur Laufzeit kann ein Baum mehr tragen, als der Typ erlaubt (etwa aus JSON gebaut).
+    const klick = vi.fn();
+    const host = zeige(
+      <svg>
+        <IsoKnoten knoten={h("rect", { width: 4, onClick: klick as unknown as string })} />
+      </svg>,
+    );
+    host.querySelector("rect")?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(klick).not.toHaveBeenCalled();
+  });
+
+  // animate und set können zur Laufzeit ein href auf javascript: setzen, am Schutz von React vorbei.
+  it.each(["script", "SCRIPT", "foreignObject", "foreignobject", "animate", "set"])("Tag %s fällt samt Kindern weg", (tag) => {
+    const html = svg(h("g", {}, h(tag, { href: "x" }, h("text", {}, "drin")), h("circle", { r: 1 })));
+    const g = dom(html).querySelector("g");
+    expect(Array.from(g?.children ?? []).map((k) => k.tagName.toLowerCase())).toEqual(["circle"]);
+    expect(html).not.toContain("drin");
   });
 });

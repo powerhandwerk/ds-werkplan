@@ -693,6 +693,7 @@ function Beispiel() {
     wann: [
       "Für die Hauptkarte einer Fläche.",
       `Die Ecken zeichnen in \`wp-stark\` mit ${komma(MASSE.eckeLinie)} px und sind rein dekorativ (\`aria-hidden\`). Sie stehen auf Papier und Nacht.`,
+      "Eine eigene Farbe kommt über die Stellschraube `--ecken-farbe` an einem umgebenden Element, nicht über die Flächenrolle. So folgen die Ecken der Leistungskarte ihrer Linienfarbe.",
       "Sie umschließen ihren Inhalt; `as` wählt das Element, damit auch ein Formular den Rahmen tragen kann. Das Polster setzt der Verbraucher.",
     ],
     props: [
@@ -1108,7 +1109,7 @@ function Beispiel(p) {
     wann: [
       "Um Leistungen und Angebote zu erklären, auf Papier oder auf Nacht.",
       "Jede Figur hat eine Geste: Der Wert `t` läuft von 0 (Ruhe) bis 1 (Geste fertig).",
-      `Aktiv wird eine Karte bei Hover, bei Tastaturfokus und am Handy einmal beim Hineinscrollen. Dann kippt sie um ${komma(GRAFIK.kippGrad)}°, hebt sich ohne Schatten um ${GRAFIK.hebenPx} px an und wechselt auf die Gegenfläche. Die breite Karte kippt flacher: um ${komma(GRAFIK.kippGradBreit)}°, ${GRAFIK.hebenPxBreit} px angehoben, ohne Vergrößerung.`,
+      `Aktiv wird eine Karte bei Hover, bei Tastaturfokus und am Handy einmal beim Hineinscrollen. Dann kippt sie um ${komma(GRAFIK.kippGrad)}°, hebt sich ohne Schatten um ${GRAFIK.hebenPx} px an und wechselt auf die Gegenfläche. Die breite Karte kippt ab 600 px Breite flacher: um ${komma(GRAFIK.kippGradBreit)}°, ${GRAFIK.hebenPxBreit} px angehoben, ohne Vergrößerung; darunter kippt sie wie jede andere Karte.`,
       "Im Server-HTML steht jede Szene im Ruhezustand. Bei reduzierter Bewegung steht die Geste sofort am Ende. Ohne `matchMedia` gilt das Gerät als ohne Hover. Ohne Hover spielt die Geste, sobald die Karte zum Sichtanteil im Bild ist; fehlt dort der `IntersectionObserver`, steht sofort das Ende. Mit Hover bleibt die Karte in Ruhe bis Hover oder Fokus.",
       "Szenen sind Funktionen und überqueren die Grenze zwischen Server und Client nicht. Das Szenen-Register liegt deshalb in einem eigenen Client-Modul (`\"use client\"`) als feste Modulkonstante; die Seite reicht nur `karten` weiter.",
       "Karten, deren `szene` im Register fehlt, fallen weg. Vier Karten stehen 2 × 2 oder in einer Reihe; `breit` legt eine einzelne Karte quer über die volle Breite.",

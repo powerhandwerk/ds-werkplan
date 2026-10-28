@@ -284,7 +284,8 @@ type Tag = "div" | "section" | "form";
  * Sucher-Ecken wie im Kamerasucher (DS Werkplan 2.0, ADR-261;
  * werkplan.module.css `.ecken`): vier 10-px-Winkel in den Ecken des Rahmens,
  * rein dekorativ (aria-hidden). Umschließt seinen Inhalt; `as` wählt das
- * Element, damit auch ein Formular den Rahmen tragen kann.
+ * Element, damit auch ein Formular den Rahmen tragen kann. Die Farbe ist
+ * `--wp-stark`; eine eigene setzt `--ecken-farbe` an einem umgebenden Element.
  */
 export declare function SucherEcken({ as: Element, className, children, ...rest }: {
     as?: Tag;
@@ -1442,6 +1443,11 @@ declare function zeichneRuhe(szene: Szene): string;
 /**
  * Zieht jeden Wert einen Schritt in Richtung Ziel. Bei reduzierter Bewegung
  * springt er sofort. Liefert, ob sich etwas bewegt hat.
+ *
+ * Der Zeigerwinkel `ang` nimmt den kürzeren Weg auf dem Kreis (von 23 auf 0 Uhr
+ * eine Stunde vorwärts, nicht fast eine Runde zurück). Unterwegs kann er
+ * deshalb kurz außerhalb des Bereichs von `uhrWinkel` liegen; am Ziel steht
+ * wieder genau der Zielwert.
  */
 declare function naehere(wert: SzenenWert, ziel: SzenenWert, reduziert: boolean): boolean;
 /** Zeigerparameter aus der relativen Zeigerposition in der Karte (0 bis 1). */
@@ -1662,6 +1668,11 @@ type Slots = Readonly<Record<string, ReactNode>>;
  * Text). Texte kommen als Kinder an und werden von React escapt, nie als
  * Attribut. Zahlenattribute bleiben Zahlen, `style`-Objekte mit
  * CSS-Variablen reicht er unverändert durch.
+ *
+ * Er verwirft `script`, `foreignObject`, `animate` und `set` samt Kindern,
+ * Ereignis-Attribute (`on…`) und `dangerouslySetInnerHTML`. Adressen prüft er
+ * nicht (javascript: in href sperrt erst React 19, React 18 warnt nur); der
+ * Baum gehört aus Code, nicht aus fremden Eingaben.
  */
 export declare function IsoKnoten({ knoten, slots, }: {
     knoten: KnotenEingabe;

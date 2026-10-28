@@ -7,7 +7,8 @@ type Tag = "div" | "section" | "form";
  * Sucher-Ecken wie im Kamerasucher (DS Werkplan 2.0, ADR-261;
  * werkplan.module.css `.ecken`): vier 10-px-Winkel in den Ecken des Rahmens,
  * rein dekorativ (aria-hidden). Umschließt seinen Inhalt; `as` wählt das
- * Element, damit auch ein Formular den Rahmen tragen kann.
+ * Element, damit auch ein Formular den Rahmen tragen kann. Die Farbe ist
+ * `--wp-stark`; eine eigene setzt `--ecken-farbe` an einem umgebenden Element.
  */
 export function SucherEcken({
   as: Element = "div",

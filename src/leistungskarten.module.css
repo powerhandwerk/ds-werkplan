@@ -56,6 +56,8 @@
 .karte {
   --lk-rx: 0deg;
   --lk-ry: 0deg;
+  /* Sucher-Ecken der Bühne folgen der animierten Linienfarbe, ohne die Flächenrollen umzubiegen */
+  --ecken-farbe: var(--lk-line);
   position: relative;
   flex: 1;
   display: flex;
@@ -158,11 +160,6 @@
   position: relative;
   aspect-ratio: 1 / 0.92;
   font-size: var(--grad-16);
-}
-
-/* Sucher-Ecken folgen der animierten Kartenfarbe, ohne die Flächenrollen umzubiegen */
-.buehne > span {
-  border-color: var(--lk-line);
 }
 
 .buehne svg {

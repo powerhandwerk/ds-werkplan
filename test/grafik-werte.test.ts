@@ -1,7 +1,8 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
+import { BAUSTEINE } from "../scripts/artifact-daten";
 import { BEWEGUNG, GRAFIK } from "../src/tokens";
-import { lies, ohneKommentare, werte } from "./css-hilfe";
+import { lies, ohneKommentare, regeln, werte } from "./css-hilfe";
 
 // Die Werte der Grafikstile stehen als Zahlen in src/tokens.ts. Dieser Test hält
 // die Werte untereinander stimmig und die CSS-Werte an denselben Zahlen. Den
@@ -46,6 +47,8 @@ describe("leistungskarten.module.css folgt BEWEGUNG und GRAFIK", () => {
   const LK = lies("src/leistungskarten.module.css");
   const farbe = (name: string) => `${name} ${BEWEGUNG.karteMs}ms ${BEWEGUNG.kurveKarte}`;
   const KIPPEN_BASIS = "perspective(900px) rotateX(var(--lk-rx)) rotateY(var(--lk-ry))";
+  /** Der Abschnitt „Wann“ der Leitlinie eines Bausteins als ein Text. */
+  const leitlinie = (name: string) => BAUSTEINE.find((b) => b.name === name)?.wann.join(" ") ?? "";
 
   it("Übergänge: Farben 320 ms, Kippen 380 ms, mit der Kurve der Karte", () => {
     expect(werte(LK, ".karte").transition).toBe(
@@ -70,6 +73,15 @@ describe("leistungskarten.module.css folgt BEWEGUNG und GRAFIK", () => {
     );
   });
 
+  it("die Leitlinie nennt die Breite, ab der die breite Karte flacher kippt", () => {
+    const rahmen = regeln(LK).find((r) => r.selektoren.includes(".rasterBreit .an"))?.rahmen ?? "";
+    const ab = /min-width: (\d+)px/.exec(rahmen)?.[1];
+    expect(ab, rahmen).toBeDefined();
+    const flacher = leitlinie("Leistungskarten").match(/breite Karte kippt[^.]*/g) ?? [];
+    expect(flacher).toHaveLength(1);
+    expect(flacher[0]).toContain(`ab ${ab} px Breite`);
+  });
+
   it.each([
     [".f", GRAFIK.strich],
     [".l", GRAFIK.strich],
@@ -81,8 +93,17 @@ describe("leistungskarten.module.css folgt BEWEGUNG und GRAFIK", () => {
     expect(werte(LK, `.buehne :global(${klasse})`)["stroke-width"]).toBe(String(staerke));
   });
 
-  it("Sucher-Ecken der Bühne tragen die Linienfarbe der Karte", () => {
-    expect(werte(LK, ".buehne > span")["border-color"]).toBe("var(--lk-line)");
+  it("Sucher-Ecken der Bühne tragen die Linienfarbe der Karte, über die Stellschraube --ecken-farbe", () => {
+    expect(werte(LK, ".karte")["--ecken-farbe"]).toBe("var(--lk-line)");
+    // Die Ecken sind in SucherEcken span-Elemente; die Karte greift nicht in diesen Aufbau.
+    expect(regeln(LK).flatMap((r) => r.selektoren).filter((s) => /\bspan\b/.test(s))).toEqual([]);
+  });
+
+  it("SucherEcken lesen --ecken-farbe vor der Flächenrolle, die Leitlinie beschreibt sie", () => {
+    expect(werte(lies("src/werkplan.module.css"), ".eckeOl").border).toBe(
+      "0 solid var(--ecken-farbe, var(--wp-stark, currentColor))",
+    );
+    expect(leitlinie("SucherEcken")).toContain("`--ecken-farbe`");
   });
 
   it("Leuchtsaum der Lime-Teile", () => {
