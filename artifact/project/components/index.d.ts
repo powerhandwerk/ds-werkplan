@@ -1417,6 +1417,7 @@ export declare const deck: (o: number) => string;
 export declare const maskiere: (wert: string) => string;
 /** Textanker im SVG. */
 export type Anker = "start" | "middle" | "end";
+declare const TEXT_ZEICHENBREITE = 4.4;
 /**
  * Zeichenwerkzeug, gebunden an ein Mess-Objekt (oder `null` beim normalen
  * Zeichnen). Jede Projektion erweitert beim Vermessen die Ausdehnung.

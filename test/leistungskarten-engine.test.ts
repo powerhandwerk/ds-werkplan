@@ -5,6 +5,7 @@ import {
   ebeneAusBild,
   naehere,
   ruheWert,
+  TEXT_ZEICHENBREITE,
   vermesse,
   werkzeug,
   zeichne,
@@ -56,7 +57,7 @@ describe("Vermessen und Ruhezustand", () => {
     const w = werkzeug(mess);
     const [x, y] = w.P(0, 0, 0);
     w.text([0, 0, 0], 0, 0, "Wärmepumpe", "lbl", "", anker);
-    const breite = "Wärmepumpe".length * 4.4;
+    const breite = "Wärmepumpe".length * TEXT_ZEICHENBREITE;
     expect(mess.x0).toBeCloseTo(x + links * breite, 5);
     expect(mess.x1).toBeCloseTo(x + rechts * breite, 5);
     // Oberlänge: der Text ragt über die Grundlinie hinaus.

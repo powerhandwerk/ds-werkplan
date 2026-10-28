@@ -117,9 +117,11 @@ export type Anker = "start" | "middle" | "end";
 // Beschriftung (`.lbl`) steht bei etwa 8 Einheiten Schriftgröße; 4,4 je Zeichen
 // ist die mittlere Laufweite, die Versalien ragen etwa 6 über die Grundlinie,
 // Unterlängen etwa 3 darunter.
-const TEXT_ZEICHENBREITE = 4.4;
+export const TEXT_ZEICHENBREITE = 4.4;
 const TEXT_OBERLAENGE = 6;
 const TEXT_UNTERLAENGE = 3;
+/** Anteil der Textbreite links vom Ankerpunkt. */
+const LINKS_VOM_ANKER: Record<Anker, number> = { start: 0, middle: 0.5, end: 1 };
 
 /**
  * Zeichenwerkzeug, gebunden an ein Mess-Objekt (oder `null` beim normalen
@@ -163,16 +165,17 @@ export function werkzeug(mess: Mess | null) {
   const text = (p: Pkt, dx: number, dy: number, inhalt: string, cls: string, stil = "", anker: Anker = "start") => {
     pruefeStil("text", stil);
     const q = P(p[0], p[1], p[2]);
+    const x = q[0] + dx;
+    const y = q[1] + dy;
     if (mess) {
       const breite = inhalt.length * TEXT_ZEICHENBREITE;
-      const x = q[0] + dx;
-      const links = anker === "start" ? x : anker === "middle" ? x - breite / 2 : x - breite;
+      const links = x - breite * LINKS_VOM_ANKER[anker];
       mess.x0 = Math.min(mess.x0, links);
       mess.x1 = Math.max(mess.x1, links + breite);
-      mess.y0 = Math.min(mess.y0, q[1] + dy - TEXT_OBERLAENGE);
-      mess.y1 = Math.max(mess.y1, q[1] + dy + TEXT_UNTERLAENGE);
+      mess.y0 = Math.min(mess.y0, y - TEXT_OBERLAENGE);
+      mess.y1 = Math.max(mess.y1, y + TEXT_UNTERLAENGE);
     }
-    return `<text class="${maskiere(cls)}" ${stil} x="${(q[0] + dx).toFixed(1)}" y="${(q[1] + dy).toFixed(1)}" text-anchor="${maskiere(anker)}">${maskiere(inhalt)}</text>`;
+    return `<text class="${maskiere(cls)}" ${stil} x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${maskiere(anker)}">${maskiere(inhalt)}</text>`;
   };
   return { P, pfad, flaeche, linie, staub, text };
 }
