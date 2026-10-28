@@ -124,3 +124,24 @@ describe("text() escapt, was ins SVG geht", () => {
     expect(messen("<<<<")).toBe(messen("abcd"));
   });
 });
+
+describe("flaeche() und linie() behandeln Klasse und stil wie text()", () => {
+  const ANGRIFF = "<img src=x onerror=alert(1)>";
+  const { flaeche, linie } = werkzeug(null);
+  const PUNKTE = [[0, 0, 0], [10, 0, 0], [10, 10, 0]];
+
+  for (const [name, zeichne] of [["flaeche", flaeche], ["linie", linie]] as const) {
+    it(`${name}: Klasse wird escapt`, () => {
+      const markup = zeichne(PUNKTE, ANGRIFF);
+      expect(markup).not.toContain("<img");
+      expect(markup).toContain('class="&lt;img src=x onerror=alert(1)&gt;"');
+    });
+
+    it(`${name}: stil nimmt deck() an und weist alles andere ab`, () => {
+      expect(zeichne(PUNKTE, "f", deck(0.5))).toContain('style="opacity:0.500"');
+      for (const boese of ["onmouseover=alert(1)", 'onload="alert(1)"', `style="x"><img src=x onerror=alert(1)>`]) {
+        expect(() => zeichne(PUNKTE, "f", boese), boese).toThrow(/stil/);
+      }
+    });
+  }
+});

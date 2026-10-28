@@ -8,9 +8,10 @@
  * den projizierten Proben-Punkten, ohne Layout (Layout-Messungen liefern in
  * versteckten Rahmen und beim Server-Rendern nur Nullen).
  *
- * Neu gegenüber der Website: `text()` escapt Inhalt und Klasse und lässt als
- * `stil` nur harmlose Attribute zu. Im Paket sind Szenen Eingabe des
- * Verbrauchers, und das Markup geht per `innerHTML` ins SVG.
+ * Neu gegenüber der Website: `flaeche()`, `linie()` und `text()` escapen die
+ * Klasse (`text()` auch den Inhalt) und lassen als `stil` nur harmlose
+ * Attribute zu. Im Paket sind Szenen Eingabe des Verbrauchers, und das Markup
+ * geht per `innerHTML` ins SVG.
  */
 
 export const C = Math.cos(Math.PI / 6);
@@ -89,13 +90,20 @@ const ZEICHEN: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;"
 export const maskiere = (wert: string) => wert.replace(/[&<>"']/g, (z) => ZEICHEN[z]);
 
 /**
- * Erlaubter Attribut-Zusatz an `text()`: nur `style`, `opacity` und
+ * Erlaubter Attribut-Zusatz an `flaeche()`, `linie()` und `text()`: nur `style`, `opacity` und
  * `transform`, je in doppelten Anführungszeichen, ohne `< > & '` im Wert
  * (so liefert ihn `deck()`). Alles andere, etwa ein `on…`-Attribut, wird
  * abgewiesen: Escapen allein machte ein Attribut ohne Anführungszeichen nicht
  * harmlos.
  */
 const STIL_ERLAUBT = /^(?:\s*(?:style|opacity|transform)="[^"<>&']*")*\s*$/;
+
+/** Wirft, wenn `stil` mehr als die erlaubten Attribute trägt. */
+function pruefeStil(art: string, stil: string): void {
+  if (!STIL_ERLAUBT.test(stil)) {
+    throw new Error(`${art}(): stil nur als style-, opacity- oder transform-Attribut, erhalten: ${JSON.stringify(stil)}`);
+  }
+}
 
 /** Textanker im SVG. */
 export type Anker = "start" | "middle" | "end";
@@ -120,8 +128,13 @@ export function werkzeug(mess: Mess | null) {
     return q[0].toFixed(2) + " " + q[1].toFixed(2);
   };
   const pfad = (arr: readonly Pkt[], zu: boolean) => "M " + arr.map(fmt).join(" L ") + (zu ? " Z" : "");
-  const flaeche = (arr: readonly Pkt[], cls: string, stil = "") => `<path class="${cls}" ${stil} d="${pfad(arr, true)}"/>`;
-  const linie = (arr: readonly Pkt[], cls: string, stil = "") => `<path class="${cls}" ${stil} d="${pfad(arr, false)}"/>`;
+  /** Pfad mit escapter Klasse; `stil` wie bei `text()` nur harmlose Attribute. */
+  const pfadElement = (art: string, arr: readonly Pkt[], cls: string, stil: string, zu: boolean) => {
+    pruefeStil(art, stil);
+    return `<path class="${maskiere(cls)}" ${stil} d="${pfad(arr, zu)}"/>`;
+  };
+  const flaeche = (arr: readonly Pkt[], cls: string, stil = "") => pfadElement("flaeche", arr, cls, stil, true);
+  const linie = (arr: readonly Pkt[], cls: string, stil = "") => pfadElement("linie", arr, cls, stil, false);
   const staub = (liste: readonly Pkt[]) =>
     liste
       .map((p) => {
@@ -135,9 +148,7 @@ export function werkzeug(mess: Mess | null) {
    * Attribute wie aus `deck()` und wirft sonst einen Fehler.
    */
   const text = (p: Pkt, dx: number, dy: number, inhalt: string, cls: string, stil = "", anker: Anker = "start") => {
-    if (!STIL_ERLAUBT.test(stil)) {
-      throw new Error(`text(): stil nur als style-, opacity- oder transform-Attribut, erhalten: ${JSON.stringify(stil)}`);
-    }
+    pruefeStil("text", stil);
     const q = P(p[0], p[1], p[2]);
     if (mess) {
       const breite = inhalt.length * 4.4;

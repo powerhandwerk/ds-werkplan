@@ -9,7 +9,7 @@ Portal und die Website aus einer Quelle. Entscheidung und Pläne: ADR-261 sowie
 Das Paket kommt als Git-Abhängigkeit mit fester Version, ohne Registry:
 
 ```json
-"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.0.0"
+"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.1.0"
 ```
 
 Es liefert TypeScript, TSX und CSS ohne eigenen Build. Next.js übersetzt es mit:
@@ -63,8 +63,74 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
 - **Bausteine der Kundenseite:** Reiter mit Handy-Menü, Kapitelleiste, Ziffernfelder
   für Codes, Kopieren-Knopf, Eingabefeld. Texte kommen als Props mit Standardwert in
   Sie-Form.
+- **Grafik:** zwei animierte Stile für Erklärgrafiken. Stil A, die Leistungskarte
+  (`Leistungskarten`, Engine, Formen-Helfer, Beispiele `profil` und `sanierung`).
+  Stil B, die Iso-Szene (Iso-Kern nach iso-glow, `IsoKnoten`, Iso-Palette, Ablauf
+  `IsoSzene`, Beispiel `explosionProfil`). Regeln im Markenbuch, Abschnitt „Bild und
+  Grafik“.
 - **Schriften und Marken:** `fonts/` (Big Shoulders Display, Hanken Grotesk, Barlow Semi
   Condensed, je mit OFL-Lizenztext), `assets/` (Logo hell und dunkel, Standort-Pin).
+
+## Grafik
+
+Beide Stile rendern im Server-HTML den Ruhezustand und bewegen sich erst im Client. In
+Next.js gilt dabei: Die Seite (Server-Komponente) reicht nur serialisierbare Daten
+weiter. Funktionen überqueren die Grenze zwischen Server und Client nicht.
+
+**Stil A, Leistungskarte.** Szenen sind Funktionen. Das Szenen-Register liegt deshalb
+in einem eigenen Client-Modul, als feste Modulkonstante:
+
+```tsx
+// app/leistungen/LeistungsRaster.tsx
+"use client";
+
+import { Leistungskarten } from "@powerhandwerk/ds-werkplan/Leistungskarten";
+import { LEISTUNGSKARTEN_BEISPIELE } from "@powerhandwerk/ds-werkplan/leistungskarten-beispiele";
+import type { LeistungsKarte } from "@powerhandwerk/ds-werkplan/leistungskarten-engine";
+
+const SZENEN = { ...LEISTUNGSKARTEN_BEISPIELE /*, eigene Szenen */ };
+
+export function LeistungsRaster({ karten }: { karten: readonly LeistungsKarte[] }) {
+  return <Leistungskarten karten={karten} szenen={SZENEN} untergrund="papier" />;
+}
+```
+
+```tsx
+// app/leistungen/page.tsx (Server-Komponente): nur Daten
+import { LEISTUNGSKARTEN_MUSTER } from "@powerhandwerk/ds-werkplan/leistungskarten-beispiele";
+import { LeistungsRaster } from "./LeistungsRaster";
+
+export default function Seite() {
+  return <LeistungsRaster karten={LEISTUNGSKARTEN_MUSTER} />;
+}
+```
+
+Eigene Szenen zeichnen mit dem Werkzeug der Engine und den Formen-Helfern
+(`leistungskarten-formen`); Text kommt nur über `w.text()` ins Bild.
+
+**Stil B, Iso-Szene.** Die Server-Komponente rechnet die Zeichnung und reicht sie als
+`zeichnung` an `IsoSzene`. `idPraefix` muss je Seite eindeutig sein, sonst teilen sich
+zwei Zeichnungen ihre Filter:
+
+```tsx
+// Server-Komponente
+import { IsoSzene } from "@powerhandwerk/ds-werkplan/IsoSzene";
+import { EXPLOSION_STUFEN, explosionProfil } from "@powerhandwerk/ds-werkplan/explosion";
+
+export function Profilgrafik() {
+  const zeichnung = explosionProfil({ idPraefix: "profil-" });
+  return (
+    <IsoSzene
+      zeichnung={zeichnung}
+      stufen={EXPLOSION_STUFEN}
+      beschreibung="Ein Profil in vier Bauteilen, die nacheinander einrasten."
+    />
+  );
+}
+```
+
+Rechnet ein Client die Zeichnung, liefert `useSvgPraefix()` (`@powerhandwerk/ds-werkplan/useSvgPraefix`)
+das Präfix.
 
 ## Regeln
 
@@ -102,4 +168,6 @@ Versionen sind Git-Tags. Ein Tag wird nie verschoben, ein Fix bekommt einen neue
 ## Lizenz
 
 Alle Rechte vorbehalten, KETESO GmbH (`LICENSE`). Die Schriften unter `fonts/` stehen
-unter der SIL Open Font License 1.1, die Lizenztexte liegen daneben.
+unter der SIL Open Font License 1.1, die Lizenztexte liegen daneben. Iso-Kern
+(`src/iso.ts`) und Explosionszeichnung (`src/explosion.ts`) beruhen auf iso-glow und
+stehen unter der MIT-Lizenz (`LICENSE-iso-glow.txt`).
