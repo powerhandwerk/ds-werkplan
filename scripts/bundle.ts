@@ -47,11 +47,15 @@ const WERKPLAN_CSS = join(WURZEL, "src/werkplan.module.css");
 
 /* ---- Namen aus src/index.ts ------------------------------------------- */
 
-/** Ein Export aus src/index.ts: Name, Modul (Eintrag unter `exports`) und ob er nur ein Typ ist. */
+/**
+ * Ein Export aus src/index.ts: Name im Paket, Modul (Eintrag unter `exports`),
+ * ob er nur ein Typ ist, und der Name im Modul (bei `x as y` ist das `x`).
+ */
 export interface IndexExport {
   name: string;
   modul: string;
   typ: boolean;
+  quelle: string;
 }
 
 /** Der eine Parser für src/index.ts: alle Exporte in ihrer Reihenfolge, Typen eingeschlossen. */
@@ -59,8 +63,11 @@ export function indexExporte(indexQuelle: string): IndexExport[] {
   const exporte: IndexExport[] = [];
   for (const block of indexQuelle.matchAll(/export\s*\{([^}]*)\}\s*from\s*"\.\/([^"]+)"/g)) {
     for (const roh of block[1].split(",")) {
-      const name = roh.trim();
-      if (name !== "") exporte.push({ name: name.replace(/^type\s+/, ""), modul: block[2], typ: name.startsWith("type ") });
+      const eintrag = roh.trim();
+      if (eintrag === "") continue;
+      const typ = eintrag.startsWith("type ");
+      const [quelle, name = quelle] = eintrag.replace(/^type\s+/, "").split(/\s+as\s+/);
+      exporte.push({ name, modul: block[2], typ, quelle });
     }
   }
   return exporte;
@@ -185,7 +192,8 @@ function typenZusammenfuehren(verzeichnis: string, indexQuelle: string): string 
   const exporte = indexExporte(indexQuelle);
   const reihenfolge = [...new Set(exporte.map((e) => e.modul))];
   const vorhanden = new Set(readdirSync(verzeichnis).filter((d) => d.endsWith(".d.ts")).map((d) => d.slice(0, -5)));
-  const exportiert = new Set(exporte.map((e) => e.name));
+  // Umbenannte Exporte (`x as y`): `x` bleibt in der Datei ohne `export`, darunter steht `export { x as y }`.
+  const exportiert = new Set(exporte.filter((e) => e.quelle === e.name).map((e) => e.name));
 
   const standardImporte = new Map<string, string>();
   const benannteImporte = new Map<string, Set<string>>();
@@ -216,7 +224,9 @@ function typenZusammenfuehren(verzeichnis: string, indexQuelle: string): string 
       /^export (declare (?:function|const|let|class|enum)|interface|type|declare namespace) ([A-Za-z0-9_]+)/gm,
       (zeile, art: string, name: string) => (exportiert.has(name) ? zeile : `${art} ${name}`),
     );
-    teile.push(`/* ---- ${modul} ---- */\n\n${text.trim()}\n`);
+    const umbenannt = exporte.filter((e) => e.modul === modul && e.quelle !== e.name);
+    const zusatz = umbenannt.map((e) => `\nexport { ${e.typ ? "type " : ""}${e.quelle} as ${e.name} };`).join("");
+    teile.push(`/* ---- ${modul} ---- */\n\n${text.trim()}\n${zusatz}`);
   }
 
   // Ein `import type` darf nicht Standard und Benanntes zugleich tragen: je eine Zeile.

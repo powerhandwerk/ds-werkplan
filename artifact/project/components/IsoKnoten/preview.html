@@ -1,0 +1,63 @@
+<!-- @dsCard group="Grafik" height=300 -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>IsoKnoten</title>
+<style>
+  html, body { margin: 0; }
+  body { background: var(--wp-grund); color: var(--wp-text); font-family: var(--font-body); }
+  .flaeche { box-sizing: border-box; min-height: 100vh; padding: var(--abstand-24); }
+  .beide { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); min-height: 100vh; }
+  .titel { margin: 0 0 var(--abstand-16); }
+  .stapel { display: flex; flex-direction: column; gap: var(--abstand-16); }
+  .stapel.eng { gap: var(--abstand-8); }
+  .schmal { max-width: 560px; }
+  .reihe { display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-12); }
+  .mitIcon { display: inline-flex; align-items: center; gap: var(--abstand-8); }
+  .schwebe { position: relative; transform: translateZ(0); height: 128px; }
+  .sucher { padding: var(--abstand-24); max-width: 560px; }
+  .seitenluft { padding-inline: var(--abstand-8); }
+  .kopfzeile { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-32); }
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); }
+  .icon { margin: 0; display: flex; align-items: center; gap: var(--abstand-12); padding: var(--abstand-12) var(--abstand-8); border-bottom: 1px solid var(--wp-linie-fein); color: var(--wp-stark); }
+  .icon figcaption { font-family: var(--font-werkplan); font-weight: 600; font-size: var(--grad-12); letter-spacing: 0.06em; color: var(--wp-text); }
+</style>
+</head>
+<body>
+<div id="wurzel"></div>
+<script>
+(function () {
+  "use strict";
+  var h = React.createElement;
+  var D = window.DsWerkplan;
+  var W = D.WERKPLAN_KLASSEN;
+  var BS = D.WERKPLAN_BAUSTEINE_SEITE;
+  function nichts() {}
+  var E = D.isoElement;
+  var KERN = D.isoKernel({ rot: -0.35, cx: 60, cy: 60 });
+  KERN.merk([0, 0, 0], [120, 0, 0], [0, 120, 0], [120, 120, 0]);
+  var KNOTEN = [
+    E("style", null, ".face { fill: var(--ink-900); stroke: var(--ink-500); stroke-width: 1; } .top { fill: var(--ink-800); } .platte { fill: none; stroke: var(--ink-500); stroke-dasharray: 3 3; } .an { fill: var(--lime); }"),
+    KERN.auf(KERN.TOP(0, 0, 0), E("rect", { className: "platte", width: 120, height: 120 })),
+    KERN.box(30, 30, 0, 60, 60, 44),
+    KERN.auf(KERN.TOP(50, 50, 44), E("rect", { className: "an", width: 20, height: 20 }))
+  ];
+  var RAHMEN = KERN.bbox(8);
+  function Beispiel() {
+    return h("figure", { className: "stapel eng" },
+      h("svg", { viewBox: RAHMEN.viewBox, width: 280, role: "img", "aria-label": "Quader mit Lime-Fläche auf einer Grundplatte" },
+        h(D.IsoKnoten, { knoten: KNOTEN })),
+      h("figcaption", { className: W.beschriftung }, "Grundplatte und Quader aus dem Iso-Kern."));
+  }
+
+  function Flaeche(p) {
+    return h("div", { className: [p.klasse, W.seite, BS, "flaeche"].join(" ") },
+      p.titel ? h("p", { className: W.beschriftung + " titel" }, p.titel) : null,
+      h(Beispiel, { u: p.u, nacht: p.u === "nacht" }));
+  }
+  ReactDOM.createRoot(document.getElementById("wurzel")).render(h(Flaeche, { klasse: W.nacht, u: "nacht" }));
+})();
+</script>
+</body>
+</html>

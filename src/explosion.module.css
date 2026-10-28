@@ -1,0 +1,270 @@
+/*
+ * Zustände der Explosionszeichnung (Stil B, Iso-Szene). Die Zeichnung rechnet
+ * explosion.ts; hier stehen Farben und Zustände. Port aus powerhandwerk-website,
+ * components/werkplan/befundgrafik.module.css (keteso 923a5c4).
+ *
+ * Farben nur aus den Tokens über die Iso-Palette (isopalette.module.css),
+ * Abstufungen per color-mix (ab Safari 16.2; relative Farbsyntax bewusst
+ * nicht). Mehrere Lime-Elemente sind gewollt: Was leuchtet, ist „an“.
+ *
+ * Zustände am SVG (setzt IsoSzene):
+ *   data-stand  0 bis 4   so viele Teile sind eingerastet und leuchten
+ *   data-fokus  1 bis 4   färbt nur Ballon und Fassung einer Position;
+ *                         eingerastet wird allein über data-stand
+ *
+ * Filter nur über die CSS-Variablen --f-bp-soft und --f-bp-bloom, die
+ * explosion.ts mit dem Präfix des Verbrauchers als `stil` liefert; nie eine
+ * feste ID im CSS. --ex und --ey (Auszug eines Teils) setzt die Zeichnung
+ * je Teil inline.
+ *
+ * Klassen der Zeichnung heißen wie in der Vorlage (face, teil, t1 …), damit
+ * Geometrie und CSS dieselben Namen tragen; die Geometrie bildet sie über
+ * dieses Modul ab.
+ */
+
+/* ---------- Zeichnung ---------- */
+
+/* Grundpalette (--accent, --line, --body …) aus isopalette.module.css. */
+.bp {
+  /* Vorlage: Ink-950 mit 35 % Schwarz (L 0,11); dunkler als Ink-950 gibt die Rampe nicht her. */
+  --fassung: var(--ink-950);
+  /* Standardwerte; die Zeichnung setzt Filter und Auszug inline. */
+  --f-bp-soft: none;
+  --f-bp-bloom: none;
+  --ex: 0px;
+  --ey: 0px;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Linien bleiben 1 px breit, egal wie groß die Zeichnung steht. */
+.bp * {
+  vector-effect: non-scaling-stroke;
+}
+
+.bp text {
+  font-family: var(--font-werkplan), var(--font-body);
+}
+
+.bp .face {
+  fill: var(--body);
+  stroke: var(--line);
+  stroke-linejoin: round;
+}
+
+.bp .face.top {
+  fill: var(--deck);
+}
+
+.bp .face.recess {
+  fill: var(--recess);
+}
+
+.bp .detail {
+  fill: none;
+  stroke: var(--detail);
+}
+
+.bp .halo {
+  fill: var(--accent);
+  opacity: 0;
+  filter: var(--f-bp-bloom);
+  transition: opacity 0.6s;
+}
+
+.bp .kopf-name {
+  fill: var(--ink-hi);
+  font-weight: 700;
+  transition: fill 0.5s;
+}
+
+.bp .kopf-kat {
+  fill: var(--ink);
+}
+
+.bp .kopf-glyph {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  transition: stroke 0.5s;
+}
+
+.bp .fassung {
+  fill: var(--fassung);
+  stroke: var(--line);
+  stroke-dasharray: 3 2.5;
+}
+
+.bp .fassung-nr {
+  fill: var(--line);
+  font-weight: 600;
+}
+
+.bp .fuehrung {
+  fill: none;
+  stroke: var(--line);
+  stroke-dasharray: 2 3;
+  transition: opacity 0.5s;
+}
+
+.bp .teil {
+  transform: translate(var(--ex), var(--ey));
+  transition: transform 0.85s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.bp .teil .face {
+  transition:
+    fill 0.45s,
+    stroke 0.45s;
+}
+
+.bp .teil-zeichen {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.45s;
+}
+
+.bp .teil-linie {
+  fill: none;
+  stroke: var(--line);
+  transition: stroke 0.45s;
+}
+
+.bp .teil-feld,
+.bp .teil-knopf {
+  fill: var(--recess);
+  stroke: var(--line);
+  transition:
+    fill 0.45s,
+    stroke 0.45s;
+}
+
+.bp .teil-punkt {
+  fill: var(--line);
+}
+
+.bp .teil-stern {
+  fill: var(--detail);
+  transition: fill 0.45s;
+}
+
+.bp .teil-text {
+  fill: var(--ink-hi);
+  font-weight: 600;
+}
+
+.bp .teil-text.leise {
+  fill: var(--ink);
+  font-weight: 400;
+}
+
+.bp .ballon-linie {
+  fill: none;
+  stroke: var(--ink);
+}
+
+.bp .ballon-kreis {
+  fill: var(--body);
+  stroke: var(--ink);
+  transition:
+    fill 0.3s,
+    stroke 0.3s;
+}
+
+.bp .ballon-nr {
+  fill: var(--ink-hi);
+  font-weight: 600;
+  transition: fill 0.3s;
+}
+
+/* ---------- eingerastet und an ---------- */
+
+.bp[data-stand="1"] .t1,
+.bp[data-stand="2"] :is(.t1, .t2),
+.bp[data-stand="3"] :is(.t1, .t2, .t3),
+.bp[data-stand="4"] .teil {
+  transform: none;
+  filter: var(--f-bp-soft);
+}
+
+.bp[data-stand="1"] .fu1,
+.bp[data-stand="2"] :is(.fu1, .fu2),
+.bp[data-stand="3"] :is(.fu1, .fu2, .fu3),
+.bp[data-stand="4"] .fuehrung {
+  opacity: 0;
+}
+
+.bp[data-stand="1"] .t1 .face,
+.bp[data-stand="2"] :is(.t1, .t2) .face,
+.bp[data-stand="3"] :is(.t1, .t2, .t3) .face,
+.bp[data-stand="4"] .teil .face {
+  fill: var(--glass-on);
+  stroke: var(--accent);
+}
+
+.bp[data-stand="1"] .t1 :is(.teil-zeichen, .teil-linie),
+.bp[data-stand="2"] :is(.t1, .t2) :is(.teil-zeichen, .teil-linie),
+.bp[data-stand="3"] :is(.t1, .t2, .t3) :is(.teil-zeichen, .teil-linie),
+.bp[data-stand="4"] .teil :is(.teil-zeichen, .teil-linie) {
+  stroke: var(--accent-hi);
+}
+
+.bp:is([data-stand="3"], [data-stand="4"]) .teil-stern {
+  fill: var(--accent);
+}
+
+.bp[data-stand="4"] :is(.teil-feld, .teil-knopf) {
+  fill: color-mix(in oklch, var(--accent) 30%, var(--glass));
+  stroke: var(--accent);
+}
+
+/* ---------- Fokus: die Zeile in der Bildmitte oder unter dem Zeiger ---------- */
+
+.bp[data-fokus="1"] .b1 .ballon-kreis,
+.bp[data-fokus="2"] .b2 .ballon-kreis,
+.bp[data-fokus="3"] .b3 .ballon-kreis,
+.bp[data-fokus="4"] .b4 .ballon-kreis {
+  fill: var(--accent);
+  stroke: var(--accent-hi);
+}
+
+.bp[data-fokus="1"] .b1 .ballon-nr,
+.bp[data-fokus="2"] .b2 .ballon-nr,
+.bp[data-fokus="3"] .b3 .ballon-nr,
+.bp[data-fokus="4"] .b4 .ballon-nr {
+  fill: var(--glass);
+}
+
+.bp[data-fokus="1"] .f1,
+.bp[data-fokus="2"] .f2,
+.bp[data-fokus="3"] .f3,
+.bp[data-fokus="4"] .f4 {
+  stroke: var(--accent);
+  stroke-dasharray: none;
+}
+
+/* ---------- vollständig ---------- */
+
+.bp[data-stand="4"] .tafel-halo {
+  opacity: 0.22;
+}
+
+.bp[data-stand="4"] .kopf-name {
+  fill: var(--accent-hi);
+}
+
+.bp[data-stand="4"] .kopf-glyph {
+  stroke: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp * {
+    transition: none !important;
+  }
+}

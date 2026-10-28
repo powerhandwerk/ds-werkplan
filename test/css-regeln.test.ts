@@ -26,6 +26,18 @@ describe("Variablen", () => {
     expect(fehlt).toEqual([]);
   });
 
+  it("nur werkplan.module.css setzt Flächenrollen --wp-*", () => {
+    const fremd: string[] = [];
+    for (const pfad of MODULE.filter((p) => p !== "src/werkplan.module.css")) {
+      for (const regel of regeln(lies(pfad))) {
+        for (const name of regel.deklarationen.keys()) {
+          if (name.startsWith("--wp-")) fremd.push(`${pfad}: ${regel.selektoren.join(", ")} ${name}`);
+        }
+      }
+    }
+    expect(fremd).toEqual([]);
+  });
+
   it("die Flächenrollen --wp-* stehen nie auf :root", () => {
     expect(lies("src/tokens.css")).not.toMatch(/--wp-/);
     for (const pfad of cssDateien()) {

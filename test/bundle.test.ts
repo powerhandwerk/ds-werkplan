@@ -5,7 +5,7 @@
 // Baustein einmal. Dass das Bündel aktuell ist, prüft der Workflow `check`
 // (`bun run bundle` und `git diff --exit-code`).
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -71,6 +71,15 @@ describe("Bündel als Text", () => {
     expect(namen.length).toBeGreaterThan(0);
     expect(namen.some(istIcon)).toBe(false);
     expect(kopf).toBe(kopfZeile(kopfBausteine(indexQuelle)));
+  });
+});
+
+describe("Lizenz von iso-glow", () => {
+  it("steht im Bündel oder als LICENSE-iso-glow.txt unter artifact/project/", () => {
+    const imBuendel = /iso-glow/i.test(buendel) && buendel.includes("MIT");
+    const alsDatei = existsSync(WURZEL + "artifact/project/LICENSE-iso-glow.txt");
+    expect(imBuendel || alsDatei).toBe(true);
+    if (alsDatei) expect(lies("artifact/project/LICENSE-iso-glow.txt")).toBe(lies("LICENSE-iso-glow.txt"));
   });
 });
 
@@ -181,4 +190,19 @@ const PROPS: Record<string, Record<string, unknown>> = {
   ZiffernFelder: { ziffern: ["1", "2", "", "", "", ""], aendern: nichts, fehlerId: null, fokusAnlass: 0 },
   KopierenKnopf: { wert: "ABC-123" },
   Eingabefeld: { label: "Name", name: "name" },
+  // Grafik: Daten aus dem Bündel selbst, darum als Getter (das Bündel lädt erst in beforeAll).
+  get Leistungskarten() {
+    const D = fenster.DsWerkplan;
+    return { karten: D.LEISTUNGSKARTEN_MUSTER, szenen: D.LEISTUNGSKARTEN_BEISPIELE, untergrund: "papier" };
+  },
+  get IsoSzene() {
+    const D = fenster.DsWerkplan;
+    const zeichnung = (D.explosionProfil as (e: { idPraefix: string }) => unknown)({ idPraefix: "test-" });
+    return { zeichnung, stufen: D.EXPLOSION_STUFEN, beschreibung: "Explosionszeichnung eines Profils" };
+  },
+  get IsoKnoten() {
+    // Der Knotenbaum bringt sein <svg> mit, weil der Test in ein <div> rendert.
+    const element = fenster.DsWerkplan.isoElement as (tag: string, attrs: Record<string, unknown>, ...kinder: unknown[]) => unknown;
+    return { knoten: element("svg", { viewBox: "0 0 10 10" }, element("rect", { width: 10, height: 10 })) };
+  },
 };

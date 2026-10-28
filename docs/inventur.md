@@ -298,3 +298,76 @@ Beim Aufräumen des Pakets bewusst nicht gelöst (Paket soll in Phase 1 nur hebe
    ziehen, wenn die Website den Reiter nutzt.
 5. Flächen- und Typo-Klassen aus `src/tokens.ts` erzeugen statt per Test abgleichen.
 
+
+## 10. Grafik
+
+Zwei Grafikstile seit Version 2.1.0 (ADR-262, Flo 28.10.2026). Quelle ist die Website
+in `powerhandwerk/keteso` auf `origin/main` 923a5c4, gelesen per `git show`; jede
+portierte Datei nennt ihre Herkunft im Kopf.
+
+### Herkunft je Datei
+
+| Paket | Website (`powerhandwerk-website/…`) |
+|---|---|
+| `src/leistungskarten-engine.ts` | `lib/werkplan/leistungskarten/engine.ts`, Typ `LeistungsKarte` aus `typen.ts` |
+| `src/leistungskarten-formen.ts` | Formen-Helfer aus `lib/werkplan/leistungskarten/szenen.ts` |
+| `src/leistungskarten-beispiele.ts` | zwei Szenen aus `lib/werkplan/leistungskarten/szenen.ts` |
+| `src/Leistungskarten.tsx` | `components/werkplan/Leistungskarten.tsx` |
+| `src/leistungskarten.module.css` | `components/werkplan/leistungskarten.module.css` |
+| `src/iso.ts` | `lib/grafiken/iso.ts` |
+| `src/IsoKnoten.tsx` | `components/werkplan/IsoKnoten.tsx` |
+| `src/useSvgPraefix.ts` | `components/werkplan/useSvgPraefix.ts` |
+| `src/isopalette.module.css` | `components/werkplan/isopalette.module.css` |
+| `src/IsoSzene.tsx` | Ablauf aus `components/werkplan/BefundGrafik.tsx` |
+| `src/explosion.ts` | `lib/grafiken/befund-profil.ts` |
+| `src/explosion.module.css` | `components/werkplan/befundgrafik.module.css` |
+| `LICENSE-iso-glow.txt` | `lib/grafiken/LICENSE-iso-glow.txt` |
+
+### Abweichungen: Leistungskarte (Stil A)
+
+- Karte eckig: `border-radius: var(--rund-eckig)` statt 10 px (Markenbuch: Kästen sind
+  eckig).
+- Grade über Tokens: Titel `--grad-32` statt 30 px (Flo, 28.10.2026), Nummer
+  `--grad-12`, Teaser `--grad-16`; am Handy (bis 639,98 px) Titel `--grad-24`, Teaser
+  `--grad-14`.
+- SVG-Beschriftung `0.4375em` und `0.5625em` gegen `font-size: var(--grad-16)` an
+  `.buehne` statt 7 und 9 Einheiten.
+- Kurve als Literal `cubic-bezier(0.22, 0.61, 0.36, 1)` statt `var(--ease-marker)`.
+- Kein Schatten an der aktiven Karte (Markenbuch); sie hebt sich nur über `transform`.
+- `.karte` setzt `--wp-stark` und `--wp-gedaempft` lokal auf ihre animierten Farben,
+  damit Sucher-Ecken und Beschriftung mitwechseln. Die Karte ist eine eigene kleine
+  Fläche; die Rollen stehen nie auf `:root`.
+- Nicht übernommen: Zwölfer-Raster (4 Spalten ab 1200 px, 2 am Handy, unter 340 px ohne
+  Teaser), Handy-Rundung 8 px, die Seiten-Klassen `.abschnitt`, `.kopfBlock`,
+  `.hinweis`, `.hebel*` und `.messpunkt`, die 15 übrigen Szenen, `schraeg`, `muenze`
+  und `UHR_RUHE_SSR`. Seiten-Klassen und Szenen-Register liegen beim Verbraucher.
+- `googleProfil` heißt `profil`. Musterkarten „Profil pflegen“ und „Dach sanieren“
+  (`LEISTUNGSKARTEN_MUSTER`).
+- `LeistungsKarte.szene` ist `string` statt `SzenenId`; `SZENEN_IDS` und `istSzenenId`
+  entfallen. Das Register kommt als Prop, geprüft wird per `hasOwnProperty` statt `in`.
+- Die Engine escapt Text und Klassen (`maskiere`); als Attribut-Zusatz (`stil`) nimmt
+  sie an `flaeche()`, `linie()` und `text()` nur `style`, `opacity` und `transform`,
+  sonst wirft sie einen Fehler.
+- Ohne `matchMedia` gilt das Gerät als ohne Hover. Ohne Hover und ohne
+  `IntersectionObserver` steht die Szene sofort auf `t: 1`.
+
+### Abweichungen: Iso-Szene (Stil B)
+
+- `--detail` aus `var(--ink-700)` wird `color-mix(in oklch, var(--ink-800) 55%,
+  var(--ink-600))` (Ersatz für Ink-700, Abschnitt 3).
+- `--recess` (Ink-950 mit 12 % Schwarz) und `--fassung` (Ink-950 mit 35 % Schwarz) sind
+  jetzt `var(--ink-950)`. Fassung und Vertiefung stehen so dunkel wie der Nacht-Grund
+  und heben sich nur über die gestrichelte Linie ab; die Rampe hat nichts Dunkleres.
+- `--glass-on` (29 % Lime in Schwarz) ist jetzt `color-mix(in oklab, var(--lime) 12%,
+  var(--ink-950))`. oklab hält den Farbton, oklch wanderte nach Ocker.
+- Raster, Sticky-Bühne, die Grenze 1080 px und die Scroll-Kopplung an die Stückliste
+  entfallen. Neu ist `.buehne` in `isopalette.module.css` (Zeichnung und Unterschrift
+  untereinander, Abstand 12 px).
+- `--f-bp-soft` und `--f-bp-bloom` stehen im Standard auf `none`, `--ex` und `--ey`
+  auf `0px`.
+- `befundProfil` heißt `explosionProfil`, die Typen `ExplosionEingabe` und
+  `ExplosionProfil`. `K` kommt aus dem eigenen CSS-Modul, die Rückgabe trägt `klasse`
+  und `stil`. Alle Texte sind optional mit Standard (`EXPLOSION_MUSTER`: „Betrieb
+  Muster“, „Gewerk · Musterstadt“, „4,8“, „38“), `EXPLOSION_STUFEN = 4`.
+- `IsoZeichnung` ist `{ viewBox, knoten, klasse?, stil? }`: nur serialisierbare Daten,
+  damit eine Server-Komponente die Zeichnung rechnen kann.

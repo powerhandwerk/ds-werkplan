@@ -28,3 +28,18 @@ export function zeige(element: ReactNode): HTMLElement {
 export function dom(markup: string): Document {
   return new DOMParser().parseFromString(`<body>${markup}</body>`, "text/html");
 }
+
+/** Eigene Wurzel für Tests, die neu rendern oder selbst abbauen. */
+export function eigeneWurzel() {
+  const host = document.createElement("div");
+  document.body.appendChild(host);
+  const root = createRoot(host);
+  return {
+    host,
+    zeige: (element: ReactNode) => act(() => root.render(element)),
+    abbauen: () => {
+      act(() => root.unmount());
+      host.remove();
+    },
+  };
+}
