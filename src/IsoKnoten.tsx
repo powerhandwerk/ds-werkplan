@@ -1,6 +1,9 @@
 import { createElement, Fragment, type ReactNode } from "react";
 import type { Knoten } from "./iso";
 
+type KnotenEingabe = Knoten | string | readonly (Knoten | string)[];
+type Slots = Readonly<Record<string, ReactNode>>;
+
 /**
  * Renderer für den Knotenbaum aus `iso.ts`: macht aus `{ tag, attrs, kids }`
  * rekursiv SVG-Elemente. Server-tauglich, kein Zustand.
@@ -15,15 +18,15 @@ export function IsoKnoten({
   knoten,
   slots,
 }: {
-  knoten: Knoten | string | readonly (Knoten | string)[];
-  slots?: Readonly<Record<string, ReactNode>>;
+  knoten: KnotenEingabe;
+  slots?: Slots;
 }) {
   return <>{baue(knoten, slots)}</>;
 }
 
 function baue(
-  knoten: Knoten | string | readonly (Knoten | string)[],
-  slots: Readonly<Record<string, ReactNode>> | undefined,
+  knoten: KnotenEingabe,
+  slots: Slots | undefined,
 ): ReactNode {
   if (typeof knoten === "string") return knoten;
   if (Array.isArray(knoten)) {

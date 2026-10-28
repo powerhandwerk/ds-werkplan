@@ -275,9 +275,10 @@ export function textDateien(): Map<string, string> {
     dateien.set(`components/${name}/preview.html`, vorschau(b));
   }
   for (const b of BAUSTEINE) if (!dateien.has(`components/${b.name}/README.md`)) throw new Error(`${b.name} steht nicht im Kopf von bundle.js`);
+  const icons = iconNamen(indexTs);
   for (const karte of SCHAUKARTEN) {
     if (tabelle.has(karte.name)) throw new Error(`Schaukarte ${karte.name} heißt wie ein Baustein`);
-    dateien.set(`components/${karte.name}/preview.html`, schaukarteVorschau(karte, iconNamen(indexTs)));
+    dateien.set(`components/${karte.name}/preview.html`, schaukarteVorschau(karte, icons));
   }
   return dateien;
 }

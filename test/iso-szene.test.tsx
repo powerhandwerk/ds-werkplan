@@ -1,5 +1,4 @@
 import { act } from "react";
-import { createRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { EXPLOSION_STUFEN, explosionProfil } from "../src/explosion";
@@ -7,7 +6,7 @@ import { IsoSzene, type IsoZeichnung } from "../src/IsoSzene";
 import pal from "../src/isopalette.module.css";
 import { GRAFIK } from "../src/tokens";
 import { attrappeBeobachter, attrappeGeraet } from "./browser-attrappen";
-import { zeige } from "./dom-hilfe";
+import { eigeneWurzel, zeige } from "./dom-hilfe";
 
 // IsoSzene: Server-HTML im Ausgangszustand, Ablauf in Stufen ab dem
 // Sichtanteil GRAFIK.isoStartAnteil im Takt GRAFIK.isoTaktMs, sofort alles bei
@@ -93,25 +92,21 @@ describe("IsoSzene", () => {
     vi.useFakeTimers();
     attrappeGeraet();
     const attrappe = attrappeBeobachter();
-    const host = document.createElement("div");
-    document.body.appendChild(host);
-    const root = createRoot(host);
-    act(() => root.render(szene()));
-    act(() => attrappe.melde(host.querySelector("svg")!, 1));
+    const erste = eigeneWurzel();
+    erste.zeige(szene());
+    act(() => attrappe.melde(erste.host.querySelector("svg")!, 1));
     act(() => vi.advanceTimersByTime(GRAFIK.isoTaktMs));
     expect(vi.getTimerCount()).toBeGreaterThan(0);
 
-    act(() => root.unmount());
+    erste.abbauen();
     expect(vi.getTimerCount()).toBe(0);
-    host.remove();
 
     // Auch vor dem Start: Unmount trennt den Beobachter.
-    const host2 = document.createElement("div");
-    const root2 = createRoot(host2);
-    act(() => root2.render(szene()));
+    const zweite = eigeneWurzel();
+    zweite.zeige(szene());
     const zweiter = attrappe.beobachter.at(-1)!;
     expect(zweiter.getrennt).toBe(false);
-    act(() => root2.unmount());
+    zweite.abbauen();
     expect(zweiter.getrennt).toBe(true);
   });
 });

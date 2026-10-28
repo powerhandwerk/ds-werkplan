@@ -6,7 +6,7 @@
 // unbekanntem Szenen-Schlüssel fallen weg, und ohne matchMedia oder
 // IntersectionObserver steht die Geste sofort am Ende.
 
-import { useEffect, useId, useRef, type MutableRefObject } from "react";
+import { useEffect, useId, useRef, type RefObject } from "react";
 
 import css from "./leistungskarten.module.css";
 import {
@@ -61,7 +61,7 @@ type KartenZustand = {
  * ohne Hover, wenn der Browser keinen IntersectionObserver kennt.
  */
 function useLeistungskartenMotor(
-  kartenRefs: MutableRefObject<(HTMLElement | null)[]>,
+  kartenRefs: RefObject<(HTMLElement | null)[]>,
   szenen: SzenenRegister,
   szenenSchluessel: string,
   aktivKlasse: string,
@@ -75,6 +75,9 @@ function useLeistungskartenMotor(
     // Endzustand ohne Anlauf: reduzierte Bewegung, oder ohne Hover keine Möglichkeit, die Geste auszulösen.
     const sofortEnde = reduziert || (ohneHover && !mitBeobachter);
     const aufraeumen: (() => void)[] = [];
+    // Listener und Schrift-Rückruf hängen an diesem Signal; abort() räumt beide ab.
+    const abbruch = new AbortController();
+    const { signal } = abbruch;
 
     const karten: KartenZustand[] = [];
     for (const el of kartenRefs.current) {
@@ -188,18 +191,11 @@ function useLeistungskartenMotor(
         if (sichtbar) aktiv(k, true);
       };
       const unfokus = () => aktiv(k, false);
-      k.el.addEventListener("pointerenter", betreten);
-      k.el.addEventListener("pointerleave", verlassen);
-      k.el.addEventListener("pointermove", bewegen);
-      k.el.addEventListener("focus", fokus);
-      k.el.addEventListener("blur", unfokus);
-      aufraeumen.push(() => {
-        k.el.removeEventListener("pointerenter", betreten);
-        k.el.removeEventListener("pointerleave", verlassen);
-        k.el.removeEventListener("pointermove", bewegen);
-        k.el.removeEventListener("focus", fokus);
-        k.el.removeEventListener("blur", unfokus);
-      });
+      k.el.addEventListener("pointerenter", betreten, { signal });
+      k.el.addEventListener("pointerleave", verlassen, { signal });
+      k.el.addEventListener("pointermove", bewegen, { signal });
+      k.el.addEventListener("focus", fokus, { signal });
+      k.el.addEventListener("blur", unfokus, { signal });
     }
 
     // Handy: kein Hover. Die Geste läuft einmal ab, sobald die Karte zum
@@ -236,32 +232,31 @@ function useLeistungskartenMotor(
       aufraeumen.push(() => io.disconnect());
     }
 
-    // Ruhezustand der Uhr jede Minute nachziehen
-    const uhr = window.setInterval(() => {
-      for (const k of karten) {
-        const client = k.szene.ruheImClient?.();
-        if (client && !k.el.classList.contains(aktivKlasse) && !k.spielt) {
-          Object.assign(k.ziel, client);
-          wecken();
+    // Ruhezustand der Uhr jede Minute nachziehen, nur wenn eine Szene ihn im Client setzt
+    if (karten.some((k) => k.szene.ruheImClient)) {
+      const uhr = window.setInterval(() => {
+        for (const k of karten) {
+          const client = k.szene.ruheImClient?.();
+          if (client && !k.el.classList.contains(aktivKlasse) && !k.spielt) {
+            Object.assign(k.ziel, client);
+            wecken();
+          }
         }
-      }
-    }, UHR_TAKT);
-    aufraeumen.push(() => window.clearInterval(uhr));
+      }, UHR_TAKT);
+      aufraeumen.push(() => window.clearInterval(uhr));
+    }
 
     // Beschriftungen nach dem Laden der Schrift neu setzen
-    let aktuell = true;
     document.fonts?.ready.then(() => {
-      if (!aktuell) return;
+      if (signal.aborted) return;
       for (const k of karten) k.neu = true;
       wecken();
-    });
-    aufraeumen.push(() => {
-      aktuell = false;
     });
 
     return () => {
       cancelAnimationFrame(rahmen);
       laeuft = false;
+      abbruch.abort();
       for (const f of aufraeumen) f();
     };
   }, [kartenRefs, szenen, szenenSchluessel, aktivKlasse]);
@@ -301,7 +296,7 @@ export function Leistungskarten({
   const variante = breit ? css.rasterBreit : gueltig.length === VIER ? css.rasterVier : undefined;
 
   return (
-    <ul className={variante ? `${css.raster} ${variante}` : css.raster}>
+    <ul className={[css.raster, variante].filter(Boolean).join(" ")}>
       {gueltig.map((k, i) => {
         const szene = szenen[k.szene];
         // Index statt Szene: Zwei Karten dürfen dieselbe Szene zeigen.

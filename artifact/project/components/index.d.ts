@@ -1353,14 +1353,19 @@ type Mess = {
     y0: number;
     y1: number;
 };
-/** Parameter einer Szene. `t` ist der Fortschritt der Geste (0 Ruhe, 1 Ende). */
+/**
+ * Parameter einer Szene. `t` ist der Fortschritt der Geste (0 Ruhe, 1 Ende).
+ *
+ * `px`, `mx` und `ang` belegt der Motor, sobald die Szene sie in `ruhe` oder
+ * `start` führt: Er setzt sie aus dem Zeiger, auf dem Handy fährt er sie selbst.
+ */
 export type SzenenWert = {
     t: number;
-    /** Zeigerposition waagerecht, 0 bis 1. */
+    /** Zeigerposition waagerecht, 0 bis 1. Handy: läuft beim Abspielen von 0 auf 0,85. */
     px?: number;
-    /** Zeigerposition waagerecht, -1 bis 1. */
+    /** Zeigerposition waagerecht, -1 bis 1. Handy: steht beim Abspielen auf 0,35. */
     mx?: number;
-    /** Zeigerwinkel einer Uhr (siehe `uhrWinkel` in leistungskarten-formen). */
+    /** Zeigerwinkel einer Uhr (siehe `uhrWinkel` in leistungskarten-formen); in Ruhe die Uhrzeit per `ruheImClient`. */
     ang?: number;
     /** Laufende Uhr in Sekunden für Szenen mit Dauerbewegung. */
     clk?: number;
@@ -1645,6 +1650,8 @@ export declare function isoKernel({ rot, cx, cy, K, }?: {
 export { h as isoElement };
 /* ---- IsoKnoten ---- */
 
+type KnotenEingabe = Knoten | string | readonly (Knoten | string)[];
+type Slots = Readonly<Record<string, ReactNode>>;
 /**
  * Renderer für den Knotenbaum aus `iso.ts`: macht aus `{ tag, attrs, kids }`
  * rekursiv SVG-Elemente. Server-tauglich, kein Zustand.
@@ -1656,8 +1663,8 @@ export { h as isoElement };
  * CSS-Variablen reicht er unverändert durch.
  */
 export declare function IsoKnoten({ knoten, slots, }: {
-    knoten: Knoten | string | readonly (Knoten | string)[];
-    slots?: Readonly<Record<string, ReactNode>>;
+    knoten: KnotenEingabe;
+    slots?: Slots;
 }): import("react").JSX.Element;
 
 /* ---- useSvgPraefix ---- */

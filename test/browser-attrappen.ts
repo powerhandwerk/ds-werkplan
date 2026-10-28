@@ -24,7 +24,7 @@ function setzeGlobal(name: string, wert: unknown): void {
 }
 
 /** matchMedia: `trifft(abfrage)` entscheidet, ob eine Media-Abfrage zutrifft. */
-export function attrappeMatchMedia(trifft: (abfrage: string) => boolean): void {
+function attrappeMatchMedia(trifft: (abfrage: string) => boolean): void {
   setzeGlobal("matchMedia", (abfrage: string) => ({
     matches: trifft(abfrage),
     media: abfrage,

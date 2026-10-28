@@ -1208,16 +1208,11 @@ function Beispiel() {
   },
 ];
 
-/** Schaukarte ohne README und ohne Export des Bündels; Vorschau wie bei einem Baustein. */
-export interface Schaukarte {
-  /** Ordnername unter components/, nur Buchstaben. */
-  name: string;
-  gruppe: Gruppe;
-  hoehe: number;
-  untertitel?: string;
-  flaeche: Flaeche;
-  skript: string;
-}
+/**
+ * Schaukarte ohne README und ohne Export des Bündels; Vorschau wie bei einem
+ * Baustein. `name` ist der Ordnername unter components/, nur Buchstaben.
+ */
+export type Schaukarte = Pick<Baustein, "name" | "gruppe" | "hoehe" | "untertitel" | "flaeche" | "skript">;
 
 /**
  * Schaukarten (`page`). Im Skript steht zusätzlich `NAMEN`, alle `*Icon`-

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { Knoten } from "./iso";
 import { IsoKnoten } from "./IsoKnoten";
 import pal from "./isopalette.module.css";
@@ -51,8 +51,11 @@ export function IsoSzene({ zeichnung, stufen, beschreibung, unterschrift, fokus,
   useEffect(() => {
     const svg = svgRef.current;
     if (!svg) return;
-    const reduziert = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-    if (reduziert || typeof window.matchMedia !== "function" || typeof IntersectionObserver === "undefined") {
+    if (
+      typeof window.matchMedia !== "function" ||
+      typeof IntersectionObserver === "undefined" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       setStand(stufen);
       return;
     }
@@ -74,11 +77,14 @@ export function IsoSzene({ zeichnung, stufen, beschreibung, unterschrift, fokus,
     };
   }, [stufen]);
 
+  // Die Stufenwechsel ändern nur `data-stand`; der Knotenbaum bleibt stehen.
+  const inhalt = useMemo(() => <IsoKnoten knoten={zeichnung.knoten} />, [zeichnung.knoten]);
+
   return (
-    <figure className={className ? `${pal.buehne} ${className}` : pal.buehne}>
+    <figure className={[pal.buehne, className].filter(Boolean).join(" ")}>
       <svg
         ref={svgRef}
-        className={zeichnung.klasse ? `${pal.palette} ${zeichnung.klasse}` : pal.palette}
+        className={[pal.palette, zeichnung.klasse].filter(Boolean).join(" ")}
         viewBox={zeichnung.viewBox}
         data-stand={Math.min(stand, stufen)}
         data-fokus={fokus}
@@ -86,7 +92,7 @@ export function IsoSzene({ zeichnung, stufen, beschreibung, unterschrift, fokus,
         aria-label={beschreibung}
         style={zeichnung.stil as CSSProperties | undefined}
       >
-        <IsoKnoten knoten={zeichnung.knoten} />
+        {inhalt}
       </svg>
       {unterschrift ? <figcaption className={w.beschriftung}>{unterschrift}</figcaption> : null}
     </figure>

@@ -279,11 +279,8 @@
   .rasterVier {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-}
-
-/* In der Vierer-Reihe haben die Titel ein oder zwei Zeilen; ohne feste Höhe
-   stünden die Bühnen der vier Karten nicht auf einer Linie. */
-@media (min-width: 1100px) {
+  /* In der Vierer-Reihe haben die Titel ein oder zwei Zeilen; ohne feste Höhe
+     stünden die Bühnen der vier Karten nicht auf einer Linie. */
   .rasterVier .titel {
     min-height: 2em;
   }
@@ -330,9 +327,6 @@
 @media (max-width: 639.98px) {
   .titel {
     font-size: var(--grad-24);
-  }
-  .nr {
-    font-size: var(--grad-12);
   }
   .teaser {
     font-size: var(--grad-14);

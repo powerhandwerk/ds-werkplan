@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
-import { act, type ReactNode } from "react";
-import { createRoot } from "react-dom/client";
+import { act } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Leistungskarten } from "../src/Leistungskarten";
@@ -9,7 +8,7 @@ import { ruheWert, vermesse, zeichne, zeichneRuhe, type LeistungsKarte, type Sze
 import css from "../src/leistungskarten.module.css";
 import { GRAFIK } from "../src/tokens";
 import { attrappeBeobachter, attrappeGeraet } from "./browser-attrappen";
-import { dom, zeige } from "./dom-hilfe";
+import { dom, eigeneWurzel, zeige } from "./dom-hilfe";
 
 // Komponente von Stil A: Server-HTML im Ruhezustand, Motor im Client mit
 // Hover, Fokus, Handy-Geste und reduzierter Bewegung; robust ohne matchMedia
@@ -42,21 +41,6 @@ function erwarteFast(ist: string | undefined, soll: string) {
   const a = ist?.match(zahl)?.map(Number) ?? [];
   const b = soll.match(zahl)?.map(Number) ?? [];
   expect(a.every((v, i) => Math.abs(v - b[i]) <= 0.5)).toBe(true);
-}
-
-/** Eigene Wurzel, wenn ein Test neu rendern oder selbst abbauen muss. */
-function wurzel() {
-  const host = document.createElement("div");
-  document.body.appendChild(host);
-  const root = createRoot(host);
-  return {
-    host,
-    zeige: (element: ReactNode) => act(() => root.render(element)),
-    abbauen: () => {
-      act(() => root.unmount());
-      host.remove();
-    },
-  };
 }
 
 /** Ein paar Bilder des rAF-Takts laufen lassen. */
@@ -200,7 +184,7 @@ describe("Motor im Client", () => {
   it("Unmount trennt den Beobachter", () => {
     attrappeGeraet({ hover: false });
     const io = attrappeBeobachter();
-    const w = wurzel();
+    const w = eigeneWurzel();
     w.zeige(<Leistungskarten karten={KARTEN} szenen={SZENEN} untergrund="papier" />);
     expect(io.beobachter).toHaveLength(1);
     expect(io.beobachter[0].ziele.size).toBe(KARTEN.length);
@@ -242,7 +226,7 @@ describe("Schnittstelle", () => {
   it("ein neues szenen-Objekt wird übernommen", () => {
     attrappeGeraet({ reduziert: true });
     const karten: LeistungsKarte[] = [{ szene: "x", titel: "X", teaser: "x" }];
-    const w = wurzel();
+    const w = eigeneWurzel();
     w.zeige(<Leistungskarten karten={karten} szenen={{ x: SZENEN.profil }} untergrund="papier" />);
     takt();
     expect(bild(w.host, "x")).toBe(ende(SZENEN.profil));
