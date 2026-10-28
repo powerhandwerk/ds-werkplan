@@ -107,7 +107,7 @@ Rundungen stehen nie in Prozent: Prozent macht aus einem breiten Chip eine Ellip
 
 ## Bewegung
 
-Übergänge dauern 180 ms mit `ease-out`, das Licht der Lichtkante läuft in 3,2 s um. `prefers-reduced-motion` schaltet beides ab und zeigt sofort den Endzustand.
+Übergänge dauern 180 ms mit `ease-out`, das Licht der Lichtkante läuft in 3,2 s um. Die Leistungskarte wechselt ihre Farben in 320 ms und kippt in 380 ms, beides mit `cubic-bezier(0.22, 0.61, 0.36, 1)`. Die Iso-Szene rastet Stufe für Stufe im Takt von 700 ms ein. `prefers-reduced-motion` schaltet alles ab und zeigt sofort den Endzustand.
 
 ## Hervorhebung
 
@@ -121,6 +121,7 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Fakten:** `Plankopf` ist das Schriftfeld einer Seite (Werte in normaler Schreibung), `Schriftfeld` die Fassung der Arbeitsfläche (Werte in Versalien); `Messwert` mit `Besch` und Quelle als Kennzahl; `Massbalken`, `Masskette` und `Fortschritt` für Anteile und Stände; `BlattZeile` für die Zeile über einem Blatt.
 - **Rahmen und Ordnung:** `Kasten` mit `SucherEcken`, `Info`, `Schritte`, `Liste` mit `Gruppe` und `Listenzeile`, `Filterleiste`, `DetailRahmen`.
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
+- **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern. Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
 
 Bausteine bekommen Texte und Daten als Props. Sie holen nichts aus einer App und hängen nicht an Next.js.
 
@@ -132,14 +133,17 @@ Strich-Icons, überwiegend aus Lucide: Strich 2 px im 24er-Raster (`ICON_STRICH`
 
 Das Logo wird nie nachgezeichnet. `logo-powerhandwerk.svg` steht auf Papier, `logo-powerhandwerk-dark.svg` ist die freigestellte Fassung für Nacht. Die Bildmarke `pin.svg` steht überall, wo powerhandwerk selbst auf einer Karte oder in einer Grafik auftaucht, statt einer Kartennadel. Die Pille hinter „handwerk“ ist die Form, aus der Marker, Lichtkante und `rund-pille-faktor` abgeleitet sind.
 
-## Bild und Iso-Grafik
+## Bild und Grafik
 
-Fotos sind erlaubt. KI-Bilder erscheinen nur gekennzeichnet. Erklärgrafiken sind isometrische Zeichnungen in zwei Familien:
+Fotos sind erlaubt. KI-Bilder erscheinen nur gekennzeichnet. Erklärgrafiken sind isometrische Zeichnungen in zwei Stilen. Beide nutzen echte Isometrie mit 30° und Farben nur aus Ink und Lime. Neue Figuren entstehen mit den Werkzeugen des Pakets, nie freihand: die Leistungskarte mit Engine und Formen-Helfern, die Iso-Szene mit dem Iso-Kern.
 
-- **Nacht-Szene:** leuchtende Haarlinien auf dunkler Grundplatte für Abläufe. Lime heißt „eingeschaltet“, mehrere Teile dürfen leuchten.
-- **Papier-Figur:** dunkler Strich auf Papier mit gestrichelter Bodenellipse und Sucher-Ecken für Leistungskarten und Aufzählungen. Genau ein Element ist Lime.
+**Stil A, Leistungskarte** (`Leistungskarten`). Eine Figur auf einer Bühne erklärt eine Leistung oder ein Angebot, auf Papier oder auf Nacht. Sie zeichnet mit festen Strichen (Kontur 1,1, feine Linien 0,7, Lime-Linie 1,6), steht auf einer gestrichelten Bodenellipse mit Staubpunkten, und die Bühne trägt die Sucher-Ecken. Jede Figur hat genau eine Geste: Der Wert `t` läuft von 0 (Ruhe) bis 1 (Geste fertig). Lime bildet ein Motiv je Figur; es darf aus mehreren Flächen bestehen, wenn sie zusammen eine Aussage tragen, etwa fünf Sterne. Aktiv wird eine Karte bei Hover, bei Tastaturfokus und am Handy einmal beim Hineinscrollen. Dann kippt sie leicht, hebt sich ohne Schatten an und wechselt auf die Gegenfläche. Karten sind eckig. Vier Karten stehen 2 × 2 oder in einer Reihe, nie drei und eine einzelne darunter.
 
-Beide nutzen echte Isometrie mit 30°, Haarlinien gleicher Stärke in jeder Größe und Farben nur aus Ink und Lime. Musterinhalte tragen „Muster, keine echten Daten.“ Reduzierte Bewegung zeigt sofort den Endzustand, jede Grafik hat eine Beschreibung für Vorleser. Die Iso-Bausteine kommen mit der ersten Website-Seite, die sie nutzt, in dieses System.
+**Stil B, Iso-Szene** (`IsoSzene`). Eine Szene auf Nacht erklärt einen Ablauf oder zerlegt ein Ding in seine Teile, etwa die Explosionszeichnung eines Profils. Sie steht auf einer Grundplatte und zeichnet mit Haarlinien aus der Iso-Palette. Lime heißt „eingeschaltet“ und darf an mehreren Teilen leuchten. Die Szene läuft in Stufen: Beim Hineinscrollen rastet Stufe für Stufe ein.
+
+Für beide Stile gilt: Musterinhalte tragen „Muster, keine echten Daten.“ Reduzierte Bewegung zeigt sofort das Ende, ohne JavaScript steht der Ruhezustand im HTML, jede Grafik hat eine Beschreibung für Vorleser. Text in einer Figur läuft durch `text()` der Engine oder als Kind durch React, nie als rohes Markup.
+
+**Produktzeichen.** Die Paket-Embleme (`AboIcon`) für Standard, Profi und Platzhirsch gehören zur selben Familie. Ein Abo-Name steht nie ohne sein Emblem.
 
 ## Nicht verwenden
 
@@ -148,6 +152,7 @@ Beide nutzen echte Isometrie mit 30°, Haarlinien gleicher Stärke in jeder Grö
 - Die Lime-Pille als Hauptknopf. Die Hauptaktion ist die Lichtkante.
 - Karten mit großem Radius und Schatten. Kästen sind eckig.
 - Neue Ink-Stufen, Farbverläufe hinter Titeln, Rundungen in Prozent.
+- Erklärgrafiken freihand oder als fertiges Bild statt mit Engine und Iso-Kern.
 
 ## Im Code
 
