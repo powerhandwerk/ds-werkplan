@@ -202,15 +202,22 @@ function useLeistungskartenMotor(
       });
     }
 
-    // Handy: kein Hover, die Geste läuft einmal ab, sobald die Karte im Bild ist
+    // Handy: kein Hover. Die Geste läuft einmal ab, sobald die Karte zum
+    // Sichtanteil `GRAFIK.handyStartAnteil` im Bild ist, und bleibt stehen, bis
+    // die Karte ganz aus dem Bild ist. `isIntersecting` allein gilt schon ab dem
+    // ersten sichtbaren Pixel und auf beiden Seiten der Schwelle.
     if (ohneHover && !sofortEnde) {
       const io = new IntersectionObserver(
         (eintraege) => {
           for (const e of eintraege) {
             const k = karten.find((x) => x.el === e.target);
             if (!k) continue;
-            k.spielt = e.isIntersecting;
-            if (e.isIntersecting) {
+            if (!e.isIntersecting) {
+              if (!k.spielt) continue;
+              k.spielt = false;
+              Object.assign(k.ziel, ruhe(k));
+            } else if (!k.spielt && e.intersectionRatio >= GRAFIK.handyStartAnteil) {
+              k.spielt = true;
               Object.assign(k.wert, k.szene.start());
               Object.assign(k.ziel, ruhe(k), { t: 1 });
               if ("mx" in k.ziel) k.ziel.mx = 0.35;
@@ -219,7 +226,7 @@ function useLeistungskartenMotor(
                 k.ziel.px = 0.85;
               }
               k.neu = true;
-            } else Object.assign(k.ziel, ruhe(k));
+            } else continue;
             wecken();
           }
         },
@@ -297,9 +304,10 @@ export function Leistungskarten({
     <ul className={variante ? `${css.raster} ${variante}` : css.raster}>
       {gueltig.map((k, i) => {
         const szene = szenen[k.szene];
-        const titelId = `${basisId}-${k.szene}`;
+        // Index statt Szene: Zwei Karten dürfen dieselbe Szene zeigen.
+        const titelId = `${basisId}-${i}`;
         return (
-          <li key={k.szene} className={css.eintrag}>
+          <li key={`${i}-${k.szene}`} className={css.eintrag}>
             <article
               ref={(el) => {
                 kartenRefs.current[i] = el;

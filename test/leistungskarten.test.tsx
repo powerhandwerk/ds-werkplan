@@ -164,6 +164,31 @@ describe("Motor im Client", () => {
     erwarteFast(bild(host, "profil"), ruhe(SZENEN.profil));
   });
 
+  it("Handy: unter dem Sichtanteil bleibt die Ruhe, über ihm läuft die Geste einmal, ganz draußen kommt die Ruhe", () => {
+    attrappeGeraet({ hover: false });
+    const io = attrappeBeobachter();
+    const host = zeige(<Leistungskarten karten={KARTEN} szenen={SZENEN} untergrund="papier" />);
+    const karte = host.querySelector('article[data-szene="profil"]');
+    if (!karte) throw new Error("Karte fehlt");
+    // Erster Rückruf beim Beobachten: Die Karte ist erst zu einem Drittel im Bild.
+    act(() => io.melde(karte, 0.3));
+    takt(5000);
+    expect(bild(host, "profil")).toBe(ruhe(SZENEN.profil));
+    act(() => io.melde(karte, GRAFIK.handyStartAnteil + 0.1));
+    takt(5000);
+    erwarteFast(bild(host, "profil"), ende(SZENEN.profil));
+    // Zurück unter die Schwelle, aber noch im Bild: kein Neustart, die Geste bleibt stehen.
+    act(() => io.melde(karte, 0.5));
+    takt(16);
+    erwarteFast(bild(host, "profil"), ende(SZENEN.profil));
+    act(() => io.melde(karte, GRAFIK.handyStartAnteil + 0.2));
+    takt(16);
+    erwarteFast(bild(host, "profil"), ende(SZENEN.profil));
+    act(() => io.melde(karte, 0));
+    takt(5000);
+    erwarteFast(bild(host, "profil"), ruhe(SZENEN.profil));
+  });
+
   it("der Sichtanteil der Handy-Geste ist GRAFIK.handyStartAnteil", () => {
     attrappeGeraet({ hover: false });
     const io = attrappeBeobachter();
@@ -194,6 +219,24 @@ describe("Schnittstelle", () => {
       zeige(<Leistungskarten karten={karten} szenen={SZENEN} untergrund="papier" />);
       takt();
     }).not.toThrow();
+  });
+
+  it("zwei Karten mit derselben Szene: eigene IDs, jeder Titel benennt seine Karte", () => {
+    const karten: LeistungsKarte[] = [
+      { szene: "profil", titel: "Erste", teaser: "a" },
+      { szene: "profil", titel: "Zweite", teaser: "b" },
+    ];
+    const doc = dom(renderToStaticMarkup(<Leistungskarten karten={karten} szenen={SZENEN} untergrund="papier" />));
+    const artikel = [...doc.querySelectorAll("article")];
+    expect(artikel).toHaveLength(2);
+    expect(new Set(artikel.map((a) => a.getAttribute("aria-labelledby"))).size).toBe(2);
+    expect(artikel.map((a) => doc.getElementById(a.getAttribute("aria-labelledby") ?? "")?.textContent)).toEqual(["Erste", "Zweite"]);
+    const fehler = vi.spyOn(console, "error").mockImplementation(() => {});
+    attrappeGeraet({ reduziert: true });
+    zeige(<Leistungskarten karten={karten} szenen={SZENEN} untergrund="papier" />);
+    const meldungen = fehler.mock.calls.map((aufruf) => String(aufruf[0]));
+    fehler.mockRestore();
+    expect(meldungen).toEqual([]);
   });
 
   it("ein neues szenen-Objekt wird übernommen", () => {
