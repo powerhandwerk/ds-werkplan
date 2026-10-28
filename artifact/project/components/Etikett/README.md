@@ -3,7 +3,7 @@ Das Etikett ist ein kleines Schild in Versalien für Stand und Art eines Eintrag
 ## Wann
 
 - `linie` mit Rahmen, `gestrichelt` mit gestricheltem Rahmen, `voll` als dunkle Fläche mit heller Schrift, `lead` als helle Lime-Fläche mit dunkler Schrift, `warn` in Warnfarbe, `still` leise.
-- Eine Hervorhebung auf Papier ist das Etikett „voll“.
+- Eine Hervorhebung auf Papier ist das Etikett `lead`: Lime als Fläche, die Schrift bleibt dunkel.
 - Die Warnfarben setzt `WERKPLAN_BAUSTEINE_SEITE` an der Seite; ohne sie gelten Rückfallwerte.
 
 ## Was der Verbraucher liefert

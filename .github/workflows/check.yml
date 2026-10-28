@@ -47,3 +47,5 @@ jobs:
           bun run bundle
           bun run artifact
           git diff --exit-code -- artifact/project/
+          # Neue, nicht eingecheckte Dateien (etwa eine kopierte Schrift) sieht git diff nicht.
+          test -z "$(git status --porcelain -- artifact/project/)"

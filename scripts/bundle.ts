@@ -104,7 +104,8 @@ const EINTRAG = "ds-werkplan:eintrag";
 
 // react und react-dom kommen aus den UMD-Skripten der Seite, die JSX-Laufzeit
 // aus dem Ersatzmodul; SVGs werden zu prozentkodierten Daten-URLs (`<` wird
-// `%3C`, kein `<` im Bündel). Der Eintrag legt die Klassen aus
+// `%3C`, so bringen die Bilder kein `</script` und kein `<!--` ins Bündel). Der
+// Eintrag legt die Klassen aus
 // werkplan.module.css dazu, damit die Vorschauen sie nicht raten müssen.
 const aufloeser: BunPlugin = {
   name: "ds-werkplan-lesefassung",
