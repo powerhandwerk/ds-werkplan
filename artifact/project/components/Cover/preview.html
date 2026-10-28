@@ -1,0 +1,52 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>DS Werkplan</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--wp-grund); color: var(--wp-stark); font-family: var(--font-body); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  /* Komposition im Feld rechts von x = 480, frei vom Namen */
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .tafel { fill: var(--wp-stark); }
+  .licht { fill: var(--lime); }
+  .weich { fill: var(--lime-soft); }
+  .ruhe { fill: var(--ink-400); }
+  .eckig { rx: var(--rund-eckig); }
+  .kreuz { stroke: var(--wp-grund); stroke-width: 1.5; stroke-linecap: square; }
+  .worte { position: absolute; left: var(--abstand-48); bottom: var(--abstand-48); max-width: 440px; }
+  .name { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 88px; line-height: 0.95; letter-spacing: 0.01em; color: var(--wp-stark); }
+  .zeile { margin: var(--abstand-12) 0 0; font-size: 14px; line-height: 20px; color: var(--wp-gedaempft); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  Blöcke     wp-stark 192×264 als Tafel über die Oberkante (Nacht auf Papier, Papier auf Nacht) · lime 192×96 als Logo-Pille · lime-soft 96×72 · ink-400 72×72, zusammen rund 28 % von 960×288
+  Anordnung  eine hohe Tafel mit Begleitern, alle Unterkanten auf einer Linie abstand-48 über dem Rand, Fugen abstand-24
+  Muster     Millimeterraster als Kreuze, aus „zwei Flächen mit Millimeterraster“: 21 Kreuze im Takt abstand-24, aus der Tafel geschnitten (wp-grund)
+  Maße       Seiten in Vielfachen von abstand-24; Ecken rund-eckig; Pille rx = rund-pille-faktor × 96 = 41,6
+-->
+<rect class="tafel eckig" x="48" y="-24" width="192" height="264"/>
+<rect class="licht" x="264" y="144" width="192" height="96" rx="41.6"/>
+<rect class="weich eckig" x="264" y="48" width="96" height="72"/>
+<rect class="ruhe eckig" x="384" y="48" width="72" height="72"/>
+<g class="kreuz">
+<path d="M68 168h8M72 164v8M92 168h8M96 164v8M116 168h8M120 164v8M140 168h8M144 164v8M164 168h8M168 164v8M188 168h8M192 164v8M212 168h8M216 164v8"/>
+<path d="M68 192h8M72 188v8M92 192h8M96 188v8M116 192h8M120 188v8M140 192h8M144 188v8M164 192h8M168 188v8M188 192h8M192 188v8M212 192h8M216 188v8"/>
+<path d="M68 216h8M72 212v8M92 216h8M96 212v8M116 216h8M120 212v8M140 216h8M144 212v8M164 216h8M168 212v8M188 216h8M192 212v8M212 216h8M216 212v8"/>
+</g>
+</svg>
+</div>
+<div class="worte">
+<h1 class="name">DS<br>Werkplan</h1>
+<p class="zeile">Gestaltung aus dem Bauplan: zwei Flächen, ein Licht.</p>
+</div>
+</div>
+</body>
+</html>
