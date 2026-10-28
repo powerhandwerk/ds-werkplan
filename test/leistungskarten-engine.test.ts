@@ -47,6 +47,23 @@ describe("Vermessen und Ruhezustand", () => {
     teile.forEach((v, i) => expect(v).toBeCloseTo(erwartet[i], 1));
   });
 
+  it.each([
+    ["start", 0, 1],
+    ["middle", -0.5, 0.5],
+    ["end", -1, 0],
+  ] as const)("text() mit Anker %s misst die Textbreite auf der richtigen Seite", (anker, links, rechts) => {
+    const mess: Mess = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
+    const w = werkzeug(mess);
+    const [x, y] = w.P(0, 0, 0);
+    w.text([0, 0, 0], 0, 0, "Wärmepumpe", "lbl", "", anker);
+    const breite = "Wärmepumpe".length * 4.4;
+    expect(mess.x0).toBeCloseTo(x + links * breite, 5);
+    expect(mess.x1).toBeCloseTo(x + rechts * breite, 5);
+    // Oberlänge: der Text ragt über die Grundlinie hinaus.
+    expect(mess.y0).toBeLessThan(y);
+    expect(mess.y1).toBeGreaterThan(y);
+  });
+
   it("zeichneRuhe ist deterministisch und gleich zeichne im Ruhewert", () => {
     expect(zeichneRuhe(PROBE)).toBe(zeichneRuhe(PROBE));
     expect(zeichneRuhe(PROBE)).toBe(zeichne(PROBE, ruheWert(PROBE)));

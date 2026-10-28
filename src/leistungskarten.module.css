@@ -56,9 +56,6 @@
 .karte {
   --lk-rx: 0deg;
   --lk-ry: 0deg;
-  /* gemeinsame Werkplan-Klassen (Sucher-Ecken, Beschriftung) folgen den Kartenfarben */
-  --wp-stark: var(--lk-line);
-  --wp-gedaempft: var(--lk-mut);
   position: relative;
   flex: 1;
   display: flex;
@@ -161,6 +158,11 @@
   position: relative;
   aspect-ratio: 1 / 0.92;
   font-size: var(--grad-16);
+}
+
+/* Sucher-Ecken folgen der animierten Kartenfarbe, ohne die Flächenrollen umzubiegen */
+.buehne > span {
+  border-color: var(--lk-line);
 }
 
 .buehne svg {

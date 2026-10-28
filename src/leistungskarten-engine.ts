@@ -113,6 +113,14 @@ function pruefeStil(art: string, stil: string): void {
 /** Textanker im SVG. */
 export type Anker = "start" | "middle" | "end";
 
+// Geschätzte Textmaße der Beschriftungen beim Vermessen, in Bildeinheiten. Die
+// Beschriftung (`.lbl`) steht bei etwa 8 Einheiten Schriftgröße; 4,4 je Zeichen
+// ist die mittlere Laufweite, die Versalien ragen etwa 6 über die Grundlinie,
+// Unterlängen etwa 3 darunter.
+const TEXT_ZEICHENBREITE = 4.4;
+const TEXT_OBERLAENGE = 6;
+const TEXT_UNTERLAENGE = 3;
+
 /**
  * Zeichenwerkzeug, gebunden an ein Mess-Objekt (oder `null` beim normalen
  * Zeichnen). Jede Projektion erweitert beim Vermessen die Ausdehnung.
@@ -156,9 +164,13 @@ export function werkzeug(mess: Mess | null) {
     pruefeStil("text", stil);
     const q = P(p[0], p[1], p[2]);
     if (mess) {
-      const breite = inhalt.length * 4.4;
-      mess.x1 = Math.max(mess.x1, q[0] + dx + (anker === "start" ? breite : breite / 2));
-      mess.y1 = Math.max(mess.y1, q[1] + dy + 3);
+      const breite = inhalt.length * TEXT_ZEICHENBREITE;
+      const x = q[0] + dx;
+      const links = anker === "start" ? x : anker === "middle" ? x - breite / 2 : x - breite;
+      mess.x0 = Math.min(mess.x0, links);
+      mess.x1 = Math.max(mess.x1, links + breite);
+      mess.y0 = Math.min(mess.y0, q[1] + dy - TEXT_OBERLAENGE);
+      mess.y1 = Math.max(mess.y1, q[1] + dy + TEXT_UNTERLAENGE);
     }
     return `<text class="${maskiere(cls)}" ${stil} x="${(q[0] + dx).toFixed(1)}" y="${(q[1] + dy).toFixed(1)}" text-anchor="${maskiere(anker)}">${maskiere(inhalt)}</text>`;
   };

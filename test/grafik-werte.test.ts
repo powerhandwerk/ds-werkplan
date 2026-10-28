@@ -81,6 +81,10 @@ describe("leistungskarten.module.css folgt BEWEGUNG und GRAFIK", () => {
     expect(werte(LK, `.buehne :global(${klasse})`)["stroke-width"]).toBe(String(staerke));
   });
 
+  it("Sucher-Ecken der Bühne tragen die Linienfarbe der Karte", () => {
+    expect(werte(LK, ".buehne > span")["border-color"]).toBe("var(--lk-line)");
+  });
+
   it("Leuchtsaum der Lime-Teile", () => {
     expect(werte(LK, ".buehne :global(.gl)").filter).toBe(`drop-shadow(0 0 ${GRAFIK.leuchtsaumPx}px var(--lk-glow))`);
   });

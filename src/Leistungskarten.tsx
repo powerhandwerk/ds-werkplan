@@ -2,9 +2,12 @@
 
 // Animierte Leistungskarten (Grafikstil A, ADR-262).
 // Port aus powerhandwerk-website, components/werkplan/Leistungskarten.tsx (keteso 923a5c4).
-// Neu gegenüber der Website: das Szenen-Register kommt als Prop, Karten mit
-// unbekanntem Szenen-Schlüssel fallen weg, und ohne matchMedia oder
-// IntersectionObserver steht die Geste sofort am Ende.
+// Neu gegenüber der Website: das Szenen-Register kommt als Prop, und Karten mit
+// unbekanntem Szenen-Schlüssel fallen weg. Bei reduzierter Bewegung steht die
+// Geste sofort am Ende. Ohne matchMedia gilt das Gerät als ohne Hover; ohne
+// Hover spielt die Geste, sobald die Karte zum Sichtanteil im Bild ist, und
+// fehlt dort der IntersectionObserver, steht sofort das Ende. Mit Hover bleibt
+// die Karte in Ruhe bis Hover oder Fokus.
 
 import { useEffect, useId, useRef, type RefObject } from "react";
 

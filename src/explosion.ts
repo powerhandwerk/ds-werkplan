@@ -46,7 +46,12 @@ export type ExplosionEingabe = {
   kategorie?: string;
   wertung?: string;
   anzahl?: string;
-  /** Vorsatz für Filter-IDs, damit zwei Zeichnungen auf einer Seite sich nicht stören. */
+  /**
+   * Vorsatz für Filter-IDs. Pflicht, sobald mehr als eine Zeichnung auf einer
+   * Seite steht, sonst teilen sich zwei Zeichnungen die Filter-IDs. Im Client
+   * per `useSvgPraefix`, auf dem Server ein fester, je Zeichnung eindeutiger
+   * Präfix.
+   */
   idPraefix?: string;
   /** Drehung der Platte in Grad; negativ dreht die Front zum Betrachter. */
   rot?: number;
