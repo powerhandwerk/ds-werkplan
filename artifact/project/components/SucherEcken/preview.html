@@ -1,0 +1,52 @@
+<!-- @dsCard group="Rahmen" height=176 -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>SucherEcken</title>
+<style>
+  html, body { margin: 0; }
+  body { background: var(--wp-grund); color: var(--wp-text); font-family: var(--font-body); }
+  .flaeche { box-sizing: border-box; min-height: 100vh; padding: var(--abstand-24); }
+  .beide { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); min-height: 100vh; }
+  .titel { margin: 0 0 var(--abstand-16); }
+  .stapel { display: flex; flex-direction: column; gap: var(--abstand-16); }
+  .stapel.eng { gap: var(--abstand-8); }
+  .schmal { max-width: 560px; }
+  .reihe { display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-12); }
+  .mitIcon { display: inline-flex; align-items: center; gap: var(--abstand-8); }
+  .schwebe { position: relative; transform: translateZ(0); height: 128px; }
+  .sucher { padding: var(--abstand-24); max-width: 560px; }
+  .seitenluft { padding-inline: var(--abstand-8); }
+  .kopfzeile { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-32); }
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); }
+  .icon { margin: 0; display: flex; align-items: center; gap: var(--abstand-12); padding: var(--abstand-12) var(--abstand-8); border-bottom: 1px solid var(--wp-linie-fein); color: var(--wp-stark); }
+  .icon figcaption { font-family: var(--font-werkplan); font-weight: 600; font-size: var(--grad-12); letter-spacing: 0.06em; color: var(--wp-text); }
+</style>
+</head>
+<body>
+<div id="wurzel"></div>
+<script>
+(function () {
+  "use strict";
+  var h = React.createElement;
+  var D = window.DsWerkplan;
+  var W = D.WERKPLAN_KLASSEN;
+  var BS = D.WERKPLAN_BAUSTEINE_SEITE;
+  function nichts() {}
+  function Beispiel() {
+    return h(D.SucherEcken, { className: "sucher" },
+      h("p", { className: W.beschriftung }, "Pos. 01 · Nächster Schritt"),
+      h("p", { className: W.text }, "Die Hauptkarte trägt die Sucher-Ecken."));
+  }
+
+  function Flaeche(p) {
+    return h("div", { className: [p.klasse, W.seite, BS, "flaeche"].join(" ") },
+      p.titel ? h("p", { className: W.beschriftung + " titel" }, p.titel) : null,
+      h(Beispiel, { u: p.u, nacht: p.u === "nacht" }));
+  }
+  ReactDOM.createRoot(document.getElementById("wurzel")).render(h("div", { className: [W.seite, BS, "flaeche"].join(" ") }, h(Beispiel, { u: "thema" })));
+})();
+</script>
+</body>
+</html>

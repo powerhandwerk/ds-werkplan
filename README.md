@@ -73,11 +73,26 @@ Kurz: Werte nur aus `src/tokens.ts`; Schriftgrößen und Rundungen nur über Tok
 Flächenrollen `--wp-*` nur in den Flächenklassen; Lime nie als Schrift auf hellem
 Grund.
 
+## Lesefassung in Claude
+
+Das Design-System in Claude zeigt dieses Paket als Lesefassung: Markenbuch, Tokens für
+Papier und Nacht, jeden Baustein mit Live-Vorschau und Leitlinie, Logos und Schriften:
+https://claude.ai/artifact/VEtPJU9f39nEtauqCZedqN
+
+Die Seite ist schreibgeschützt (`"editing": "code"`). Ihre Dateien liegen unter
+`artifact/project/` und entstehen aus dem Paket: `bun run erzeuge` (Tokens), `bun run
+bundle` (Bündel für React 18 als `window.DsWerkplan`), `bun run artifact` (`tokens.css`,
+Schriften, Logos, Vorschauen und Leitlinien). Markenbuch (`artifact/project/README.md`)
+und Cover sind von Hand geschrieben. Geändert wird nur im Paket, danach werden die
+Dateien neu veröffentlicht.
+
 ## Entwickeln
 
 ```bash
 bun install
 bun run erzeuge      # tokens.css, schriften.css und tokens.json aus src/tokens.ts
+bun run bundle       # Bündel der Lesefassung (artifact/project/components/)
+bun run artifact     # übrige Dateien der Lesefassung
 bun x tsc --noEmit
 bun x vitest run
 ```

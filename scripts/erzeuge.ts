@@ -85,6 +85,11 @@ export function schriftenCss(): string {
 
 /* ---- artifact/project/tokens.json ------------------------------------ */
 
+/** Zahl im Fließtext der usage-Angaben mit deutschem Dezimalkomma; CSS-Werte bleiben mit Punkt. */
+export function komma(zahl: number): string {
+  return String(zahl).replace(".", ",");
+}
+
 type ThemaWert = string | { papier: string; nacht?: string };
 
 /** Ein Rollenwert für tokens.json: Verweis `{farbe}` ohne Deckkraft, sonst Hex mit Alpha. */
@@ -177,7 +182,7 @@ export function tokensJson(): string {
       tokens: ABSTAENDE.map((px) => ({ name: `abstand-${px}`, value: `${px}px`, usage: `${px} px.` })),
     },
     radius: {
-      note: `Rollen ${Object.keys(RUNDUNGEN).join(", ")}; Knöpfe und Chips mit fester Höhe runden mit Höhe × ${String(PILLE_FAKTOR).replace(".", ",")} wie die Pille im Logo (rund-pille-faktor).`,
+      note: `Rollen ${Object.keys(RUNDUNGEN).join(", ")}; Knöpfe und Chips mit fester Höhe runden mit Höhe × ${komma(PILLE_FAKTOR)} wie die Pille im Logo (rund-pille-faktor).`,
       tokens: Object.entries(RUNDUNGEN).map(([name, { wert, rolle }]) => ({ name: `rund-${name}`, value: wert, usage: rolle })),
     },
     abmessungen: {
@@ -185,10 +190,10 @@ export function tokensJson(): string {
       tokens: [
         { name: "rund-pille-faktor", value: String(PILLE_FAKTOR), usage: "Rundung von Knöpfen und Chips mit fester Höhe: calc(<Höhe> * var(--rund-pille-faktor))." },
         { name: "mass-linie", value: `${MASSE.linie}px`, usage: "Maßlinie, Endstriche, Schriftfeld-Fugen." },
-        { name: "mass-ecke", value: `${MASSE.ecke}px`, usage: `Kantenlänge der Sucher-Ecken, Linie ${MASSE.eckeLinie} px.` },
+        { name: "mass-ecke", value: `${MASSE.ecke}px`, usage: `Kantenlänge der Sucher-Ecken, Linie ${komma(MASSE.eckeLinie)} px.` },
         { name: "mass-raster", value: `${MASSE.raster}px`, usage: "Millimeterraster der Flächen." },
         { name: "mass-massbalken", value: `${MASSE.massbalkenHoehe}px`, usage: `Höhe des Maßbalkens, Füllung ${MASSE.massbalkenFuellung} px.` },
-        { name: "mass-lichtkante", value: `${MASSE.lichtkanteHoehe}px`, usage: `Höhe der Lichtkante, Chip ${MASSE.lichtkanteChip} px, Lichtumlauf ${MASSE.lichtkanteUmlauf} s.` },
+        { name: "mass-lichtkante", value: `${MASSE.lichtkanteHoehe}px`, usage: `Höhe der Lichtkante, Chip ${MASSE.lichtkanteChip} px, Lichtumlauf ${komma(MASSE.lichtkanteUmlauf)} s.` },
       ],
     },
   };

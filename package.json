@@ -5,6 +5,7 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
+  "packageManager": "bun@1.4.4",
   "sideEffects": [
     "*.css"
   ],
@@ -49,7 +50,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "erzeuge": "bun scripts/erzeuge.ts"
+    "erzeuge": "bun scripts/erzeuge.ts",
+    "bundle": "bun scripts/bundle.ts",
+    "artifact": "bun scripts/artifact.ts"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
@@ -62,6 +65,8 @@
     "jsdom": "^30.0.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-dom18": "npm:react-dom@18.3.1",
+    "react18": "npm:react@18.3.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"
   }

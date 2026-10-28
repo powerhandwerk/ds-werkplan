@@ -1,4 +1,5 @@
-# CI: Typecheck, Tests und Aktualität der erzeugten Dateien auf jedem PR und auf main.
+# CI: Typecheck, Tests und Aktualität der erzeugten Dateien (Tokens, Schriften,
+# Bündel der Lesefassung) auf jedem PR und auf main.
 #
 # `check` ist Required Status Check auf main (mit enforce_admins). Job-ID und
 # Name müssen deshalb „check“ bleiben, und es gibt kein `paths-ignore`: Ein
@@ -28,12 +29,23 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with:
-          # Wie im Admin-Repo (ci.yml): latest statt fester Version.
-          bun-version: latest
+          # Feste Version statt latest: das minifizierte Bündel unter
+          # artifact/project/components/ hängt an der bun-Version, und der Schritt
+          # „Lesefassung aktuell“ vergleicht es Byte für Byte. Die Version steht
+          # einmal in package.json (`packageManager`); `bun run bundle` bricht lokal
+          # bei einer anderen Version ab. Ein Wechsel heißt: dort heben und neu bündeln.
+          bun-version-file: package.json
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun x vitest run
       - name: Erzeugte Dateien aktuell
         run: |
           bun run erzeuge
-          git diff --exit-code -- src/tokens.css artifact/project/tokens.json
+          git diff --exit-code -- src/tokens.css src/schriften.css artifact/project/tokens.json
+      - name: Lesefassung aktuell
+        run: |
+          bun run bundle
+          bun run artifact
+          git diff --exit-code -- artifact/project/
+          # Neue, nicht eingecheckte Dateien (etwa eine kopierte Schrift) sieht git diff nicht.
+          test -z "$(git status --porcelain -- artifact/project/)"
