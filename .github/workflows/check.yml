@@ -31,9 +31,10 @@ jobs:
         with:
           # Feste Version statt latest: das minifizierte Bündel unter
           # artifact/project/components/ hängt an der bun-Version, und der Schritt
-          # „Bündel der Lesefassung aktuell“ vergleicht es Byte für Byte. Lokal dieselbe
-          # Version nutzen; ein Wechsel heißt: Version hier heben und neu bündeln.
-          bun-version: 1.4.4
+          # „Lesefassung aktuell“ vergleicht es Byte für Byte. Die Version steht
+          # einmal in package.json (`packageManager`); `bun run bundle` bricht lokal
+          # bei einer anderen Version ab. Ein Wechsel heißt: dort heben und neu bündeln.
+          bun-version-file: package.json
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun x vitest run
@@ -41,11 +42,8 @@ jobs:
         run: |
           bun run erzeuge
           git diff --exit-code -- src/tokens.css src/schriften.css artifact/project/tokens.json
-      - name: Bündel der Lesefassung aktuell
-        run: |
-          bun run bundle
-          git diff --exit-code -- artifact/project/components/
       - name: Lesefassung aktuell
         run: |
+          bun run bundle
           bun run artifact
           git diff --exit-code -- artifact/project/

@@ -4,13 +4,21 @@
 //
 // Vorschau: `skript` definiert `function Beispiel(p)`, eine React-Komponente,
 // die mit `p.u` ("papier" oder "nacht", bei `flaeche: "thema"` "thema") die
-// Zustände des Bausteins rendert. Im Skript stehen `h` (React.createElement),
+// Zustände des Bausteins rendert; `p.nacht` ist wahr, wenn `p.u` "nacht" ist. Im Skript stehen `h` (React.createElement),
 // `D` (window.DsWerkplan), `W` (Klassen aus werkplan.module.css), `BS`
 // (WERKPLAN_BAUSTEINE_SEITE) und `nichts` (leere Funktion) bereit. Kein JSX,
 // keine Template-Literale, kein „</script“.
 //
 // Leitlinie: nur Belegtes aus Code, JSDoc, docs/inventur.md und dem Markenbuch
-// (artifact/project/README.md). Keine Gedankenstriche, echte Umlaute.
+// (artifact/project/README.md). Keine Gedankenstriche, echte Umlaute. Werte
+// wie Neigung und Maße kommen aus src/, nicht von Hand.
+
+import { MARKER_TILT_DEG } from "../src/MarkerHighlight";
+import { MASSE } from "../src/tokens";
+import { komma } from "./erzeuge";
+
+const GRUPPEN = ["Aktionen", "Status", "Hervorhebung", "Fakten", "Rahmen", "Listen", "Kundenseite", "Marke"] as const;
+export type Gruppe = (typeof GRUPPEN)[number];
 
 /** Wie die Vorschau ihre Fläche bekommt. */
 export type Flaeche =
@@ -28,7 +36,7 @@ export type Prop = [name: string, typ: string, standard: string, bedeutung: stri
 
 export interface Baustein {
   name: string;
-  gruppe: string;
+  gruppe: Gruppe;
   hoehe: number;
   /** Layout-Breite der Vorschau, wenn der Baustein erst ab einer Breite seine Hauptform zeigt. */
   breite?: number;
@@ -40,8 +48,6 @@ export interface Baustein {
   props: Prop[];
   lassen: string[];
 }
-
-export const GRUPPEN = ["Aktionen", "Status", "Hervorhebung", "Fakten", "Rahmen", "Listen", "Kundenseite", "Marke"] as const;
 
 const KINDER = "ReactNode";
 
@@ -95,15 +101,14 @@ function Beispiel(p) {
     flaeche: "beide",
     skript: `
 function Beispiel(p) {
-  var nacht = p.u === "nacht";
   return h("div", { className: "stapel" },
     h("div", { className: "reihe" },
-      h(D.RuhigerKnopf, { nacht: nacht }, "Abbrechen"),
-      h(D.RuhigerKnopf, { nacht: nacht, icon: h(D.PlusIcon, { size: 16 }) }, "Hinzufügen"),
-      h(D.RuhigerKnopf, { nacht: nacht, disabled: true }, "Gesperrt")),
+      h(D.RuhigerKnopf, { nacht: p.nacht }, "Abbrechen"),
+      h(D.RuhigerKnopf, { nacht: p.nacht, icon: h(D.PlusIcon, { size: 16 }) }, "Hinzufügen"),
+      h(D.RuhigerKnopf, { nacht: p.nacht, disabled: true }, "Gesperrt")),
     h("div", { className: "reihe" },
-      h(D.RuhigerKnopf, { nacht: nacht, groesse: "klein" }, "Klein"),
-      h(D.RuhigerKnopf, { nacht: nacht, groesse: "handy" }, "Handy")));
+      h(D.RuhigerKnopf, { nacht: p.nacht, groesse: "klein" }, "Klein"),
+      h(D.RuhigerKnopf, { nacht: p.nacht, groesse: "handy" }, "Handy")));
 }`,
     zusammenfassung:
       "Der ruhige Knopf ist der Knopf für Nebenaktionen: transparenter Grund, 1 px Rahmen und eine Rundung wie die Pille im Logo.",
@@ -164,12 +169,11 @@ function Beispiel() {
     flaeche: "beide",
     skript: `
 function Beispiel(p) {
-  var nacht = p.u === "nacht";
   return h("div", { className: "reihe" },
-    h(D.IconKnopf, { nacht: nacht, label: "Kopieren", icon: h(D.CopyIcon, { size: 16 }), onClick: nichts }),
-    h(D.IconKnopf, { nacht: nacht, label: "Löschen", icon: h(D.TrashIcon, { size: 16 }), onClick: nichts }),
-    h(D.IconKnopf, { nacht: nacht, label: "Schließen", icon: h(D.XIcon, { size: 18 }), groesse: 40, onClick: nichts }),
-    h(D.IconKnopf, { nacht: nacht, label: "Gesperrt", icon: h(D.LockIcon, { size: 16 }), disabled: true }));
+    h(D.IconKnopf, { nacht: p.nacht, label: "Kopieren", icon: h(D.CopyIcon, { size: 16 }), onClick: nichts }),
+    h(D.IconKnopf, { nacht: p.nacht, label: "Löschen", icon: h(D.TrashIcon, { size: 16 }), onClick: nichts }),
+    h(D.IconKnopf, { nacht: p.nacht, label: "Schließen", icon: h(D.XIcon, { size: 18 }), groesse: 40, onClick: nichts }),
+    h(D.IconKnopf, { nacht: p.nacht, label: "Gesperrt", icon: h(D.LockIcon, { size: 16 }), disabled: true }));
 }`,
     zusammenfassung: "Der Icon-Knopf ist quadratisch und trägt nur ein Icon; sein Label steht als `aria-label` und `title`.",
     wann: [
@@ -347,10 +351,9 @@ function Beispiel() {
     flaeche: "beide",
     skript: `
 function Beispiel(p) {
-  var nacht = p.u === "nacht";
   return h("p", { className: W.text },
-    "Mit ", h(D.Tastenkappe, { nacht: nacht }, "Z"), " rückgängig, mit ",
-    h(D.Tastenkappe, { nacht: nacht }, "Esc"), " schließen.");
+    "Mit ", h(D.Tastenkappe, { nacht: p.nacht }, "Z"), " rückgängig, mit ",
+    h(D.Tastenkappe, { nacht: p.nacht }, "Esc"), " schließen.");
 }`,
     zusammenfassung: "Die Tastenkappe zeigt eine Taste im Text, etwa die Abkürzung zu einer Aktion.",
     wann: ["Im Fließtext und im `Toast` neben der Aktion.", "Auf Nacht mit `nacht`."],
@@ -398,13 +401,13 @@ function Beispiel() {
     wann: [
       "Nur im Logo und im Hero der Website, dort einmal und hinter einem kurzen Wort.",
       "Die Fläche ist dieselbe Form wie die Pille im Logo: `markerGeometry()` rechnet sie aus der Versalhöhe von Big Shoulders Display, die Buchstaben stehen immer frei.",
-      "Die Neigung ist -3,96°; `markerTiltDeg()` macht sie bei langen Wörtern flacher.",
+      `Die Neigung ist ${komma(MARKER_TILT_DEG)}°; \`markerTiltDeg()\` macht sie bei langen Wörtern flacher.`,
       "Der Marker hält seinen Kasten auf `line-height: 1`; die Geometrie hängt daran.",
       "`animate` wischt die Fläche ein; die `@keyframes marker-wisch` liefert bis Phase 1b die App.",
     ],
     props: [
       ["children", KINDER, "Pflicht", "Das Wort."],
-      ["rotate", "number", "ohne", "Neigung in Grad; ohne Angabe -3,96°, bei langen Wörtern flacher."],
+      ["rotate", "number", "ohne", `Neigung in Grad; ohne Angabe ${komma(MARKER_TILT_DEG)}°, bei langen Wörtern flacher.`],
       ["animate", "boolean", "false", "Fläche wischt ein."],
       ["color", "string", "ohne", "Farbe der Fläche; ohne Angabe `var(--lime)`."],
       ["geometry", "MarkerGeometry", "GEOMETRY_DEFAULT", "Überstand und Rundung in em; die Voreinstellung ist am Logo vermessen."],
@@ -555,7 +558,7 @@ function Beispiel(p) {
     zusammenfassung: "Der Maßbalken zeigt einen Anteil als Maßlinie mit Endstrichen und einer Lime-Füllung.",
     wann: [
       "Für Anteile und Stände, die wie Vermessung aussehen sollen, statt eines Balkendiagramms.",
-      "Er füllt die Breite seines Elternteils; die Striche bleiben in jeder Breite 1 px. Höhe 14 px, Füllung 6 px.",
+      `Er füllt die Breite seines Elternteils; die Striche bleiben in jeder Breite 1 px. Höhe ${komma(MASSE.massbalkenHoehe)} px, Füllung ${komma(MASSE.massbalkenFuellung)} px.`,
       "Mit `label` ist er ein Bild mit Namen (`role=\"img\"`), ohne ist er für Vorleser versteckt.",
     ],
     props: [
@@ -687,7 +690,7 @@ function Beispiel() {
     zusammenfassung: "Die Sucher-Ecken setzen vier 10-px-Winkel in die Ecken eines Rahmens, wie im Kamerasucher.",
     wann: [
       "Für die Hauptkarte einer Fläche.",
-      "Die Ecken zeichnen in `wp-stark` mit 1,5 px und sind rein dekorativ (`aria-hidden`). Sie stehen auf Papier und Nacht.",
+      `Die Ecken zeichnen in \`wp-stark\` mit ${komma(MASSE.eckeLinie)} px und sind rein dekorativ (\`aria-hidden\`). Sie stehen auf Papier und Nacht.`,
       "Sie umschließen ihren Inhalt; `as` wählt das Element, damit auch ein Formular den Rahmen tragen kann. Das Polster setzt der Verbraucher.",
     ],
     props: [
@@ -1061,7 +1064,7 @@ function Beispiel() {
     flaeche: "beide",
     skript: `
 function Beispiel(p) {
-  var variant = p.u === "nacht" ? "dark" : "light";
+  var variant = p.nacht ? "dark" : "light";
   return h("div", { className: "reihe" },
     h(D.Logo, { variant: variant }),
     h(D.Logo, { variant: variant, height: 24, href: "#start" }));
@@ -1085,9 +1088,23 @@ function Beispiel(p) {
   },
 ];
 
-/** Schaukarte der Icons (Gruppe Marke, `page`): kein Export des Bündels, ohne README. */
-export const ICONS_KARTE = {
+/**
+ * Schaukarte der Icons (Gruppe Marke, `page`): kein Export des Bündels, ohne
+ * README. Im Skript steht zusätzlich `NAMEN`, alle `*Icon`-Exporte; `AboIcon`
+ * zeigt die Karte je Paket statt einmal.
+ */
+export const ICONS_KARTE: { name: string; gruppe: Gruppe; hoehe: number; skript: string } = {
   name: "Icons",
   gruppe: "Marke",
   hoehe: 600,
+  skript: `
+function Beispiel() {
+  return h("div", { className: "icons" },
+    NAMEN.filter(function (n) { return n !== "AboIcon"; }).map(function (n) {
+      return h("figure", { key: n, className: "icon" }, h(D[n], { size: 24 }), h("figcaption", null, n));
+    }),
+    D.PAKETE.map(function (paket) {
+      return h("figure", { key: "abo-" + paket, className: "icon" }, h(D.AboIcon, { paket: paket, size: 24 }), h("figcaption", null, "AboIcon " + paket));
+    }));
+}`,
 };

@@ -6,7 +6,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { PROJEKT, TOKENS_KOPF, kopfNamen, textDateien, tokensCss } from "../scripts/artifact";
+import { PROJEKT, TOKENS_KOPF, kopfNamen, textDateien } from "../scripts/artifact";
 
 const lies = (pfad: string) => readFileSync(join(PROJEKT, pfad), "utf8");
 
@@ -105,9 +105,8 @@ describe("Lesefassung", () => {
     }
   });
 
-  it("tokens.css frisch erzeugt ist gleich der eingecheckten", () => {
+  it("tokens.css beginnt mit dem Pflichtkopf des Typs", () => {
     expect(tokens.split("\n", 1)[0]).toBe(TOKENS_KOPF);
-    expect(tokensCss(JSON.parse(lies("tokens.json")))).toBe(tokens);
   });
 
   it("alle erzeugten Textdateien sind aktuell", () => {

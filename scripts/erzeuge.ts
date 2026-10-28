@@ -86,7 +86,7 @@ export function schriftenCss(): string {
 /* ---- artifact/project/tokens.json ------------------------------------ */
 
 /** Zahl im Fließtext der usage-Angaben mit deutschem Dezimalkomma; CSS-Werte bleiben mit Punkt. */
-function komma(zahl: number): string {
+export function komma(zahl: number): string {
   return String(zahl).replace(".", ",");
 }
 

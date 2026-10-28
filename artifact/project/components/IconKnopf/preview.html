@@ -31,22 +31,21 @@
   "use strict";
   var h = React.createElement;
   var D = window.DsWerkplan;
-  var W = {"aufNacht":"aufNacht_piK1_A","aufPapier":"aufPapier_piK1_A","beschriftung":"beschriftung_piK1_A","blattZeile":"blattZeile_piK1_A","eckeOl":"eckeOl_piK1_A","eckeOr":"eckeOr_piK1_A","eckeUl":"eckeUl_piK1_A","eckeUr":"eckeUr_piK1_A","ecken":"ecken_piK1_A","h1":"h1_piK1_A","h2":"h2_piK1_A","h3":"h3_piK1_A","lead":"lead_piK1_A","massbalken":"massbalken_piK1_A","massbalkenFuellung":"massbalkenFuellung_piK1_A","massbalkenLinie":"massbalkenLinie_piK1_A","messwert":"messwert_piK1_A","nacht":"nacht_piK1_A","nachtHell":"nachtHell_piK1_A","papier":"papier_piK1_A","plankopf":"plankopf_piK1_A","plankopfBreit":"plankopfBreit_piK1_A","plankopfFeld":"plankopfFeld_piK1_A","plankopfLabel":"plankopfLabel_piK1_A","plankopfWert":"plankopfWert_piK1_A","pos":"pos_piK1_A","quelle":"quelle_piK1_A","seite":"seite_piK1_A","teilung":"teilung_piK1_A","text":"text_piK1_A","textlink":"textlink_piK1_A"};
+  var W = D.WERKPLAN_KLASSEN;
   var BS = D.WERKPLAN_BAUSTEINE_SEITE;
   function nichts() {}
   function Beispiel(p) {
-    var nacht = p.u === "nacht";
     return h("div", { className: "reihe" },
-      h(D.IconKnopf, { nacht: nacht, label: "Kopieren", icon: h(D.CopyIcon, { size: 16 }), onClick: nichts }),
-      h(D.IconKnopf, { nacht: nacht, label: "Löschen", icon: h(D.TrashIcon, { size: 16 }), onClick: nichts }),
-      h(D.IconKnopf, { nacht: nacht, label: "Schließen", icon: h(D.XIcon, { size: 18 }), groesse: 40, onClick: nichts }),
-      h(D.IconKnopf, { nacht: nacht, label: "Gesperrt", icon: h(D.LockIcon, { size: 16 }), disabled: true }));
+      h(D.IconKnopf, { nacht: p.nacht, label: "Kopieren", icon: h(D.CopyIcon, { size: 16 }), onClick: nichts }),
+      h(D.IconKnopf, { nacht: p.nacht, label: "Löschen", icon: h(D.TrashIcon, { size: 16 }), onClick: nichts }),
+      h(D.IconKnopf, { nacht: p.nacht, label: "Schließen", icon: h(D.XIcon, { size: 18 }), groesse: 40, onClick: nichts }),
+      h(D.IconKnopf, { nacht: p.nacht, label: "Gesperrt", icon: h(D.LockIcon, { size: 16 }), disabled: true }));
   }
 
   function Flaeche(p) {
     return h("div", { className: [p.klasse, W.seite, BS, "flaeche"].join(" ") },
       p.titel ? h("p", { className: W.beschriftung + " titel" }, p.titel) : null,
-      h(Beispiel, { u: p.u }));
+      h(Beispiel, { u: p.u, nacht: p.u === "nacht" }));
   }
   ReactDOM.createRoot(document.getElementById("wurzel")).render(h("div", { className: "beide" }, h(Flaeche, { klasse: W.papier, u: "papier", titel: "Papier" }), h(Flaeche, { klasse: W.nacht, u: "nacht", titel: "Nacht" })));
 })();

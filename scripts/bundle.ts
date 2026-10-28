@@ -22,6 +22,7 @@ interface PluginBau {
 interface BunPlugin { name: string; setup(build: PluginBau): void }
 interface Ausgabe { path: string; kind: string; text(): Promise<string> }
 declare const Bun: {
+  version: string;
   build(o: {
     entrypoints: string[];
     root: string;
@@ -40,19 +41,47 @@ const SHIM = join(WURZEL, "scripts/jsx-runtime-shim.ts");
 const NAMESPACE = "DsWerkplan";
 const HOECHSTGROESSE = 6 * 1024 * 1024;
 const VERBOTEN = ["</script", "<!--"];
+/** Name im Namespace für die Klassen aus werkplan.module.css; nur im Bündel, nicht im Kopf. */
+const KLASSEN_NAME = "WERKPLAN_KLASSEN";
+const WERKPLAN_CSS = join(WURZEL, "src/werkplan.module.css");
 
 /* ---- Namen aus src/index.ts ------------------------------------------- */
 
-/** Alle Wertexporte aus src/index.ts in ihrer Reihenfolge (ohne `type …`). */
-export function exportNamen(indexQuelle: string): string[] {
-  const namen: string[] = [];
-  for (const block of indexQuelle.matchAll(/export\s*\{([^}]*)\}\s*from/g)) {
+/** Ein Export aus src/index.ts: Name, Modul (Eintrag unter `exports`) und ob er nur ein Typ ist. */
+export interface IndexExport {
+  name: string;
+  modul: string;
+  typ: boolean;
+}
+
+/** Der eine Parser für src/index.ts: alle Exporte in ihrer Reihenfolge, Typen eingeschlossen. */
+export function indexExporte(indexQuelle: string): IndexExport[] {
+  const exporte: IndexExport[] = [];
+  for (const block of indexQuelle.matchAll(/export\s*\{([^}]*)\}\s*from\s*"\.\/([^"]+)"/g)) {
     for (const roh of block[1].split(",")) {
       const name = roh.trim();
-      if (name !== "" && !name.startsWith("type ")) namen.push(name);
+      if (name !== "") exporte.push({ name: name.replace(/^type\s+/, ""), modul: block[2], typ: name.startsWith("type ") });
     }
   }
-  return namen;
+  return exporte;
+}
+
+/** Alle Wertexporte aus src/index.ts in ihrer Reihenfolge (ohne `type …`). */
+export function exportNamen(indexQuelle: string): string[] {
+  return indexExporte(indexQuelle).filter((e) => !e.typ).map((e) => e.name);
+}
+
+/** Modul (Eintrag unter `exports`) je Exportname aus src/index.ts. */
+export function moduleJeName(indexQuelle: string): Map<string, string> {
+  return new Map(indexExporte(indexQuelle).map((e) => [e.name, e.modul]));
+}
+
+/** Eine `*Icon`-Komponente: PascalCase mit der Endung `Icon`. */
+export const istIcon = (name: string) => /^[A-Z][A-Za-z0-9]*Icon$/.test(name);
+
+/** Alle `*Icon`-Komponenten aus src/index.ts in ihrer Reihenfolge. */
+export function iconNamen(indexQuelle: string): string[] {
+  return exportNamen(indexQuelle).filter(istIcon);
 }
 
 /**
@@ -61,7 +90,7 @@ export function exportNamen(indexQuelle: string): string[] {
  * Konstanten (VERSALIEN) und Funktionen (kleiner Anfang) fallen heraus.
  */
 export function kopfBausteine(indexQuelle: string): string[] {
-  return exportNamen(indexQuelle).filter((n) => /^[A-Z][a-z]/.test(n) && !n.endsWith("Icon"));
+  return exportNamen(indexQuelle).filter((n) => /^[A-Z][a-z]/.test(n) && !istIcon(n));
 }
 
 export function kopfZeile(bausteine: string[]): string {
@@ -74,13 +103,20 @@ export function kopfZeile(bausteine: string[]): string {
 const EINTRAG = "ds-werkplan:eintrag";
 
 // react und react-dom kommen aus den UMD-Skripten der Seite, die JSX-Laufzeit
-// aus dem Ersatzmodul; SVGs werden zu base64-Daten-URLs (kein `<` im Bündel).
+// aus dem Ersatzmodul; SVGs werden zu prozentkodierten Daten-URLs (`<` wird
+// `%3C`, kein `<` im Bündel). Der Eintrag legt die Klassen aus
+// werkplan.module.css dazu, damit die Vorschauen sie nicht raten müssen.
 const aufloeser: BunPlugin = {
   name: "ds-werkplan-lesefassung",
   setup(build) {
     build.onResolve({ filter: /^ds-werkplan:eintrag$/ }, () => ({ path: EINTRAG, namespace: "eintrag" }));
     build.onLoad({ filter: /.*/, namespace: "eintrag" }, () => ({
-      contents: `import * as ds from ${JSON.stringify(INDEX)};\nwindow.${NAMESPACE} = { ...ds };\n`,
+      contents: [
+        `import * as ds from ${JSON.stringify(INDEX)};`,
+        `import klassen from ${JSON.stringify(WERKPLAN_CSS)};`,
+        `window.${NAMESPACE} = { ...ds, ${KLASSEN_NAME}: klassen };`,
+        "",
+      ].join("\n"),
       loader: "ts",
     }));
     build.onResolve({ filter: /^react\/jsx(-dev)?-runtime$/ }, () => ({ path: SHIM }));
@@ -91,7 +127,7 @@ const aufloeser: BunPlugin = {
       loader: "js",
     }));
     build.onLoad({ filter: /\.svg$/ }, (args) => ({
-      contents: `export default ${JSON.stringify(`data:image/svg+xml;base64,${readFileSync(args.path).toString("base64")}`)};`,
+      contents: `export default ${JSON.stringify(`data:image/svg+xml,${encodeURIComponent(readFileSync(args.path, "utf8"))}`)};`,
       loader: "js",
     }));
   },
@@ -145,12 +181,10 @@ function typen(indexQuelle: string): string {
 }
 
 function typenZusammenfuehren(verzeichnis: string, indexQuelle: string): string {
-  const reihenfolge = [...indexQuelle.matchAll(/\}\s*from\s*"\.\/([^"]+)"/g)].map((m) => m[1]);
+  const exporte = indexExporte(indexQuelle);
+  const reihenfolge = [...new Set(exporte.map((e) => e.modul))];
   const vorhanden = new Set(readdirSync(verzeichnis).filter((d) => d.endsWith(".d.ts")).map((d) => d.slice(0, -5)));
-  const exportiert = new Set([
-    ...exportNamen(indexQuelle),
-    ...[...indexQuelle.matchAll(/\btype\s+([A-Za-z0-9_]+)/g)].map((m) => m[1]),
-  ]);
+  const exportiert = new Set(exporte.map((e) => e.name));
 
   const standardImporte = new Map<string, string>();
   const benannteImporte = new Map<string, Set<string>>();
@@ -201,12 +235,31 @@ function typenZusammenfuehren(verzeichnis: string, indexQuelle: string): string 
     ...importe,
     "",
     ...teile,
+    "/* ---- nur im Bündel ---- */",
+    "",
+    "/** Klassen aus werkplan.module.css: lokaler Name auf den Namen in bundle.css. Kein Export des Pakets. */",
+    `export declare const ${KLASSEN_NAME}: Readonly<Record<string, string>>;`,
+    "",
   ].join("\n");
 }
 
 /* ---- Schreiben -------------------------------------------------------- */
 
+/** Die bun-Version aus `packageManager` in package.json; CI liest dieselbe Angabe. */
+function bunVersionPruefen(): void {
+  const paket = JSON.parse(readFileSync(join(WURZEL, "package.json"), "utf8")) as { packageManager?: string };
+  const soll = paket.packageManager?.match(/^bun@(.+)$/)?.[1];
+  if (!soll) throw new Error("package.json ohne `packageManager: \"bun@…\"`");
+  if (Bun.version !== soll) {
+    throw new Error(
+      `bun ${Bun.version} statt ${soll}: Das minifizierte Bündel hängt an der bun-Version, und CI vergleicht es Byte für Byte. ` +
+        `Lokal bun ${soll} nutzen oder \`packageManager\` in package.json heben und neu bündeln.`,
+    );
+  }
+}
+
 export async function erzeugeBuendel(): Promise<void> {
+  bunVersionPruefen();
   const indexQuelle = readFileSync(INDEX, "utf8");
   const { js, css } = await buendel();
   const skript = `${kopfZeile(kopfBausteine(indexQuelle))}\n${js}`;

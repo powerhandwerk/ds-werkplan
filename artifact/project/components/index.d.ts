@@ -1260,3 +1260,8 @@ export type EingabefeldProps = (Gemeinsam & {
     mehrzeilig: true;
 } & TextareaHTMLAttributes<HTMLTextAreaElement>);
 export declare function Eingabefeld(props: EingabefeldProps): import("react").JSX.Element;
+
+/* ---- nur im Bündel ---- */
+
+/** Klassen aus werkplan.module.css: lokaler Name auf den Namen in bundle.css. Kein Export des Pakets. */
+export declare const WERKPLAN_KLASSEN: Readonly<Record<string, string>>;

@@ -7,10 +7,12 @@
 // Die Funktionen sind rein, damit test/artifact.test.ts sie ohne
 // Schreibzugriff gegen die Dateien prüfen kann.
 
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { SCHRIFTDATEIEN } from "../src/tokens";
 import { BAUSTEINE, ICONS_KARTE, type Baustein, type Prop } from "./artifact-daten";
+import { iconNamen, moduleJeName } from "./bundle";
 
 export const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export const PROJEKT = join(WURZEL, "artifact/project");
@@ -18,58 +20,23 @@ export const PROJEKT = join(WURZEL, "artifact/project");
 /** Pflichtwortlaut der ersten Zeile von tokens.css (Layout „tokens.css as compiled“ des Typs). */
 export const TOKENS_KOPF = "/* DS Werkplan — generated from tokens.json */";
 
+/** Schriftdateien aus src/tokens.ts, dazu die Lizenztexte unter fonts/. */
 export const SCHRIFTEN = [
-  "big-shoulders-display.woff2",
-  "hanken-grotesk.woff2",
-  "barlow-semi-condensed-300.woff2",
-  "barlow-semi-condensed-600.woff2",
-  "OFL-big-shoulders-display.txt",
-  "OFL-hanken-grotesk.txt",
-  "OFL-barlow-semi-condensed.txt",
-] as const;
+  ...SCHRIFTDATEIEN.map((s) => s.datei),
+  ...readdirSync(join(WURZEL, "fonts")).filter((d) => /^OFL-.+\.txt$/.test(d)).sort(),
+];
 
 export const LOGOS = ["logo-powerhandwerk.svg", "logo-powerhandwerk-dark.svg", "pin.svg"] as const;
 
 const lies = (pfad: string) => readFileSync(join(WURZEL, pfad), "utf8");
 
-/* ---- Bündel: Kopf, Klassen, Module ------------------------------------ */
+/* ---- Bündel: Kopf ----------------------------------------------------- */
 
 /** Namen der Bausteine aus dem Kopf `@ds-bundle` von bundle.js. */
 export function kopfNamen(bundleJs: string): string[] {
   const kopf = bundleJs.split("\n", 1)[0].match(/^\/\* @ds-bundle: (\{.*\}) \*\/$/);
   if (!kopf) throw new Error("bundle.js ohne @ds-bundle-Kopf");
   return (JSON.parse(kopf[1]) as { components: { name: string }[] }).components.map((c) => c.name);
-}
-
-/**
- * Klassen aus werkplan.module.css im Bündel: lokaler Name auf gebündelten
- * Namen. Das Suffix des Moduls erkennt die Klasse `nachtHell`, die nur dort
- * steht; so folgen die Vorschauen jedem neuen Bündel.
- */
-export function werkplanKlassen(bundleCss: string): Record<string, string> {
-  const alle = [...new Set([...bundleCss.matchAll(/\.([a-z][A-Za-z0-9]*)_([A-Za-z0-9_-]+)/g)].map((m) => `${m[1]}_${m[2]}`))];
-  const suffix = alle.find((k) => k.startsWith("nachtHell_"))?.slice("nachtHell_".length);
-  if (!suffix) throw new Error("bundle.css ohne Klassen aus werkplan.module.css");
-  return Object.fromEntries(
-    alle.filter((k) => k.endsWith(`_${suffix}`) && k.indexOf("_") === k.length - suffix.length - 1).map((k) => [k.split("_", 1)[0], k]).sort(),
-  );
-}
-
-/** Modul (Eintrag unter `exports`) je Exportname aus src/index.ts. */
-export function moduleJeName(indexTs: string): Map<string, string> {
-  const karte = new Map<string, string>();
-  for (const block of indexTs.matchAll(/export\s*\{([^}]*)\}\s*from\s*"\.\/([^"]+)"/g)) {
-    for (const roh of block[1].split(",")) {
-      const name = roh.trim().replace(/^type\s+/, "");
-      if (name !== "") karte.set(name, block[2]);
-    }
-  }
-  return karte;
-}
-
-/** Alle `*Icon`-Komponenten aus src/index.ts in ihrer Reihenfolge. */
-export function iconNamen(indexTs: string): string[] {
-  return [...moduleJeName(indexTs).keys()].filter((n) => /^[A-Z][A-Za-z0-9]*Icon$/.test(n));
 }
 
 /* ---- tokens.css ------------------------------------------------------- */
@@ -200,21 +167,20 @@ function dokument(kopf: string, titel: string, skript: string): string {
   ].join("\n");
 }
 
-function vorspann(klassen: Record<string, string>): string {
-  return `(function () {
+// W: Klassen aus werkplan.module.css, vom Bündel selbst bereitgestellt.
+const VORSPANN = `(function () {
   "use strict";
   var h = React.createElement;
   var D = window.DsWerkplan;
-  var W = ${JSON.stringify(klassen)};
+  var W = D.WERKPLAN_KLASSEN;
   var BS = D.WERKPLAN_BAUSTEINE_SEITE;
   function nichts() {}`;
-}
 
 const ABSPANN = `
   function Flaeche(p) {
     return h("div", { className: [p.klasse, W.seite, BS, "flaeche"].join(" ") },
       p.titel ? h("p", { className: W.beschriftung + " titel" }, p.titel) : null,
-      h(Beispiel, { u: p.u }));
+      h(Beispiel, { u: p.u, nacht: p.u === "nacht" }));
   }
   ReactDOM.createRoot(document.getElementById("wurzel")).render(INHALT);
 })();`;
@@ -227,25 +193,17 @@ const INHALT: Record<Baustein["flaeche"], string> = {
     'h("div", { className: "beide" }, h(Flaeche, { klasse: W.papier, u: "papier", titel: "Papier" }), h(Flaeche, { klasse: W.nacht, u: "nacht", titel: "Nacht" }))',
 };
 
-export function vorschau(b: Baustein, klassen: Record<string, string>): string {
-  const skript = [vorspann(klassen), b.skript.trim().replace(/^/gm, "  "), ABSPANN.replace("INHALT", INHALT[b.flaeche])].join("\n");
+export function vorschau(b: Baustein): string {
+  const skript = [VORSPANN, b.skript.trim().replace(/^/gm, "  "), ABSPANN.replace("INHALT", INHALT[b.flaeche])].join("\n");
   return dokument(marker(b), b.name, skript);
 }
 
-export function iconsVorschau(klassen: Record<string, string>, namen: string[]): string {
-  const ohneAbo = namen.filter((n) => n !== "AboIcon");
+/** Schaukarte der Icons: `NAMEN` sind alle `*Icon`-Exporte, das Beispiel steht in den Daten der Karte. */
+export function iconsVorschau(namen: string[]): string {
   const skript = [
-    vorspann(klassen),
-    `  var NAMEN = ${JSON.stringify(ohneAbo)};
-  function Beispiel() {
-    return h("div", { className: "icons" },
-      NAMEN.map(function (n) {
-        return h("figure", { key: n, className: "icon" }, h(D[n], { size: 24 }), h("figcaption", null, n));
-      }),
-      D.PAKETE.map(function (paket) {
-        return h("figure", { key: "abo-" + paket, className: "icon" }, h(D.AboIcon, { paket: paket, size: 24 }), h("figcaption", null, "AboIcon " + paket));
-      }));
-  }`,
+    VORSPANN,
+    `  var NAMEN = ${JSON.stringify(namen)};`,
+    ICONS_KARTE.skript.trim().replace(/^/gm, "  "),
     ABSPANN.replace("INHALT", INHALT.thema),
   ].join("\n");
   return dokument(marker({ ...ICONS_KARTE, page: true }), ICONS_KARTE.name, skript);
@@ -297,7 +255,6 @@ export const LOGOS_README = [
 /** Alle erzeugten Textdateien, Pfad relativ zu artifact/project/. */
 export function textDateien(): Map<string, string> {
   const bundleJs = lies("artifact/project/components/bundle.js");
-  const klassen = werkplanKlassen(lies("artifact/project/components/bundle.css"));
   const indexTs = lies("src/index.ts");
   const module = moduleJeName(indexTs);
   const tabelle = new Map(BAUSTEINE.map((b) => [b.name, b]));
@@ -311,10 +268,10 @@ export function textDateien(): Map<string, string> {
     if (!b) throw new Error(`Baustein ${name} fehlt in scripts/artifact-daten.ts`);
     if (!modul) throw new Error(`Baustein ${name} fehlt in src/index.ts`);
     dateien.set(`components/${name}/README.md`, leitlinie(b, modul));
-    dateien.set(`components/${name}/preview.html`, vorschau(b, klassen));
+    dateien.set(`components/${name}/preview.html`, vorschau(b));
   }
   for (const b of BAUSTEINE) if (!dateien.has(`components/${b.name}/README.md`)) throw new Error(`${b.name} steht nicht im Kopf von bundle.js`);
-  dateien.set(`components/${ICONS_KARTE.name}/preview.html`, iconsVorschau(klassen, iconNamen(indexTs)));
+  dateien.set(`components/${ICONS_KARTE.name}/preview.html`, iconsVorschau(iconNamen(indexTs)));
   return dateien;
 }
 

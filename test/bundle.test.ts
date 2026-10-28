@@ -9,7 +9,8 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { exportNamen, kopfBausteine, kopfZeile } from "../scripts/bundle";
+import { kopfNamen } from "../scripts/artifact";
+import { exportNamen, istIcon, kopfBausteine, kopfZeile } from "../scripts/bundle";
 
 // Pfad aus dem String von import.meta.url: in jsdom ist `URL` die Klasse von jsdom,
 // die fileURLToPath nicht annimmt (darum hier nicht test/css-hilfe.ts).
@@ -65,13 +66,10 @@ describe("Bündel als Text", () => {
   });
 
   it("trägt in Zeile 1 den @ds-bundle-Kopf, passend zu src/index.ts", () => {
-    const treffer = kopf.match(/^\/\* @ds-bundle: (.*) \*\/$/);
-    expect(treffer).not.toBeNull();
-    const json = JSON.parse(treffer![1]) as { format: number; namespace: string; components: { name: string }[] };
-    expect(json.format).toBe(4);
-    expect(json.namespace).toBe("DsWerkplan");
-    expect(json.components.length).toBeGreaterThan(0);
-    expect(json.components.some((k) => k.name.endsWith("Icon"))).toBe(false);
+    // kopfZeile setzt format 4 und den Namespace DsWerkplan.
+    const namen = kopfNamen(buendel);
+    expect(namen.length).toBeGreaterThan(0);
+    expect(namen.some(istIcon)).toBe(false);
     expect(kopf).toBe(kopfZeile(kopfBausteine(indexQuelle)));
   });
 });
@@ -86,19 +84,32 @@ describe("Bündel mit React 18", () => {
   it("enthält jeden Export aus src/index.ts", () => {
     const fehlend = exportNamen(indexQuelle).filter((name) => !(name in fenster.DsWerkplan));
     expect(fehlend).toEqual([]);
-    expect(Object.keys(fenster.DsWerkplan).sort()).toEqual([...exportNamen(indexQuelle)].sort());
+    // Einziger Name über src/index.ts hinaus: die Klassen aus werkplan.module.css für die Vorschauen.
+    expect(Object.keys(fenster.DsWerkplan).sort()).toEqual([...exportNamen(indexQuelle), "WERKPLAN_KLASSEN"].sort());
+  });
+
+  it("WERKPLAN_KLASSEN bildet die Klassen aus werkplan.module.css auf bundle.css ab", () => {
+    const klassen = fenster.DsWerkplan.WERKPLAN_KLASSEN as Record<string, string>;
+    const css = lies("artifact/project/components/bundle.css");
+    for (const name of ["seite", "papier", "nacht", "nachtHell", "beschriftung", "text"]) {
+      expect(typeof klassen[name], name).toBe("string");
+    }
+    for (const [lokal, gebuendelt] of Object.entries(klassen)) {
+      expect(gebuendelt.startsWith(`${lokal}_`), lokal).toBe(true);
+      expect(css, lokal).toContain(`.${gebuendelt}`);
+    }
   });
 
   it("jeder Name im Kopf ist ein Baustein im Namespace", () => {
-    const json = JSON.parse(kopf.slice("/* @ds-bundle: ".length, -" */".length)) as { components: { name: string }[] };
-    for (const { name } of json.components) expect(typeof fenster.DsWerkplan[name], name).toBe("function");
+    for (const name of kopfNamen(buendel)) expect(typeof fenster.DsWerkplan[name], name).toBe("function");
   });
 
   it("das Logo trägt sein Bild als Daten-URL", () => {
     const knoten = rendere("Logo", {});
     const bild = knoten.querySelector("img");
-    expect(bild?.getAttribute("src")).toMatch(/^data:image\/svg\+xml;base64,/);
-    expect(atob(bild!.getAttribute("src")!.split(",")[1])).toContain("<svg");
+    const quelle = bild?.getAttribute("src") ?? "";
+    expect(quelle).toMatch(/^data:image\/svg\+xml,%3C/);
+    expect(decodeURIComponent(quelle.slice("data:image/svg+xml,".length))).toContain("<svg");
   });
 
   it("jeder React-Baustein rendert einmal mit createRoot ohne Fehler, die Icons eingeschlossen", () => {
@@ -107,7 +118,7 @@ describe("Bündel mit React 18", () => {
     );
     expect(bausteine.length).toBeGreaterThan(70);
     for (const name of bausteine) {
-      const knoten = rendere(name, PROPS[name] ?? (name.endsWith("Icon") ? {} : { children: "Text" }));
+      const knoten = rendere(name, PROPS[name] ?? (istIcon(name) ? {} : { children: "Text" }));
       expect(knoten.innerHTML, name).not.toBe("");
     }
     expect(fehler).toEqual([]);
