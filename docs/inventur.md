@@ -221,7 +221,7 @@ keteso-Wegweiser). An einem Quadrat ergibt `999px` denselben Kreis wie `50 %`.
 ## 6. Olivgrün
 
 Gestrichen (ADR-261 Nr. 6). Lime gibt es nur als Fläche mit dunkler Schrift darauf
-(Etikett „voll“, Punkt, Unterstrich); Lime als Schrift auf Nacht bleibt erlaubt.
+(Etikett `lead`, Punkt, Unterstrich); Lime als Schrift auf Nacht bleibt erlaubt.
 
 **Im Paket:** keine Stelle. `test/olivgruen.test.ts` sperrt Hex-Wert, den alten
 Token-Namen und `--lime-text` der Website in `src/`, `fonts/`, `assets/`,

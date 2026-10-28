@@ -61,7 +61,7 @@ Schrift erreicht auf ihrer Fläche mindestens 4,5:1, große Schrift, Linien mit 
 
 - **Ink** ist eine warme Grauleiter mit zehn Stufen von `ink-950` bis `ink-050`. Zwischentöne entstehen mit `color-mix()` aus zwei Nachbarstufen, nie als neue Stufe.
 - **Lime** (`lime`) ist das Signal des Logos und nur Fläche mit dunkler Schrift (`ink-950`) darauf. `lime-deep` ist der gedrückte Zustand, `lime-soft` die helle Lime-Fläche (Etikett, Icon im Kasten, Glanz der Lichtkante), `lime-glow` das Leuchten um eine Lime-Fläche. Auf Nacht ist Lime zusätzlich Fokusring (`focus-ring-on-dark`) und darf dort Schrift sein.
-- **Lime ist auf hellem Grund nie Schriftfarbe.** Eine Hervorhebung auf Papier ist dunkle Schrift mit Lime daneben oder darunter: Etikett „voll“, Lime-Punkt, Unterstrich.
+- **Lime ist auf hellem Grund nie Schriftfarbe.** Eine Hervorhebung auf Papier ist dunkle Schrift mit Lime daneben oder darunter: Etikett `lead`, Lime-Punkt, Unterstrich.
 - **Rot** (`danger`) gibt es nur für Fehler und Löschen, als Fläche. Fehlertext auf Papier setzt `danger-ink`.
 - Fokusringe: auf Papier `focus-ring` (`ink-950`), auf Nacht `focus-ring-on-dark` (`lime`); innerhalb einer Fläche immer über `wp-fokus`.
 
