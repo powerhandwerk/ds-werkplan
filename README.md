@@ -9,7 +9,7 @@ Portal und die Website aus einer Quelle. Entscheidung und Pläne: ADR-261 sowie
 Das Paket kommt als Git-Abhängigkeit mit fester Version, ohne Registry:
 
 ```json
-"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.1.1"
+"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.2.0"
 ```
 
 Es liefert TypeScript, TSX und CSS ohne eigenen Build. Next.js übersetzt es mit:

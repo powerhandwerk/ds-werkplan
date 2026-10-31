@@ -7,6 +7,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { PROJEKT, TOKENS_KOPF, kopfNamen, textDateien } from "../scripts/artifact";
+import { STELLSCHRAUBEN } from "./css-hilfe";
 
 const lies = (pfad: string) => readFileSync(join(PROJEKT, pfad), "utf8");
 
@@ -71,12 +72,15 @@ describe("Lesefassung", () => {
     expect(dateien).not.toContain("components/Cover/README.md");
   });
 
-  it("jede var(--x) in Vorschauen, Cover und bundle.css ist in tokens.css oder im selben Dokument definiert", () => {
+  it("jede var(--x) in Vorschauen, Cover und bundle.css ist in tokens.css oder im selben Dokument definiert oder Stellschraube mit Rückfallwert", () => {
     const global = definiert(tokens);
     for (const datei of [...vorschauen, "components/bundle.css"]) {
       const text = lies(datei);
       const eigene = definiert(text);
-      const fehlt = benutzt(text).filter((v) => !global.has(v) && !eigene.has(v));
+      // var(--x) ohne Komma hat keinen Rückfallwert; eine Stellschraube braucht ihn.
+      const ohneRueckfall = new Set([...text.matchAll(/var\(\s*(--[A-Za-z0-9_-]+)\s*\)/g)].map((m) => m[1]));
+      const stellschraube = (v: string) => STELLSCHRAUBEN.has(v) && !ohneRueckfall.has(v);
+      const fehlt = benutzt(text).filter((v) => !global.has(v) && !eigene.has(v) && !stellschraube(v));
       expect(fehlt, datei).toEqual([]);
     }
   });

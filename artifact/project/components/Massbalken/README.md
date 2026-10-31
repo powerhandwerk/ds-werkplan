@@ -5,6 +5,7 @@ Der Maßbalken zeigt einen Anteil als Maßlinie mit Endstrichen und einer Lime-F
 - Für Anteile und Stände, die wie Vermessung aussehen sollen, statt eines Balkendiagramms.
 - Er füllt die Breite seines Elternteils; die Striche bleiben in jeder Breite 1 px. Höhe 14 px, Füllung 6 px.
 - Mit `label` ist er ein Bild mit Namen (`role="img"`), ohne ist er für Vorleser versteckt.
+- Die Füllfarbe setzt die Stellschraube `--fuell-farbe` an einem umgebenden Element, Standard Lime.
 
 ## Was der Verbraucher liefert
 
