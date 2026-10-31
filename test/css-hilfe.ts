@@ -74,3 +74,8 @@ export function werte(css: string, selektor: string, rahmen = ""): Record<string
   }
   return aus;
 }
+
+// Stellschrauben: Variablen, die das Paket nur liest und ein Verbraucher an einem
+// umgebenden Element setzt. Das Paket definiert sie nicht; ihr Standard steht als
+// Rückfallwert im var() selbst.
+export const STELLSCHRAUBEN: ReadonlySet<string> = new Set(["--mass-fuellung"]);

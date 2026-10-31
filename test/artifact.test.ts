@@ -7,6 +7,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { PROJEKT, TOKENS_KOPF, kopfNamen, textDateien } from "../scripts/artifact";
+import { STELLSCHRAUBEN } from "./css-hilfe";
 
 const lies = (pfad: string) => readFileSync(join(PROJEKT, pfad), "utf8");
 
@@ -76,7 +77,7 @@ describe("Lesefassung", () => {
     for (const datei of [...vorschauen, "components/bundle.css"]) {
       const text = lies(datei);
       const eigene = definiert(text);
-      const fehlt = benutzt(text).filter((v) => !global.has(v) && !eigene.has(v));
+      const fehlt = benutzt(text).filter((v) => !global.has(v) && !eigene.has(v) && !STELLSCHRAUBEN.has(v));
       expect(fehlt, datei).toEqual([]);
     }
   });
