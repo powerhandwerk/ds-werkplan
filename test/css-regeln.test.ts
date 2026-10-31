@@ -19,8 +19,10 @@ describe("Variablen", () => {
     }
     const fehlt: string[] = [];
     for (const pfad of cssDateien()) {
-      for (const treffer of ohneKommentare(lies(pfad)).matchAll(/var\(\s*(--[\w-]+)/g)) {
-        if (!definiert.has(treffer[1]) && !STELLSCHRAUBEN.has(treffer[1])) fehlt.push(`${pfad}: ${treffer[1]}`);
+      // Eine Stellschraube gilt nur mit Rückfallwert als versorgt: var(--x, Standard).
+      for (const treffer of ohneKommentare(lies(pfad)).matchAll(/var\(\s*(--[\w-]+)\s*(,?)/g)) {
+        const stellschraube = STELLSCHRAUBEN.has(treffer[1]) && treffer[2] === ",";
+        if (!definiert.has(treffer[1]) && !stellschraube) fehlt.push(`${pfad}: ${treffer[1]}`);
       }
     }
     expect(fehlt).toEqual([]);
