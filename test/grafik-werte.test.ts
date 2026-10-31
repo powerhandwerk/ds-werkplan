@@ -106,11 +106,11 @@ describe("leistungskarten.module.css folgt BEWEGUNG und GRAFIK", () => {
     expect(leitlinie("SucherEcken")).toContain("`--ecken-farbe`");
   });
 
-  it("Maßbalken und Maßkette lesen --mass-fuellung vor Lime, die Leitlinien beschreiben sie", () => {
+  it("Maßbalken und Maßkette lesen --fuell-farbe vor Lime, die Leitlinien beschreiben sie", () => {
     expect(werte(lies("src/werkplan.module.css"), ".massbalkenFuellung").fill).toBe(
-      "var(--mass-fuellung, var(--lime))",
+      "var(--fuell-farbe, var(--lime))",
     );
-    for (const name of ["Massbalken", "Masskette"]) expect(leitlinie(name)).toContain("`--mass-fuellung`");
+    for (const name of ["Massbalken", "Masskette"]) expect(leitlinie(name)).toContain("`--fuell-farbe`");
   });
 
   it("Leuchtsaum der Lime-Teile", () => {

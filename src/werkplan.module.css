@@ -270,10 +270,10 @@
   stroke-opacity: 0.7;
 }
 
-/* Farbe: die Stellschraube --mass-fuellung an einem umgebenden Element, sonst Lime.
+/* Farbe: die Stellschraube --fuell-farbe an einem umgebenden Element, sonst Lime.
    Gilt für Maßbalken und Maßkette. */
 .massbalkenFuellung {
-  fill: var(--mass-fuellung, var(--lime));
+  fill: var(--fuell-farbe, var(--lime));
   stroke: currentColor;
   stroke-width: 1;
   transition: width 180ms ease-out, x 180ms ease-out;

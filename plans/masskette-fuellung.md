@@ -5,7 +5,7 @@ Stand: 31.10.2026
 ## Ziel
 
 Die Füllfarbe von Maßkette und Maßbalken lässt sich über die Stellschraube
-`--mass-fuellung` an einem umgebenden Element setzen. Ohne gesetzte Stellschraube
+`--fuell-farbe` an einem umgebenden Element setzen. Ohne gesetzte Stellschraube
 bleibt sie Lime. Paketversion 2.2.0.
 
 ## Fertig heißt
@@ -15,7 +15,7 @@ bleibt sie Lime. Paketversion 2.2.0.
 
 ## Steps
 
-1. `src/werkplan.module.css`, `.massbalkenFuellung`: `fill: var(--mass-fuellung, var(--lime))`
+1. `src/werkplan.module.css`, `.massbalkenFuellung`: `fill: var(--fuell-farbe, var(--lime))`
    mit Kommentar im Stil der Sucher-Ecken (`--ecken-farbe`).
 2. Doku der Stellschraube in `scripts/artifact-daten.ts` (Abschnitt `wann` von Maßbalken
    und Maßkette, wie bei den Sucher-Ecken); die Lesefassungs-READMEs entstehen daraus.

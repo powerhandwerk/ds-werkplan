@@ -562,7 +562,7 @@ function Beispiel(p) {
       "Für Anteile und Stände, die wie Vermessung aussehen sollen, statt eines Balkendiagramms.",
       `Er füllt die Breite seines Elternteils; die Striche bleiben in jeder Breite 1 px. Höhe ${komma(MASSE.massbalkenHoehe)} px, Füllung ${komma(MASSE.massbalkenFuellung)} px.`,
       "Mit `label` ist er ein Bild mit Namen (`role=\"img\"`), ohne ist er für Vorleser versteckt.",
-      "Die Füllfarbe setzt die Stellschraube `--mass-fuellung` an einem umgebenden Element, Standard Lime.",
+      "Die Füllfarbe setzt die Stellschraube `--fuell-farbe` an einem umgebenden Element, Standard Lime.",
     ],
     props: [
       ["anteil", "number", "Pflicht", "Anteil in Prozent, auf 0 bis 100 geklemmt."],
@@ -591,7 +591,7 @@ function Beispiel() {
       "Für den Stand mehrerer Positionen in Abschnitten, etwa Blatt 01 und Blatt 02.",
       "`massketteGeometrie()` rechnet Füllungen, Teilstriche und Trenner aus; der Test prüft sie ohne DOM.",
       "Sie steht auf Papier.",
-      "Die Füllfarbe setzt die Stellschraube `--mass-fuellung` an einem umgebenden Element, Standard Lime.",
+      "Die Füllfarbe setzt die Stellschraube `--fuell-farbe` an einem umgebenden Element, Standard Lime.",
     ],
     props: [
       ["gruppen", "readonly (readonly boolean[])[]", "Pflicht", "Je Abschnitt eine Liste; `true` heißt geprüft."],
