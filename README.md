@@ -9,7 +9,7 @@ Portal und die Website aus einer Quelle. Entscheidung und Pläne: ADR-261 sowie
 Das Paket kommt als Git-Abhängigkeit mit fester Version, ohne Registry:
 
 ```json
-"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.4.0"
+"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.5.0"
 ```
 
 Es liefert TypeScript, TSX und CSS ohne eigenen Build. Next.js übersetzt es mit:
@@ -90,6 +90,25 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
   import { Modellkarte } from "@powerhandwerk/ds-werkplan/Modellkarte";
 
   <Modellkarte zeichen="website" name="Website" etikett="4 Seiten" preis="00 €" einheit="im Monat, netto" />
+  ```
+- **Preise** (`Paketkarten`, `LaufzeitSchalter`, `LaufzeitBereich`): die drei
+  Abo-Pakete nebeneinander, je Karte Emblem und Name, Nutzen, Für-wen, Preis beider
+  Laufzeiten, Abschnittslabel und die Liste mit Produktzeichen in 44 px. Die
+  empfohlene Karte steht im Gegenton zur Fläche, mit Lime-Rahmen und Etikett. Texte
+  und Preise kommen fertig vom Verbraucher, das Paket enthält keine Preise und keine
+  Paketinhalte. Die Karten schalten über ihre eigene Breite (unter 640 px
+  untereinander, bis 1.080 px untereinander und innen zweispaltig, darüber drei
+  Spalten). `Paketkarten` rendert auf dem Server; `LaufzeitBereich` (Client) zeigt
+  darüber den Laufzeit-Schalter, 24 Monate zuerst, und wählt die Laufzeit per
+  `data-laufzeit`.
+
+  ```tsx
+  import { LaufzeitBereich } from "@powerhandwerk/ds-werkplan/LaufzeitSchalter";
+  import { Paketkarten } from "@powerhandwerk/ds-werkplan/Paketkarten";
+
+  <LaufzeitBereich>
+    <Paketkarten karten={karten} empfohlen="Profi" untergrund="papier" />
+  </LaufzeitBereich>
   ```
 - **Schriften und Marken:** `fonts/` (Big Shoulders Display, Hanken Grotesk, Barlow Semi
   Condensed, je mit OFL-Lizenztext), `assets/` (Logo hell und dunkel, Standort-Pin).
