@@ -1416,6 +1416,8 @@ export declare const kreis: (cx: number, cy: number, z: number, r: number, n?: n
 export declare const deck: (o: number) => string;
 /** Escapt `& < > " '` für Text und Attributwerte im Markup. */
 export declare const maskiere: (wert: string) => string;
+/** Wirft, wenn `stil` mehr als die erlaubten Attribute trägt. */
+declare function pruefeStil(art: string, stil: string): void;
 /** Textanker im SVG. */
 export type Anker = "start" | "middle" | "end";
 declare const TEXT_ZEICHENBREITE = 4.4;

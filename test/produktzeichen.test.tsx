@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Produktzeichen } from "../src/Produktzeichen";
-import { PIN_PFADE } from "../src/produktzeichen-formen";
+import { PIN_PFADE, strichFest, strichMal, zeichenBildFlaeche, zeichenBildLinie } from "../src/produktzeichen-formen";
 import { PRODUKTZEICHEN, PRODUKTZEICHEN_NAMEN, optischeGroesse, produktzeichenDaten } from "../src/produktzeichen-verzeichnis";
 
 // Produktzeichen: Server-HTML auf Papier und Nacht, ein Lime-Motiv je Zeichen,
@@ -133,5 +133,19 @@ describe("Barrierefreiheit", () => {
     expect(svg.getAttribute("aria-hidden")).toBeNull();
     expect(svg.innerHTML).not.toContain(titel);
     expect(html.split(titel)).toHaveLength(2);
+  });
+});
+
+describe("Stil-Attribute der Bausteine", () => {
+  const punkte = [[0, 0], [1, 1]] as const;
+  it("Bildpfade nehmen nur harmlose Attribute an", () => {
+    expect(() => zeichenBildLinie(punkte, "k", 'onload="alert(1)"')).toThrow();
+    expect(() => zeichenBildFlaeche(punkte, "k", 'style="x" onclick="y"')).toThrow();
+    expect(zeichenBildLinie(punkte, "k", strichFest(1.2))).toContain('style="stroke-width:1.2"');
+  });
+  it("Strich-Zusätze können das style-Attribut nicht verlassen", () => {
+    expect(() => strichMal(1, 'x" onload="alert(1)')).toThrow();
+    expect(() => strichFest(1, "<script>")).toThrow();
+    expect(strichMal(1.5, "opacity:0.6")).toBe('style="--m:1.5;opacity:0.6"');
   });
 });

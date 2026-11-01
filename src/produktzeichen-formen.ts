@@ -22,12 +22,17 @@
  * Die Bildmarke Pin geht mit unveränderten Pfaden per `transform` ins Bild,
  * nie durch die Projektion.
  */
-import { ebeneAusBild, maskiere, ruheWert, werkzeug, type Mess, type Pkt, type Szene, type Werkzeug } from "./leistungskarten-engine";
+import { ebeneAusBild, maskiere, pruefeStil, ruheWert, werkzeug, type Mess, type Pkt, type Szene, type Werkzeug } from "./leistungskarten-engine";
 import { stern, type Ebene } from "./leistungskarten-formen";
 
 /* ---------- Strichstärken ---------- */
 
-const stilAttribut = (erste: string, zusatz: string) => `style="${erste}${zusatz ? `;${zusatz}` : ""}"`;
+/** Baut das style-Attribut; ein Zusatz, der es verlassen könnte, wirft. */
+const stilAttribut = (erste: string, zusatz: string) => {
+  const attribut = `style="${erste}${zusatz ? `;${zusatz}` : ""}"`;
+  pruefeStil("strich", attribut);
+  return attribut;
+};
 
 /** Strich relativ zur optischen Größe: `m` mal die Grundstärke der Klasse. */
 export const strichMal = (m: number, zusatz = "") => stilAttribut(`--m:${m}`, zusatz);
@@ -47,8 +52,11 @@ export function zeichenPunkt(w: Werkzeug, bx: number, by: number): void {
 
 type BildPunkte = readonly (readonly [number, number])[];
 
-const bildPfad = (punkte: BildPunkte, cls: string, stil: string, ende: string) =>
-  `<path class="${maskiere(cls)}" ${stil} d="M ${punkte.map(([x, y]) => `${zahl(x)} ${zahl(y)}`).join(" L ")}${ende}"/>`;
+/** Pfad aus Bildpunkten; `stil` wie bei `flaeche()` nur harmlose Attribute. */
+const bildPfad = (punkte: BildPunkte, cls: string, stil: string, ende: string) => {
+  pruefeStil("zeichenBild", stil);
+  return `<path class="${maskiere(cls)}" ${stil} d="M ${punkte.map(([x, y]) => `${zahl(x)} ${zahl(y)}`).join(" L ")}${ende}"/>`;
+};
 
 /** Geschlossene Fläche aus Bildpunkten, für bildschirmparallele Teile wie den Zeiger. */
 export const zeichenBildFlaeche = (punkte: BildPunkte, cls: string, stil = "") => bildPfad(punkte, cls, stil, " Z");

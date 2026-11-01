@@ -104,7 +104,7 @@ export const maskiere = (wert: string) => wert.replace(/[&<>"']/g, (z) => ZEICHE
 const STIL_ERLAUBT = /^(?:\s*(?:style|opacity|transform)="[^"<>&']*")*\s*$/;
 
 /** Wirft, wenn `stil` mehr als die erlaubten Attribute trägt. */
-function pruefeStil(art: string, stil: string): void {
+export function pruefeStil(art: string, stil: string): void {
   if (!STIL_ERLAUBT.test(stil)) {
     throw new Error(`${art}(): stil nur als style-, opacity- oder transform-Attribut, erhalten: ${JSON.stringify(stil)}`);
   }
