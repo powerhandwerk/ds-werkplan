@@ -249,6 +249,60 @@ export {
   LEISTUNGSKARTEN_MUSTER,
 } from "./leistungskarten-beispiele";
 export {
+  Produktzeichen,
+  type ProduktzeichenProps,
+} from "./Produktzeichen";
+export {
+  PRODUKTZEICHEN,
+  PRODUKTZEICHEN_NAMEN,
+  optischeGroesse,
+  produktzeichenDaten,
+  type ProduktzeichenName,
+  type OptischeGroesse,
+} from "./produktzeichen-verzeichnis";
+export {
+  ZEICHEN_ONEPAGER,
+  ZEICHEN_WEBSITE,
+  ZEICHEN_FEINSCHLIFF,
+  ZEICHEN_DATEI_ANFRAGE,
+  ZEICHEN_KUNDENSEITE,
+  ZEICHEN_MONATSBERICHT,
+} from "./produktzeichen-reihe1";
+export {
+  ZEICHEN_BEWERTUNGSSEITE,
+  ZEICHEN_ERSCHEINUNGSBILD,
+  ZEICHEN_GOOGLE_PROFIL,
+  ZEICHEN_GOOGLE_SUCHE,
+  ZEICHEN_KI_SICHTBARKEIT,
+  ZEICHEN_WEBSITE_BEREICH,
+  ZEICHEN_PRUEFBERICHT,
+  ZEICHEN_KOMPAKT_CHECK,
+} from "./produktzeichen-reihe2";
+export {
+  strichMal,
+  strichFest,
+  zeichenPunkt,
+  zeichenBildFlaeche,
+  zeichenBildLinie,
+  rundRechteck,
+  zeichenEbene,
+  zeichenTafel,
+  zeichenRundTafel,
+  zeichenZylinder,
+  zeichenBoden,
+  zeichenSchatten,
+  zeichenBrowserleiste,
+  zeichenSterne,
+  zeichenMotiv,
+  zeichenMarke,
+  zeichenKiFunke,
+  PIN_PFADE,
+  zeichenBildmarke,
+  zeichenSzene,
+  zeichenAusschnitt,
+  type ZeichenEbene,
+} from "./produktzeichen-formen";
+export {
   h as isoElement,
   sternPfad,
   filterDefs,

@@ -190,6 +190,7 @@ const PROPS: Record<string, Record<string, unknown>> = {
   ZiffernFelder: { ziffern: ["1", "2", "", "", "", ""], aendern: nichts, fehlerId: null, fokusAnlass: 0 },
   KopierenKnopf: { wert: "ABC-123" },
   Eingabefeld: { label: "Name", name: "name" },
+  Produktzeichen: { name: "feinschliff" },
   // Grafik: Daten aus dem Bündel selbst, darum als Getter (das Bündel lädt erst in beforeAll).
   get Leistungskarten() {
     const D = fenster.DsWerkplan;

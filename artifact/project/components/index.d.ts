@@ -1416,6 +1416,8 @@ export declare const kreis: (cx: number, cy: number, z: number, r: number, n?: n
 export declare const deck: (o: number) => string;
 /** Escapt `& < > " '` für Text und Attributwerte im Markup. */
 export declare const maskiere: (wert: string) => string;
+/** Wirft, wenn `stil` mehr als die erlaubten Attribute trägt. */
+declare function pruefeStil(art: string, stil: string): void;
 /** Textanker im SVG. */
 export type Anker = "start" | "middle" | "end";
 declare const TEXT_ZEICHENBREITE = 4.4;
@@ -1555,6 +1557,271 @@ export declare function uhrWinkel(x: number, y: number): number;
 export declare const LEISTUNGSKARTEN_BEISPIELE: Readonly<Record<"profil" | "sanierung", Szene>>;
 /** Musterkarten zu den Beispielszenen, neutral getextet. */
 export declare const LEISTUNGSKARTEN_MUSTER: readonly LeistungsKarte[];
+
+/* ---- Produktzeichen ---- */
+
+export type ProduktzeichenProps = {
+    name: ProduktzeichenName;
+    /** Untergrund, auf dem das Zeichen steht. Standard: Papier. */
+    untergrund?: Untergrund;
+    /** Kantenlänge in px. Bestimmt auch die optische Größe (Strichstärken). Standard: 64. */
+    groesse?: number;
+    /**
+     * Zugänglicher Name, wenn das Zeichen allein steht. Ohne `titel` ist es
+     * dekorativ und der Name steht daneben (Vorschlag: `PRODUKTZEICHEN[name].titel`).
+     */
+    titel?: string;
+    className?: string;
+};
+/**
+ * Isometrisches Produktzeichen mit genau einem Lime-Motiv, im Ruhezustand ohne
+ * Bewegung. Rendert auf dem Server; Farben und Strichstärken kommen aus
+ * `produktzeichen.module.css`.
+ */
+export declare function Produktzeichen({ name, untergrund, groesse, titel, className }: ProduktzeichenProps): import("react").JSX.Element;
+
+/* ---- produktzeichen-verzeichnis ---- */
+
+/**
+ * Verzeichnis der Produktzeichen: Name, Szene und Titel je Zeichen in fester
+ * Reihenfolge. Rein, ohne React; die Komponente `Produktzeichen` liest von hier.
+ */
+/**
+ * Die Produktzeichen in fester Reihenfolge. `titel` ist der Name des Produkts,
+ * wie ihn Kunden kennen; er taugt als `titel` der Komponente, wenn das Zeichen
+ * ohne sichtbaren Namen daneben steht.
+ */
+export declare const PRODUKTZEICHEN: {
+    readonly onepager: {
+        readonly titel: "One-Pager";
+        readonly szene: Szene;
+    };
+    readonly website: {
+        readonly titel: "Website · 4 Seiten";
+        readonly szene: Szene;
+    };
+    readonly feinschliff: {
+        readonly titel: "Feinschliff";
+        readonly szene: Szene;
+    };
+    readonly "datei-anfrage": {
+        readonly titel: "Datei-Anfrage";
+        readonly szene: Szene;
+    };
+    readonly kundenseite: {
+        readonly titel: "Kundenseite";
+        readonly szene: Szene;
+    };
+    readonly monatsbericht: {
+        readonly titel: "Monatsbericht";
+        readonly szene: Szene;
+    };
+    readonly bewertungsseite: {
+        readonly titel: "Bewertungs-Seite";
+        readonly szene: Szene;
+    };
+    readonly erscheinungsbild: {
+        readonly titel: "Erscheinungsbild-Handbuch";
+        readonly szene: Szene;
+    };
+    readonly "google-profil": {
+        readonly titel: "Bereich Google-Profil";
+        readonly szene: Szene;
+    };
+    readonly "google-suche": {
+        readonly titel: "Bereich Google-Suche";
+        readonly szene: Szene;
+    };
+    readonly "ki-sichtbarkeit": {
+        readonly titel: "Bereich KI-Sichtbarkeit";
+        readonly szene: Szene;
+    };
+    readonly "website-bereich": {
+        readonly titel: "Bereich Website";
+        readonly szene: Szene;
+    };
+    readonly pruefbericht: {
+        readonly titel: "Prüfbericht";
+        readonly szene: Szene;
+    };
+    readonly "kompakt-check": {
+        readonly titel: "Kompakt-Check";
+        readonly szene: Szene;
+    };
+};
+export type ProduktzeichenName = keyof typeof PRODUKTZEICHEN;
+/** Alle Namen in der Reihenfolge des Verzeichnisses. */
+export declare const PRODUKTZEICHEN_NAMEN: ProduktzeichenName[];
+/** Optische Größe: unter 56 px kräftige Linien, ab 96 px Haarlinien, dazwischen mittel. */
+export type OptischeGroesse = "klein" | "mittel" | "gross";
+export declare function optischeGroesse(groesse: number): OptischeGroesse;
+/** Bildausschnitt und Markup eines Zeichens im Ruhezustand, einmal gerechnet. */
+export declare function produktzeichenDaten(name: ProduktzeichenName): {
+    viewBox: string;
+    markup: string;
+};
+
+/* ---- produktzeichen-reihe1 ---- */
+
+/**
+ * Produktzeichen 01 bis 06: One-Pager, Website, Feinschliff, Datei-Anfrage,
+ * Kundenseite, Monatsbericht. Jede Figur zeichnet mit den Bausteinen aus
+ * `produktzeichen-formen` und hat genau ein Lime-Motiv.
+ */
+export declare const ZEICHEN_ONEPAGER: Szene;
+export declare const ZEICHEN_WEBSITE: Szene;
+export declare const ZEICHEN_FEINSCHLIFF: Szene;
+export declare const ZEICHEN_DATEI_ANFRAGE: Szene;
+export declare const ZEICHEN_KUNDENSEITE: Szene;
+export declare const ZEICHEN_MONATSBERICHT: Szene;
+
+/* ---- produktzeichen-reihe2 ---- */
+
+/**
+ * Produktzeichen 07 bis 13: Bewertungs-Seite, Erscheinungsbild-Handbuch, die
+ * vier Bereiche der Kundenseite (Google-Profil, Google-Suche, KI-Sichtbarkeit,
+ * Website) sowie Prüfbericht und Kompakt-Check. Gleiche Regeln wie Reihe 1.
+ */
+export declare const ZEICHEN_BEWERTUNGSSEITE: Szene;
+export declare const ZEICHEN_ERSCHEINUNGSBILD: Szene;
+export declare const ZEICHEN_GOOGLE_PROFIL: Szene;
+export declare const ZEICHEN_GOOGLE_SUCHE: Szene;
+export declare const ZEICHEN_KI_SICHTBARKEIT: Szene;
+export declare const ZEICHEN_WEBSITE_BEREICH: Szene;
+export declare const ZEICHEN_PRUEFBERICHT: Szene;
+export declare const ZEICHEN_KOMPAKT_CHECK: Szene;
+
+/* ---- produktzeichen-formen ---- */
+
+/**
+ * Bausteine der Produktzeichen: isometrische Zeichen für Produkte und
+ * Werkzeuge, die Kunden beim Namen nennen. Sie teilen Werkzeug und Projektion
+ * mit den Leistungskarten (`werkzeug()` aus der Engine), sind aber kein
+ * Grafikstil A: keine Bühne, keine Geste, eigene Strichstärken.
+ *
+ * Jede Figur zeichnet mit diesen Bausteinen und gibt Klassen statt Farben aus;
+ * die Farben und Strichstärken setzt `produktzeichen.module.css` je Untergrund
+ * und optischer Größe:
+ *
+ * - `f` Vorderseite, `s` Seite, `o` Oberseite (Fläche mit Kontur)
+ * - `k` Kontur ohne Fläche, `th` feine Linie
+ * - `wf` setzt die Grundstärke einer Kontur auf die feine Linie
+ * - `kv` Fläche in Konturfarbe, `tv` Fläche in Farbe der feinen Linie, `sv` Seite ohne Kontur
+ * - `a` Lime-Fläche, `ar` Kontur in Lime-Randfarbe, `al` Lime-Linie, `ad` Linie auf Lime
+ * - `ku` dunkle Unterlage einer Lime-Linie (nur Papier)
+ * - `av` volle Lime-Marke, `am` ihre Kante, `ak` Zeichen darauf
+ * - `gl` Glühen (nur Nacht), `b` Boden gestrichelt, `pt` Staub, `sch` Schatten
+ * - `z` Zeiger, `fk` KI-Funke, `t1` bis `t3` Farbfelder
+ *
+ * Das eine Lime-Motiv steht in `<g class="motiv">` (siehe `zeichenMotiv`).
+ * Die Bildmarke Pin geht mit unveränderten Pfaden per `transform` ins Bild,
+ * nie durch die Projektion.
+ */
+/** Strich relativ zur optischen Größe: `m` mal die Grundstärke der Klasse. */
+export declare const strichMal: (m: number, zusatz?: string) => string;
+/** Feste Strichstärke in Bildeinheiten, gleich bei jeder optischen Größe. */
+export declare const strichFest: (breite: number, zusatz?: string) => string;
+/** Erweitert den Bildausschnitt um einen Bildpunkt (für Teile, die nicht durch `P` laufen). */
+export declare function zeichenPunkt(w: Werkzeug, bx: number, by: number): void;
+type BildPunkte = readonly (readonly [number, number])[];
+/** Geschlossene Fläche aus Bildpunkten, für bildschirmparallele Teile wie den Zeiger. */
+export declare const zeichenBildFlaeche: (punkte: BildPunkte, cls: string, stil?: string) => string;
+/** Offene Linie aus Bildpunkten. */
+export declare const zeichenBildLinie: (punkte: BildPunkte, cls: string, stil?: string) => string;
+/** Abgerundetes Rechteck in Flächenkoordinaten (u nach rechts, v nach oben), n Punkte je Ecke. */
+export declare function rundRechteck(u: number, v: number, bw: number, bh: number, r: number, n?: number): [number, number][];
+/** Ebene Fläche im Raum: Ursprung `o`, Achse `eu` nach rechts, `ev` nach oben. */
+export declare function zeichenEbene(w: Werkzeug, o: Pkt, eu: Pkt, ev: Pkt): {
+    q: (u: number, v: number) => number[];
+    E: Ebene;
+    shape: (lst: readonly (readonly [number, number])[], cls: string, stil?: string) => string;
+    path: (lst: readonly (readonly [number, number])[], cls: string, stil?: string) => string;
+    rect: (u: number, v: number, bw: number, bh: number, cls: string, stil?: string) => string;
+    rrect: (u: number, v: number, bw: number, bh: number, r: number, cls: string, stil?: string) => string;
+    line: (u1: number, v1: number, u2: number, v2: number, cls: string, stil?: string) => string;
+    kreis: (u: number, v: number, rad: number, cls: string, stil?: string) => string;
+};
+export type ZeichenEbene = ReturnType<typeof zeichenEbene>;
+/**
+ * Stehende Tafel (Seite, Bildschirm, Karte, Block): Breite entlang x, Höhe
+ * entlang z, Dicke nach hinten (−y). Sichtbar sind Vorderseite, rechte Kante
+ * und Oberkante.
+ */
+export declare function zeichenTafel(w: Werkzeug, x: number, y: number, z: number, bw: number, bh: number, t?: number): {
+    f: {
+        q: (u: number, v: number) => number[];
+        E: Ebene;
+        shape: (lst: readonly (readonly [number, number])[], cls: string, stil?: string) => string;
+        path: (lst: readonly (readonly [number, number])[], cls: string, stil?: string) => string;
+        rect: (u: number, v: number, bw: number, bh: number, cls: string, stil?: string) => string;
+        rrect: (u: number, v: number, bw: number, bh: number, r: number, cls: string, stil?: string) => string;
+        line: (u1: number, v1: number, u2: number, v2: number, cls: string, stil?: string) => string;
+        kreis: (u: number, v: number, rad: number, cls: string, stil?: string) => string;
+    };
+    koerper: () => string;
+};
+/**
+ * Stehende Tafel mit runden Ecken (Handy, Sprechblase, Münze): Vorderseite,
+ * um die Dicke versetzte Rückseite und die zwei Tangenten rechts. `zipfel`
+ * sind Flächenpunkte, die an der Unterkante links eingesetzt werden.
+ * `koerper(true)` zeichnet die Tafel als Lime-Fläche.
+ */
+export declare function zeichenRundTafel(w: Werkzeug, x: number, y: number, z: number, bw: number, bh: number, r: number, t?: number, zipfel?: readonly (readonly [number, number])[]): {
+    f: {
+        q: (u: number, v: number) => number[];
+        E: Ebene;
+        shape: (lst: readonly (readonly [number, number])[], cls: string, stil?: string) => string;
+        path: (lst: readonly (readonly [number, number])[], cls: string, stil?: string) => string;
+        rect: (u: number, v: number, bw: number, bh: number, cls: string, stil?: string) => string;
+        rrect: (u: number, v: number, bw: number, bh: number, r: number, cls: string, stil?: string) => string;
+        line: (u1: number, v1: number, u2: number, v2: number, cls: string, stil?: string) => string;
+        kreis: (u: number, v: number, rad: number, cls: string, stil?: string) => string;
+    };
+    koerper: (lime?: boolean) => string;
+};
+/**
+ * Stehender Zylinder auf der Ebene z (Stempel, Knopf): sichtbare Mantelhälfte
+ * und Deckel, Klassen für Deckel und Mantel.
+ */
+export declare function zeichenZylinder(w: Werkzeug, cx: number, cy: number, z: number, rad: number, hoehe: number, deckel: string, mantel: string): string;
+/** Gestrichelte Bodenellipse mit drei Staubpunkten. */
+export declare function zeichenBoden(w: Werkzeug, cx: number, cy: number, radius: number, z?: number): string;
+/** Weicher Bodenschatten unter schwebenden Teilen. */
+export declare function zeichenSchatten(w: Werkzeug, cx: number, cy: number, radius: number): string;
+/** Browserleiste oben auf einer Tafel: Trennlinie und Punkte. */
+export declare function zeichenBrowserleiste(f: ZeichenEbene, bw: number, bh: number, punkte?: number): string;
+/** Fünf Sterne in einer Reihe, über `stern` aus den Formen der Leistungskarten. */
+export declare function zeichenSterne(w: Werkzeug, f: ZeichenEbene, u0: number, v: number, r: number, abstand: number, lime?: boolean, anzahl?: number): string;
+/**
+ * Das eine Lime-Motiv eines Zeichens: `leuchtend` glüht auf Nacht, `davor`
+ * und `danach` gehören zum Motiv, glühen aber nicht (Unterlage, Zeichen auf Lime).
+ */
+export declare const zeichenMotiv: (leuchtend: string, danach?: string, davor?: string) => string;
+/**
+ * Bildschirmparallele Lime-Marke als Münze mit Kante, darauf ein Pfeil nach
+ * oben oder ein Haken. Liefert ein ganzes Motiv.
+ */
+export declare function zeichenMarke(w: Werkzeug, cx: number, cy: number, rad: number, zeichen?: "pfeil" | "haken"): string;
+/** KI-Funke mit nach innen gewölbten Seiten, bildschirmparallel, Mittelpunkt im Bild. */
+export declare function zeichenKiFunke(w: Werkzeug, cx: number, cy: number, r: number): string;
+/** Pfade der Bildmarke Pin, unverändert aus `assets/pin.svg` (viewBox 0 0 45.59 62.85). */
+export declare const PIN_PFADE: readonly {
+    fill: string;
+    d: string;
+}[];
+/**
+ * Die Bildmarke Pin, Spitze am Szenenpunkt (x, y, z), `hoehe` in Bildeinheiten.
+ * Bildschirmparallel per `transform`, ohne Rand. Gehört als Motiv in `zeichenMotiv`.
+ */
+export declare function zeichenBildmarke(w: Werkzeug, x: number, y: number, z: number, hoehe: number): string;
+/** Ein Produktzeichen als Szene der Engine: ohne Geste, eine Probe im Ruhezustand. */
+export declare const zeichenSzene: (zeichne: (w: Werkzeug) => string) => Szene;
+/**
+ * Quadratischer Bildausschnitt eines Zeichens als viewBox-String: die Figur
+ * mittig, die längere Seite füllt 56 von 64 Teilen. So bleiben Größe und
+ * Strichstärke gleich, egal wie breit oder hoch die Figur ist.
+ */
+export declare function zeichenAusschnitt(szene: Szene): string;
 
 /* ---- iso ---- */
 
