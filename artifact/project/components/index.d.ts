@@ -1285,6 +1285,28 @@ export interface KopierenTexte {
 }
 /** Texte des Kopieren-Knopfs in Sie-Form, wie auf der Kundenseite. */
 export declare const KOPIEREN_TEXTE: KopierenTexte;
+export interface PaketkartenTexte {
+    /** Etikett der empfohlenen Karte. */
+    empfehlung: string;
+    /** Zugänglicher Name einer Karte; `{paket}` wird zum Namen des Pakets. */
+    karte: string;
+    /** Zugänglicher Name der empfohlenen Karte; `{paket}` wie oben. */
+    karteEmpfohlen: string;
+}
+/** Texte der Paketkarten. Ohne Paketinhalte: Nutzen, Leistungen und Preise reicht der Verbraucher hinein. */
+export declare const PAKETKARTEN_TEXTE: PaketkartenTexte;
+export interface LaufzeitTexte {
+    /** Beschriftung über dem Schalter. */
+    label: string;
+    /** Zugänglicher Name der Knopfgruppe. */
+    gruppe: string;
+    /** Text eines Knopfs; `{monate}` wird zur Zahl der Monate. */
+    option: string;
+}
+/** Texte des Laufzeit-Schalters. Die Info-Zeilen haben keinen Standard (Sie und du unterscheiden sich). */
+export declare const LAUFZEIT_TEXTE: LaufzeitTexte;
+/** Die Laufzeiten in ihrer festen Reihenfolge: 24 zuerst und vorgewählt, 12 daneben. */
+export declare const PAKET_LAUFZEITEN: readonly [24, 12];
 
 /* ---- Eingabefeld ---- */
 
@@ -1859,6 +1881,77 @@ export type ModellkarteProps = {
  * einer Linie stehen.
  */
 export declare function Modellkarte({ zeichen, name, ueberschrift: Ueberschrift, etikett, text, preis, einheit, summen, zeichenGroesse, className, }: ModellkarteProps): React.JSX.Element;
+
+/* ---- Paketkarten ---- */
+
+/** Laufzeit in Monaten. */
+export type PaketLaufzeit = 12 | 24;
+/** Grund, auf dem eine Karte steht. */
+export type PaketGrund = "papier" | "nacht";
+/** Preis einer Laufzeit, fertig formatiert vom Verbraucher. Der Baustein rechnet nichts. */
+export type PaketPreis = {
+    betrag: string;
+    einheit: string;
+    zusatz?: string;
+};
+/** Eine Leistung der Liste: Produktzeichen (dekorativ), Titel und Text. */
+export type PaketReihe = {
+    zeichen: ProduktzeichenName;
+    titel: string;
+    text: React.ReactNode;
+};
+export type Paketkarte = {
+    /** Paket, zugleich Emblem und Name. */
+    paket: Paket;
+    /** Nutzen-Satz; das markierte Wort setzt der Verbraucher mit <Unterstrich>. */
+    nutzen: React.ReactNode;
+    fuerWen: React.ReactNode;
+    preis: Record<PaketLaufzeit, PaketPreis>;
+    /** Abschnittslabel über der Liste. */
+    label: string;
+    reihen: PaketReihe[];
+    /** Knopf unter dem Preis; bekommt den Grund seiner Karte, die Empfehlung steht im Gegenton. */
+    aktion?: (grund: PaketGrund) => React.ReactNode;
+};
+export type PaketkartenProps = {
+    karten: Paketkarte[];
+    /** Diese Karte trägt Etikett, Lime-Rahmen und Gegenton. */
+    empfohlen?: Paket;
+    /** Fläche unter den Karten. Standard: Papier. */
+    untergrund?: PaketGrund;
+    /** Nur wenn gesetzt, trägt der Baustein data-laufzeit; sonst gilt ein Vorfahr oder 24. */
+    laufzeit?: PaketLaufzeit;
+    texte?: Partial<PaketkartenTexte>;
+};
+/**
+ * Abokacheln Variante D (Flo 01.11.2026): je Paket Emblem und Name, Nutzen,
+ * Für-wen, Preis beider Laufzeiten, Zusatz und Aktion, Abschnittslabel und die
+ * Liste mit Produktzeichen. Rendert auf dem Server; die Laufzeit wählt ein
+ * Vorfahr mit data-laufzeit (LaufzeitBereich) oder die Prop `laufzeit`.
+ * Jede Karte rendert jeden Rasterplatz, leer wenn ihr der Inhalt fehlt, damit
+ * Label und Liste aller Karten auf einer Linie stehen, auch beim Umschalten.
+ */
+export declare function Paketkarten({ karten, empfohlen, untergrund, laufzeit, texte }: PaketkartenProps): React.JSX.Element;
+
+/* ---- LaufzeitSchalter ---- */
+
+export type LaufzeitSchalterProps = {
+    wert: PaketLaufzeit;
+    onWechsel: (laufzeit: PaketLaufzeit) => void;
+    /** Info-Zeile je Laufzeit. Ohne `info` entfällt die Zeile. */
+    info?: Record<PaketLaufzeit, string>;
+    texte?: Partial<LaufzeitTexte>;
+};
+export declare function LaufzeitSchalter({ wert, onWechsel, info, texte }: LaufzeitSchalterProps): React.JSX.Element;
+export type LaufzeitBereichProps = {
+    /** Laufzeit beim ersten Rendern. Standard: 24. */
+    start?: PaketLaufzeit;
+    info?: Record<PaketLaufzeit, string>;
+    texte?: Partial<LaufzeitTexte>;
+    children: React.ReactNode;
+};
+/** Hält die Laufzeit, zeigt oben den Schalter und setzt data-laufzeit auf den Rahmen um die Kinder. */
+export declare function LaufzeitBereich({ start, info, texte, children }: LaufzeitBereichProps): React.JSX.Element;
 
 /* ---- iso ---- */
 
