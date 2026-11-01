@@ -54,7 +54,7 @@ describe("Variablen", () => {
 
 describe("Schriftgrade und Rundungen", () => {
   const GRAD = `var\\(--grad-(?:${Object.keys(GRADE).join("|")})\\)`;
-  const SCHRIFTGROESSE = [new RegExp(`^${GRAD}$`), new RegExp(`^clamp\\(${GRAD}, [\\d.]+vw, ${GRAD}\\)$`), /^inherit$/, /^[\d.]+em$/];
+  const SCHRIFTGROESSE = [new RegExp(`^${GRAD}$`), new RegExp(`^clamp\\(${GRAD}, [\\d.]+(?:vw|cqi), ${GRAD}\\)$`), /^inherit$/, /^[\d.]+em$/];
   const RUNDUNG = [
     new RegExp(`^var\\(--rund-(?:${Object.keys(RUNDUNGEN).join("|")})\\)$`),
     /^calc\((?:[\d.]+px|var\(--[\w-]+\)) \* var\(--rund-pille-faktor\)\)$/,

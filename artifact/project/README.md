@@ -75,7 +75,7 @@ Drei Familien mit festen Rollen:
 
 Es gibt keine Mono-Schrift. Zahlen setzt `messwert` mit proportionalen Versalziffern, nie tabellarisch.
 
-Schriftgrößen kommen nur aus den Graden `grad-12`, `grad-14`, `grad-16`, `grad-18`, `grad-24`, `grad-32`, `grad-48`, `grad-64` und der Messwert-Stufe `grad-80`. Fließende Überschriften behalten ihre `vw`-Mitte, ihre Endpunkte liegen auf Graden: `clamp(var(--grad-32), 3.4vw, var(--grad-48))`.
+Schriftgrößen kommen nur aus den Graden `grad-12`, `grad-14`, `grad-16`, `grad-18`, `grad-24`, `grad-32`, `grad-48`, `grad-64` und der Messwert-Stufe `grad-80`. Fließende Überschriften behalten ihre `vw`-Mitte, ihre Endpunkte liegen auf Graden: `clamp(var(--grad-32), 3.4vw, var(--grad-48))`. Ein Baustein, der über seine eigene Breite schaltet, nimmt statt `vw` eine `cqi`-Mitte, etwa der Preis der Modellkarte: `clamp(var(--grad-48), 16cqi, var(--grad-64))`.
 
 | Rolle | Satz |
 |---|---|
@@ -122,6 +122,7 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Rahmen und Ordnung:** `Kasten` mit `SucherEcken`, `Info`, `Schritte`, `Liste` mit `Gruppe` und `Listenzeile`, `Filterleiste`, `DetailRahmen`.
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
 - **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A). Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
+- **Preise:** `Modellkarte`, die Preiskarte eines Website-Angebots auf Papier mit Produktzeichen, Preis und Summen; Zahlen kommen fertig formatiert vom Verbraucher, zwei Karten stehen nebeneinander.
 
 Bausteine bekommen Texte und Daten als Props. Sie holen nichts aus einer App und hängen nicht an Next.js.
 

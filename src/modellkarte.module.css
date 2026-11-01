@@ -1,0 +1,124 @@
+/*
+ * Modellkarte: Preiskarte eines Website-Angebots auf Papier (Entwurf 1
+ * „Modellkarte“, Flo 01.11.2026). Werte aus der Website (components/gruendung),
+ * dort über die Seitenbreite geschaltet, hier über die Breite der Karte selbst.
+ * Unter 420 px: Bühne 220 px, Zeichen 150 px, Summen untereinander;
+ * ab 420 px: Bühne 250 px, Zeichen in voller Größe, Summen nebeneinander.
+ * Die Schwelle folgt den Summen: ab 420 px Kartenbreite bleiben je Spalte gut
+ * 160 px, genug für „24 Raten zusammen“ (157 px) und die Ratensumme des
+ * Musters (141 px) ohne Umbruch (gemessen am 01.11.2026 mit den Paketschriften).
+ */
+
+/* Die Textzeile wächst (1fr), damit Preis und Summen zweier Karten
+   nebeneinander auf einer Linie stehen. Jeder Teil hat seine feste Zeile,
+   auch wenn Etikett oder Text fehlen. */
+.karte {
+  --ecken-farbe: var(--lime);
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto;
+  border: 1px solid var(--wp-linie);
+  background: var(--wp-blatt);
+}
+
+/* Die Bühne trägt das 24-px-Raster der Flächen. */
+.buehne {
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  border-bottom: 1px solid var(--wp-linie-fein);
+  background-image:
+    linear-gradient(var(--wp-raster) 1px, transparent 1px),
+    linear-gradient(90deg, var(--wp-raster) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.kopf {
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 24px 0;
+}
+
+.name {
+  margin: 0;
+  font-size: var(--grad-32);
+}
+
+.text {
+  grid-row: 3;
+  margin: 0;
+  padding: 12px 24px 0;
+}
+
+.preis {
+  grid-row: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  padding: 22px 24px 20px;
+}
+
+/* Website: 56 px, ab 1024 px Seitenbreite 64 px; hier fließend mit der Kartenbreite. */
+.messwert {
+  font-size: clamp(var(--grad-48), 16cqi, var(--grad-64));
+  line-height: 0.9;
+}
+
+.einheit {
+  font-size: var(--grad-14);
+  color: var(--wp-gedaempft);
+}
+
+.summen {
+  grid-row: 5;
+  display: grid;
+  margin: 0;
+  border-top: 1px solid var(--wp-linie);
+}
+
+.summen > div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 14px 24px 18px;
+}
+
+.summen > div + div {
+  border-top: 1px solid var(--wp-linie-fein);
+}
+
+.summen dt {
+  color: var(--wp-gedaempft);
+}
+
+.summen dd {
+  font-size: var(--grad-18);
+}
+
+@container (width < 420px) {
+  .buehne svg {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@container (width >= 420px) {
+  .buehne {
+    height: 250px;
+  }
+
+  .summen {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .summen > div + div {
+    border-top: 0;
+    border-left: 1px solid var(--wp-linie-fein);
+  }
+}

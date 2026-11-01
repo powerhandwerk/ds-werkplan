@@ -191,6 +191,7 @@ const PROPS: Record<string, Record<string, unknown>> = {
   KopierenKnopf: { wert: "ABC-123" },
   Eingabefeld: { label: "Name", name: "name" },
   Produktzeichen: { name: "feinschliff" },
+  Modellkarte: { zeichen: "website", name: "Website", preis: "00 €" },
   // Grafik: Daten aus dem Bündel selbst, darum als Getter (das Bündel lädt erst in beforeAll).
   get Leistungskarten() {
     const D = fenster.DsWerkplan;

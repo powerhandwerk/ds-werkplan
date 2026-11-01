@@ -19,7 +19,7 @@ import { MARKER_TILT_DEG } from "../src/MarkerHighlight";
 import { GRAFIK, MASSE } from "../src/tokens";
 import { komma } from "./erzeuge";
 
-const GRUPPEN = ["Aktionen", "Status", "Hervorhebung", "Fakten", "Rahmen", "Listen", "Kundenseite", "Marke", "Grafik"] as const;
+const GRUPPEN = ["Aktionen", "Status", "Hervorhebung", "Fakten", "Rahmen", "Listen", "Kundenseite", "Marke", "Grafik", "Preise"] as const;
 export type Gruppe = (typeof GRUPPEN)[number];
 
 /** Wie die Vorschau ihre Fläche bekommt. */
@@ -1249,6 +1249,67 @@ function Beispiel(p) {
       "Bühne, Geste oder die Strichstärken der Leistungskarte: Produktzeichen sind kein Stil A.",
       "Ein Zeichen kleiner als 32 px.",
       "Ein Zeichen freihand statt mit Engine und `produktzeichen-formen`.",
+    ],
+  },
+  /* ---------------- Preise ---------------- */
+  {
+    name: "Modellkarte",
+    gruppe: "Preise",
+    hoehe: 720,
+    flaeche: "papier",
+    skript: `
+var ZWEI = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 312px), 1fr))", gap: "var(--abstand-16)" };
+var EINHEIT = "im Monat, netto · 24 Raten · nur mit Paket";
+var SUMMEN = [{ label: "24 Raten zusammen", wert: "24 × 00 € = 000 €" }, { label: "Auf einmal gekauft", wert: "0.000 €" }];
+function Beispiel() {
+  return h("div", { className: "stapel" },
+    h("div", { style: ZWEI },
+      h(D.Modellkarte, {
+        zeichen: "onepager",
+        name: "One-Pager",
+        etikett: "1 Seite",
+        text: "Eine Seite mit Ihren Leistungen und Ihren Kontaktwegen: Anruf, WhatsApp, E-Mail.",
+        preis: "00 €",
+        einheit: EINHEIT,
+        summen: SUMMEN
+      }),
+      h(D.Modellkarte, {
+        zeichen: "website",
+        name: "Website",
+        etikett: "4 Seiten",
+        text: "Vier Seiten, zum Beispiel Start, Leistungen, Über uns, Kontakt.",
+        preis: "00 €",
+        einheit: EINHEIT,
+        summen: SUMMEN
+      })),
+    h("p", { className: W.beschriftung }, "Muster, keine echten Preise."));
+}`,
+    zusammenfassung:
+      "Die Modellkarte ist die Preiskarte eines Website-Angebots: das Produktzeichen auf eigener Bühne, Etikett und Name, ein kurzer Text, der Preis groß als Messwert mit Einheit und darunter bis zu zwei Summen.",
+    wann: [
+      "Auf Papier, für Angebote mit festem Preis wie One-Pager und Website auf der Website und der Preisseite. Zwei Karten stehen nebeneinander in einem Raster mit 16 px Lücke, schmal untereinander.",
+      "Alle Zahlen kommen fertig formatiert vom Verbraucher, aus seinem Preisregister: `preis`, `einheit` und die Werte in `summen`. Der Baustein rechnet nichts.",
+      "Die Karte schaltet über ihre eigene Breite: unter 420 px Bühne 220 px und Zeichen 150 px, Summen untereinander; ab 420 px Bühne 250 px, Zeichen in voller Größe, Summen nebeneinander mit feiner Trennlinie. Der Preis wächst mit der Kartenbreite von 48 auf 64 px.",
+      "Die Textzeile wächst, damit Preis und Summen zweier Karten nebeneinander auf einer Linie stehen, auch bei verschieden langen Texten.",
+      "Die Karte ist eine `section` mit `name` als zugänglichem Namen, gerahmt von `SucherEcken` mit Lime-Ecken. Das Produktzeichen ist dekorativ, der Name steht daneben.",
+    ],
+    props: [
+      ["zeichen", "ProduktzeichenName", "Pflicht", "Produktzeichen auf der Bühne, etwa `\"onepager\"` oder `\"website\"`."],
+      ["name", "string", "Pflicht", "Name des Angebots; Überschrift und zugänglicher Name der Karte."],
+      ["ueberschrift", "\"h2\" \\| \"h3\" \\| \"h4\"", "\"h3\"", "Ebene der Überschrift."],
+      ["etikett", KINDER, "ohne", "Etikett (`lead`) vor dem Namen, etwa der Umfang."],
+      ["text", KINDER, "ohne", "Kurzer Text zum Angebot."],
+      ["preis", "string", "Pflicht", "Preis, fertig formatiert, etwa `\"00 €\"`."],
+      ["einheit", "string", "ohne", "Einheit neben dem Preis."],
+      ["summen", "readonly { label: string; wert: string }[]", "ohne", "Bis zu zwei Summen unter dem Preis, als Beschreibungsliste."],
+      ["zeichenGroesse", "number", "172", "Kantenlänge des Produktzeichens in px; unter 420 px Kartenbreite 150 px."],
+      ["className", "string", "ohne", "Zusätzliche Klasse an der Karte."],
+    ],
+    lassen: [
+      "Preise im Baustein ausrechnen oder fest eintragen: Die Zahlen kommen aus dem Preisregister des Verbrauchers.",
+      "Die Karte auf Nacht: Sie steht auf Papier.",
+      "Mehr als zwei Summen oder mehr als zwei Karten nebeneinander.",
+      "Echte Preise in Mustern und Vorschauen: Muster tragen „Muster, keine echten Preise.“",
     ],
   },
 ];

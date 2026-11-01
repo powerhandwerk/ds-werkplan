@@ -303,6 +303,11 @@ export {
   type ZeichenEbene,
 } from "./produktzeichen-formen";
 export {
+  Modellkarte,
+  type ModellkarteProps,
+  type ModellkarteSumme,
+} from "./Modellkarte";
+export {
   h as isoElement,
   sternPfad,
   filterDefs,
