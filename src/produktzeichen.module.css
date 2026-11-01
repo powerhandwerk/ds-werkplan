@@ -1,0 +1,225 @@
+/*
+ * Produktzeichen: Farben je Untergrund, Strichstärken je optischer Größe.
+ * Die Szenen-Klassen (f, s, o, k, th, wf, kv, tv, sv, a, ar, al, ad, ku, av,
+ * am, ak, gl, b, pt, sch, z, fk, t1 bis t3; Bedeutung in
+ * produktzeichen-formen.ts) setzt die Szene als Markup-String, deshalb stehen
+ * sie hier als :global unter der gehashten Wurzel .zeichen.
+ * Strichstärken in Bildeinheiten des Bildausschnitts: --zk Kontur, --zf feine
+ * Linie; ein Element skaliert sie mit --m.
+ */
+
+.zeichen {
+  --m: 1;
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Untergrund ---------- */
+
+.papier {
+  --z-front: var(--ink-050);
+  --z-seite: color-mix(in oklch, var(--ink-200) 90%, var(--ink-100));
+  --z-oben: var(--ink-100);
+  --z-kontur: var(--ink-950);
+  --z-fein: var(--ink-500);
+  --z-boden: var(--ink-500);
+  --z-lime-flaeche: var(--lime);
+  --z-lime-rand: var(--ink-950);
+  --z-auf-lime: var(--ink-950);
+  --z-funke: var(--ink-950);
+  --z-ton-1: var(--ink-950);
+  --z-ton-2: var(--ink-500);
+  --z-ton-3: var(--ink-200);
+  --z-schatten: 0.06;
+}
+
+.nacht {
+  --z-front: var(--ink-900);
+  --z-seite: var(--ink-950);
+  --z-oben: var(--ink-800);
+  --z-kontur: var(--ink-400);
+  --z-fein: var(--ink-500);
+  --z-boden: var(--ink-600);
+  --z-lime-flaeche: color-mix(in srgb, var(--lime) 12%, var(--ink-950));
+  --z-lime-rand: var(--lime);
+  --z-auf-lime: var(--lime);
+  --z-funke: var(--ink-050);
+  --z-ton-1: var(--ink-050);
+  --z-ton-2: var(--ink-400);
+  --z-ton-3: color-mix(in oklch, var(--ink-800) 66%, var(--ink-600));
+  --z-schatten: 0.3;
+}
+
+/* ---------- Optische Größe ---------- */
+
+.papier.klein {
+  --zk: 1.5;
+  --zf: 0.9;
+}
+.papier.mittel {
+  --zk: 1.05;
+  --zf: 0.65;
+}
+.papier.gross {
+  --zk: 0.8;
+  --zf: 0.5;
+}
+.nacht.klein {
+  --zk: 1.35;
+  --zf: 0.9;
+}
+.nacht.mittel {
+  --zk: 0.95;
+  --zf: 0.65;
+}
+.nacht.gross {
+  --zk: 0.75;
+  --zf: 0.5;
+}
+
+/* ---------- Flächen mit Kontur ---------- */
+
+.zeichen :global(.f),
+.zeichen :global(.s),
+.zeichen :global(.o),
+.zeichen :global(.t1),
+.zeichen :global(.t2),
+.zeichen :global(.t3),
+.zeichen :global(.k),
+.zeichen :global(.a) {
+  stroke: var(--z-kontur);
+  stroke-width: calc(var(--zk) * var(--m));
+}
+.zeichen :global(.f) {
+  fill: var(--z-front);
+}
+.zeichen :global(.s) {
+  fill: var(--z-seite);
+}
+.zeichen :global(.o) {
+  fill: var(--z-oben);
+}
+.zeichen :global(.t1) {
+  fill: var(--z-ton-1);
+}
+.zeichen :global(.t2) {
+  fill: var(--z-ton-2);
+}
+.zeichen :global(.t3) {
+  fill: var(--z-ton-3);
+}
+.zeichen :global(.k) {
+  fill: none;
+}
+
+/* ---------- Feine Linie ---------- */
+
+.zeichen :global(.th) {
+  fill: none;
+  stroke: var(--z-fein);
+}
+.zeichen :global(.th),
+.zeichen :global(.wf) {
+  stroke-width: calc(var(--zf) * var(--m));
+}
+
+/* ---------- Flächen ohne Kontur ---------- */
+
+.zeichen :global(.kv) {
+  fill: var(--z-kontur);
+  stroke: none;
+}
+.zeichen :global(.tv) {
+  fill: var(--z-fein);
+  stroke: none;
+}
+.zeichen :global(.sv) {
+  fill: var(--z-seite);
+  stroke: none;
+}
+
+/* ---------- Lime-Motiv ---------- */
+
+.zeichen :global(.a) {
+  fill: var(--z-lime-flaeche);
+  stroke: var(--z-lime-rand);
+}
+.zeichen :global(.ar) {
+  stroke: var(--z-lime-rand);
+}
+.zeichen :global(.al) {
+  fill: none;
+  stroke: var(--lime);
+}
+.zeichen :global(.ad) {
+  fill: none;
+  stroke: var(--z-auf-lime);
+}
+.zeichen :global(.ku) {
+  fill: none;
+  stroke: var(--z-kontur);
+}
+.zeichen.nacht :global(.ku) {
+  display: none;
+}
+
+/* Marke: Münze in Lime mit dunklerer Kante, dunkles Zeichen darauf */
+.zeichen :global(.av),
+.zeichen :global(.am) {
+  stroke: var(--ink-950);
+  stroke-width: 1;
+}
+.zeichen :global(.av) {
+  fill: var(--lime);
+}
+.zeichen :global(.am) {
+  fill: color-mix(in srgb, var(--lime) 78%, var(--ink-950));
+}
+.zeichen.nacht :global(.av),
+.zeichen.nacht :global(.am) {
+  stroke: none;
+}
+.zeichen :global(.ak) {
+  fill: none;
+  stroke: var(--ink-950);
+  stroke-width: 1.5;
+}
+
+/* Lime leuchtet auf Nacht */
+.zeichen.nacht :global(.gl) {
+  filter: drop-shadow(0 0 2.2px var(--lime-glow));
+}
+
+/* ---------- Boden, Staub, Schatten ---------- */
+
+.zeichen :global(.b) {
+  fill: none;
+  stroke: var(--z-boden);
+  stroke-width: 0.7;
+  stroke-dasharray: 1.6 1.9;
+  stroke-linecap: butt;
+  opacity: 0.9;
+}
+.zeichen :global(.pt) {
+  fill: var(--z-boden);
+  stroke: none;
+}
+.zeichen :global(.sch) {
+  fill: var(--ink-950);
+  stroke: none;
+  opacity: var(--z-schatten);
+}
+
+/* ---------- Zeiger und KI-Funke ---------- */
+
+.zeichen :global(.z) {
+  fill: var(--ink-050);
+  stroke: var(--ink-950);
+}
+.zeichen :global(.fk) {
+  fill: var(--z-funke);
+  stroke: none;
+}

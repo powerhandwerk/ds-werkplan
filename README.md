@@ -68,6 +68,18 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
   Stil B, die Iso-Szene (Iso-Kern nach iso-glow, `IsoKnoten`, Iso-Palette, Ablauf
   `IsoSzene`, Beispiel `explosionProfil`). Regeln im Markenbuch, Abschnitt „Bild und
   Grafik“.
+- **Produktzeichen** (`Produktzeichen`, Verzeichnis `PRODUKTZEICHEN`, Szenen in zwei
+  Reihen, Bausteine in `produktzeichen-formen`): 14 isometrische Zeichen für Produkte
+  und Werkzeuge, die Kunden beim Namen nennen, mit genau einem Lime-Motiv, auf Papier
+  und Nacht. Die Strichstärke folgt der Größe (unter 56 px kräftig, ab 96 px fein).
+  Sie teilen Werkzeug und Projektion mit Stil A, sind aber kein Stil A: keine Bühne,
+  keine Geste. Ohne `titel` dekorativ, mit `titel` ein Bild mit Namen.
+
+  ```tsx
+  import { Produktzeichen } from "@powerhandwerk/ds-werkplan/Produktzeichen";
+
+  <Produktzeichen name="feinschliff" untergrund="nacht" groesse={64} />
+  ```
 - **Schriften und Marken:** `fonts/` (Big Shoulders Display, Hanken Grotesk, Barlow Semi
   Condensed, je mit OFL-Lizenztext), `assets/` (Logo hell und dunkel, Standort-Pin).
 

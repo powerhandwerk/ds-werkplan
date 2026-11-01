@@ -121,7 +121,7 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Fakten:** `Plankopf` ist das Schriftfeld einer Seite (Werte in normaler Schreibung), `Schriftfeld` die Fassung der Arbeitsfläche (Werte in Versalien); `Messwert` mit `Besch` und Quelle als Kennzahl; `Massbalken`, `Masskette` und `Fortschritt` für Anteile und Stände; `BlattZeile` für die Zeile über einem Blatt.
 - **Rahmen und Ordnung:** `Kasten` mit `SucherEcken`, `Info`, `Schritte`, `Liste` mit `Gruppe` und `Listenzeile`, `Filterleiste`, `DetailRahmen`.
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
-- **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern. Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
+- **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A). Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
 
 Bausteine bekommen Texte und Daten als Props. Sie holen nichts aus einer App und hängen nicht an Next.js.
 
@@ -143,7 +143,24 @@ Fotos sind erlaubt. KI-Bilder erscheinen nur gekennzeichnet. Erklärgrafiken sin
 
 Für beide Stile gilt: Musterinhalte tragen „Muster, keine echten Daten.“ Reduzierte Bewegung zeigt sofort das Ende, ohne JavaScript steht der Ruhezustand im HTML, jede Grafik hat eine Beschreibung für Vorleser. Text in einer Figur läuft durch `text()` der Engine oder als Kind durch React, nie als rohes Markup.
 
-**Produktzeichen.** Die Paket-Embleme (`AboIcon`) für Standard, Profi und Platzhirsch gehören zur selben Familie. Ein Abo-Name steht nie ohne sein Emblem.
+**Produktzeichen** (`Produktzeichen`). Ein Produktzeichen steht für ein Produkt oder Werkzeug, das Kunden beim Namen nennen, und steht neben diesem Namen. Es ist eine kleine isometrische Figur auf Papier oder auf Nacht, ab 32 px, mit genau einem Lime-Motiv; fünf Sterne zählen als ein Motiv. Die Strichstärken folgen der Größe: unter 56 px kräftig, ab 96 px Haarlinien, dazwischen mittel. Produktzeichen sind kein Stil A: keine Bühne, keine Geste, eigene Strichstärken. Das Paket führt 14 Zeichen:
+
+- `onepager`, One-Pager: eine lange Seite.
+- `website`, Website mit vier Seiten: vier Seiten hintereinander.
+- `feinschliff`, Feinschliff: diese eine Stelle der Seite.
+- `datei-anfrage`, Datei-Anfrage: ein Foto hebt ab.
+- `kundenseite`, Kundenseite: alles auf einen Blick.
+- `monatsbericht`, Monatsbericht: belegt.
+- `bewertungsseite`, Bewertungs-Seite: ein Aufsteller mit QR-Code.
+- `erscheinungsbild`, Erscheinungsbild-Handbuch: das Handbuch.
+- `google-profil`, Bereich Google-Profil: der Betrieb mit der Bildmarke.
+- `google-suche`, Bereich Google-Suche: Suchfeld und Treffer.
+- `ki-sichtbarkeit`, Bereich KI-Sichtbarkeit: Frage und Antwort mit dem KI-Funken.
+- `website-bereich`, Bereich Website: die Website läuft.
+- `pruefbericht`, Prüfbericht: der Prüfstand mit Bericht.
+- `kompakt-check`, Kompakt-Check: der Prüfstand allein.
+
+Neue Zeichen entstehen nur mit der Engine und den Bausteinen aus `produktzeichen-formen`. Eine Funktion, die ein normales Icon hat, bekommt kein Produktzeichen, etwa Zugänge, Rückruf oder Neuigkeiten. Die Paket-Embleme (`AboIcon`) für Standard, Profi und Platzhirsch gehören zur selben Familie. Ein Abo-Name steht nie ohne sein Emblem.
 
 ## Nicht verwenden
 
