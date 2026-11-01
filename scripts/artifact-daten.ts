@@ -1312,6 +1312,150 @@ function Beispiel() {
       "Echte Preise in Mustern und Vorschauen: Muster tragen „Muster, keine echten Preise.“",
     ],
   },
+  {
+    name: "Paketkarten",
+    gruppe: "Preise",
+    hoehe: 1000,
+    breite: 2400,
+    untertitel: "Ab 1.080 px drei Spalten",
+    flaeche: "beide",
+    skript: `
+var LAUFZEIT_INFO = { 24: "Muster für die Info-Zeile bei 24 Monaten.", 12: "Muster für die Info-Zeile bei 12 Monaten." };
+var EMPFOHLEN = "Profi";
+function preis() {
+  return {
+    24: { betrag: "00 €", einheit: "im Monat, netto", zusatz: "Muster für den Zusatz bei 24 Monaten." },
+    12: { betrag: "00 €", einheit: "im Monat, netto", zusatz: "Muster für den Zusatz bei 12 Monaten." }
+  };
+}
+function reihe(zeichen) {
+  return { zeichen: zeichen, titel: "Muster-Leistung", text: "Muster für den Satz zu einer Leistung." };
+}
+function hauptaktion(grund) {
+  return h(D.LichtkanteButton, { href: "#paket", untergrund: grund }, "Paket wählen");
+}
+function nebenaktion(grund) {
+  return h(D.RuhigerKnopf, { nacht: grund === "nacht" }, "Paket wählen");
+}
+function karte(paket, label, zeichen) {
+  return {
+    paket: paket,
+    nutzen: h("span", null, "Muster für den ", h(D.Unterstrich, null, "Nutzen"), " des Pakets in einem Satz."),
+    fuerWen: "Muster für die Betriebe, zu denen das Paket passt.",
+    preis: preis(),
+    label: label,
+    reihen: zeichen.map(reihe),
+    aktion: paket === EMPFOHLEN ? hauptaktion : nebenaktion
+  };
+}
+var KARTEN = [
+  karte("Standard", "Was wir tun", ["google-profil", "bewertungsseite", "monatsbericht"]),
+  karte("Profi", "Alles aus Standard, dazu", ["google-suche", "website-bereich"]),
+  karte("Platzhirsch", "Alles aus Profi, dazu", ["ki-sichtbarkeit", "feinschliff"])
+];
+function Beispiel(p) {
+  return h("div", { className: "stapel" },
+    h(D.LaufzeitBereich, { info: LAUFZEIT_INFO },
+      h(D.Paketkarten, { karten: KARTEN, empfohlen: EMPFOHLEN, untergrund: p.u })),
+    h("p", { className: W.beschriftung }, "Muster, keine echten Preise und Leistungen."));
+}`,
+    zusammenfassung:
+      "Die Paketkarten zeigen die drei Abo-Pakete nebeneinander: je Karte Emblem und Name, Nutzen, Für-wen, Preis beider Laufzeiten, Zusatz und Aktion, Abschnittslabel und die Liste mit Produktzeichen.",
+    wann: [
+      "Wo Betriebe zwischen Standard, Profi und Platzhirsch wählen, etwa auf der Preisseite und den Zielseiten der Website, auf Papier oder auf Nacht.",
+      "Nutzen zuerst, die Leistungen sind der Beleg. Jede Karte nennt nur, was gegenüber der vorigen dazukommt; das Label sagt es, etwa „Alles aus Standard, dazu“.",
+      "Die empfohlene Karte (`empfohlen`) steht im Gegenton zur Fläche, auf Papier Nacht und auf Nacht Papier, mit Lime-Rahmen und dem Etikett „Unsere Empfehlung“ auf der oberen Kante. Ihre Produktzeichen und `aktion(grund)` bekommen diesen Gegenton.",
+      "Die Karten schalten über ihre eigene Breite: unter 640 px untereinander, bis 1.080 px untereinander und innen zweispaltig, darüber drei Spalten mit Subgrid. Label und Liste aller Karten stehen auf einer Linie, auch beim Umschalten der Laufzeit.",
+      "Beide Laufzeiten stehen im Server-HTML. Sichtbar ist 24, außer `laufzeit` oder ein Vorfahr mit `data-laufzeit` (`LaufzeitBereich`) wählt 12. Der Baustein selbst rendert auf dem Server.",
+      "Alle Texte und Preise kommen fertig vom Verbraucher, aus seinem Preisregister. Der Baustein rechnet nichts. Produktzeichen stehen in 44 px und sind dekorativ.",
+    ],
+    props: [
+      ["karten", "Paketkarte[]", "Pflicht", "Je Karte `paket`, `nutzen`, `fuerWen`, `preis` mit `24` und `12` (je `betrag`, `einheit`, optional `zusatz`), `label`, `reihen` (je `zeichen`, `titel`, `text`) und optional `aktion(grund)`."],
+      ["empfohlen", "Paket", "ohne", "Diese Karte trägt Etikett, Lime-Rahmen und Gegenton."],
+      ["untergrund", "\"papier\" \\| \"nacht\"", "\"papier\"", "Fläche unter den Karten."],
+      ["laufzeit", "12 \\| 24", "ohne", "Wählt die Laufzeit am Baustein selbst; ohne gilt ein Vorfahr mit `data-laufzeit` oder 24."],
+      ["texte", "Partial<PaketkartenTexte>", "PAKETKARTEN_TEXTE", "Etikett der Empfehlung und zugängliche Namen der Karten."],
+    ],
+    lassen: [
+      "Preise oder Paketinhalte im Baustein: Sie kommen als Props aus dem Preisregister des Verbrauchers.",
+      "Alle Leistungen auf jeder Karte wiederholen: Jede Karte nennt nur, was dazukommt.",
+      "Mehr als eine Empfehlung oder Lime an anderen Karten.",
+      "Echte Preise in Mustern und Vorschauen: Muster tragen „Muster, keine echten Preise und Leistungen.“",
+    ],
+  },
+  {
+    name: "LaufzeitSchalter",
+    gruppe: "Preise",
+    hoehe: 220,
+    flaeche: "beide",
+    skript: `
+var INFO = { 24: "Muster für die Info-Zeile bei 24 Monaten.", 12: "Muster für die Info-Zeile bei 12 Monaten." };
+function Beispiel() {
+  var s = React.useState(24);
+  return h(D.LaufzeitSchalter, { wert: s[0], onWechsel: s[1], info: INFO });
+}`,
+    zusammenfassung:
+      "Der Laufzeit-Schalter wählt über den Paketkarten zwischen 24 und 12 Monaten: zwei gleich breite Knöpfe, 24 zuerst, darunter die Info-Zeile zur gewählten Laufzeit.",
+    wann: [
+      "Über den Paketkarten, auf Papier oder auf Nacht. 24 Monate stehen zuerst, 12 daneben; die gewählte Laufzeit trägt Lime.",
+      "Die Knöpfe tragen `aria-pressed`. Die Info-Zeile wechselt ihren Text und wird angesagt (`aria-live`); beide Zeilen halten gemeinsam die Höhe, damit nichts springt.",
+      "Ohne `info` entfällt die Info-Zeile. Info-Zeilen haben keinen Standard, weil Sie und du sich unterscheiden.",
+      "Der Schalter nimmt eine Funktion und geht deshalb nur aus Client-Komponenten. Server-Seiten nehmen `LaufzeitBereich`, der den Zustand hält.",
+    ],
+    props: [
+      ["wert", "12 \\| 24", "Pflicht", "Gewählte Laufzeit."],
+      ["onWechsel", "(laufzeit: 12 \\| 24) => void", "Pflicht", "Ruft die neu gewählte Laufzeit zurück."],
+      ["info", "Record<12 \\| 24, string>", "ohne", "Info-Zeile je Laufzeit."],
+      ["texte", "Partial<LaufzeitTexte>", "LAUFZEIT_TEXTE", "Beschriftung, Name der Knopfgruppe und Text eines Knopfs mit `{monate}`."],
+    ],
+    lassen: [
+      "12 Monate zuerst oder vorgewählt: 24 steht vorn.",
+      "Den Schalter in einer Server-Komponente mit eigener Funktion: Dafür gibt es `LaufzeitBereich`.",
+      "Preise in der Info-Zeile des Pakets: Muster tragen Platzhalter.",
+    ],
+  },
+  {
+    name: "LaufzeitBereich",
+    gruppe: "Preise",
+    hoehe: 760,
+    flaeche: "beide",
+    skript: `
+var INFO = { 24: "Muster für die Info-Zeile bei 24 Monaten.", 12: "Muster für die Info-Zeile bei 12 Monaten." };
+var KARTE = {
+  paket: "Profi",
+  nutzen: h("span", null, "Muster für den ", h(D.Unterstrich, null, "Nutzen"), " des Pakets in einem Satz."),
+  fuerWen: "Muster für die Betriebe, zu denen das Paket passt.",
+  preis: {
+    24: { betrag: "00 €", einheit: "im Monat, netto" },
+    12: { betrag: "00 €", einheit: "im Monat, netto", zusatz: "Muster für den Zusatz bei 12 Monaten." }
+  },
+  label: "Was wir tun",
+  reihen: [{ zeichen: "google-profil", titel: "Muster-Leistung", text: "Muster für den Satz zu einer Leistung." }]
+};
+function Beispiel(p) {
+  return h("div", { className: "stapel" },
+    h(D.LaufzeitBereich, { info: INFO },
+      h(D.Paketkarten, { karten: [KARTE], untergrund: p.u })),
+    h("p", { className: W.beschriftung }, "Muster, keine echten Preise und Leistungen."));
+}`,
+    zusammenfassung:
+      "Der Laufzeit-Bereich hält die gewählte Laufzeit, zeigt oben den Laufzeit-Schalter und setzt `data-laufzeit` auf den Rahmen um seine Kinder, die Paketkarten.",
+    wann: [
+      "Um die Paketkarten einer Server-Seite: Der Bereich ist eine Client-Komponente, die Karten darin bleiben Server-Inhalt.",
+      "Er startet mit 24 Monaten (`start`). Ein Klick auf 12 tauscht in allen Karten darin Betrag, Einheit und Zusatz und die Info-Zeile.",
+      "Info-Zeilen und Texte reicht er an den `LaufzeitSchalter` weiter.",
+    ],
+    props: [
+      ["children", KINDER, "Pflicht", "Die Paketkarten, die der Laufzeit folgen."],
+      ["start", "12 \\| 24", "24", "Laufzeit beim ersten Rendern."],
+      ["info", "Record<12 \\| 24, string>", "ohne", "Info-Zeile je Laufzeit."],
+      ["texte", "Partial<LaufzeitTexte>", "LAUFZEIT_TEXTE", "Texte des Schalters."],
+    ],
+    lassen: [
+      "Den Zustand der Laufzeit in den Karten halten: Er gehört in den Bereich, die Karten lesen `data-laufzeit`.",
+      "Zwei Bereiche um dieselben Karten.",
+    ],
+  },
 ];
 
 /**

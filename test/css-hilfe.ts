@@ -1,13 +1,22 @@
 // Hilfen für die CSS-Tests: Dateien lesen und Regeln grob zerlegen. Kein
 // vollständiger CSS-Parser; er reicht für die Module dieses Pakets.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const WURZEL = fileURLToPath(new URL("../", import.meta.url));
 
 export function lies(pfad: string): string {
   return readFileSync(WURZEL + pfad, "utf8");
+}
+
+/** Alle Dateien unter `ordner`, rekursiv, als Pfade relativ zu `bezug`. */
+export function alleDateien(ordner: string, bezug: string = WURZEL): string[] {
+  return readdirSync(ordner).flatMap((name) => {
+    const voll = join(ordner, name);
+    return statSync(voll).isDirectory() ? alleDateien(voll, bezug) : [relative(bezug, voll)];
+  });
 }
 
 /** Alle CSS-Dateien unter src/, relativ zur Wurzel. */

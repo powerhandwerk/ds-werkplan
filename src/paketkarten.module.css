@@ -1,0 +1,368 @@
+/*
+ * Paketkarten und Laufzeit-Schalter (Abokacheln Variante D, Flo 01.11.2026).
+ * Werte 1:1 aus dem freigegebenen Entwurf (Plan ds-werkplan-paketkarten,
+ * Entwürfe mockups-abokacheln, paketkartenCss).
+ * Die Breiten misst der Baustein an sich selbst (Container), nicht am Fenster:
+ * unter 640 px untereinander, 640 bis 1079 px untereinander und innen
+ * zweispaltig, ab 1080 px drei Spalten mit Subgrid. Container-Abfragen wirken
+ * nur auf Nachfahren, deshalb sind Wurzel und Raster getrennte Elemente.
+ * Der Container bleibt ohne Namen wie bei der Modellkarte: Bun benennt im
+ * Bündel der Lesefassung Namen in @container um, die Deklaration aber nicht.
+ */
+
+/* Zeilen je Karte im Subgrid; die Wurzel setzt die echte Zahl inline. */
+.paketkarten {
+  container-type: inline-size;
+  --pk-zeilen: 6;
+}
+
+/* ---------- Laufzeit ---------- */
+
+/* Beide Laufzeiten stehen im HTML. Sichtbar ist 24, außer die Wurzel oder ein
+   Vorfahr trägt data-laufzeit="12"; der Wert der Wurzel geht vor. Die vier
+   Fälle schließen sich aus, nie verschwinden beide Preise. */
+.paketkarten[data-laufzeit="12"] [data-nur="24"],
+[data-laufzeit="12"] .paketkarten:not([data-laufzeit]) [data-nur="24"],
+.paketkarten[data-laufzeit]:not([data-laufzeit="12"]) [data-nur="12"],
+.paketkarten:not([data-laufzeit]):not([data-laufzeit="12"] *) [data-nur="12"] {
+  display: none;
+}
+
+/* Bereich um Schalter und Karten: Abstand wie im Entwurf. */
+.bereich {
+  display: grid;
+  gap: 28px;
+}
+
+.laufzeit {
+  display: grid;
+  gap: 12px;
+  max-width: 380px;
+}
+
+.segmente {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2px;
+  border: 1px solid var(--wp-linie);
+  border-radius: calc(50px * var(--rund-pille-faktor));
+}
+
+.segmente button {
+  height: 44px;
+  margin: 0;
+  border: 0;
+  border-radius: calc(44px * var(--rund-pille-faktor));
+  background: transparent;
+  color: var(--wp-text);
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-14);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.segmente button[aria-pressed="true"] {
+  background: var(--lime);
+  color: var(--ink-950);
+}
+
+.segmente button:focus-visible {
+  outline: 2px solid var(--wp-fokus);
+  outline-offset: 2px;
+}
+
+/* Beide Info-Zeilen liegen verdeckt in derselben Zelle und halten die Höhe der
+   längeren; darüber die sichtbare Zeile, deren Text wechselt. */
+.laufzeitInfo {
+  display: grid;
+  font-size: var(--grad-14);
+  line-height: 1.45;
+  color: var(--wp-gedaempft);
+}
+
+.laufzeitInfo > p {
+  grid-area: 1 / 1;
+  margin: 0;
+}
+
+.laufzeitInfo > p[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+/* ---------- Karten ---------- */
+
+.raster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 32px;
+}
+
+.karte {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  padding: 28px 20px 8px;
+  border: 1px solid var(--wp-linie);
+  background: var(--wp-blatt);
+  color: var(--wp-text);
+}
+
+.links,
+.rechts {
+  display: contents;
+}
+
+.karte p {
+  margin: 0;
+}
+
+.empfohlen {
+  outline: 2px solid var(--lime);
+  outline-offset: -1px;
+}
+
+/* Gegenton zur Fläche mit festem Grund: --wp-blatt der Nacht ist durchscheinend. */
+.nachtKarte {
+  background: var(--ink-950);
+  border-color: var(--ink-950);
+}
+
+.papierKarte {
+  background: var(--ink-050);
+  border-color: var(--ink-050);
+}
+
+/* Lage und Lime des Etiketts; doppelte Klasse schlägt die Etikett-Art unabhängig von der Reihenfolge der Module. */
+.karte .etikett {
+  position: absolute;
+  top: -12px;
+  left: 19px;
+  z-index: 1;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 5px 8px 4px;
+  border: 0;
+  border-radius: var(--rund-fein);
+  background: var(--lime);
+  color: var(--ink-950);
+}
+
+.kopf {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--wp-stark);
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--grad-24);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--wp-stark);
+}
+
+.karte .nutzen {
+  margin-top: 18px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-24);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--wp-stark);
+  text-wrap: pretty;
+}
+
+.karte .wer {
+  margin-top: 12px;
+  font-size: var(--grad-16);
+  line-height: 1.5;
+  color: var(--wp-text);
+}
+
+.preis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin-top: 22px;
+}
+
+/* Hülle je Laufzeit: Betrag und Einheit bleiben Flex-Elemente des Preises. */
+.preisLaufzeit {
+  display: contents;
+}
+
+.mess {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 300;
+  font-size: var(--grad-48);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums;
+  color: var(--wp-stark);
+  /* Bricht nicht um: Als Flex-Element bleibt der Betrag so breit wie sein Inhalt
+     (im Entwurf white-space: nowrap; css-regeln zählt „white“ als Farbwert). */
+  flex-shrink: 0;
+}
+
+.einheit {
+  font-size: var(--grad-14);
+  line-height: 1.4;
+  color: var(--wp-gedaempft);
+}
+
+.karte .zusatz {
+  margin-top: 8px;
+  font-size: var(--grad-14);
+  line-height: 1.4;
+  color: var(--wp-stark);
+}
+
+.aktion {
+  margin-top: 18px;
+}
+
+/* Leere Plätze halten nur die Zeile im Raster, ohne eigenen Abstand. */
+.karte .zusatz:empty,
+.karte .aktion:empty {
+  margin-top: 0;
+}
+
+/* Der Knopf der Aktion: volle Breite, Pfeil am Ende. Der ruhige Knopf wird 48 px
+   hoch; die Lichtkante der Empfehlung behält ihre 54 px wie im Entwurf, weil sie
+   ihre Höhe über `--lk-h` setzt. Zwei Klassen schlagen die Knopf-Klassen
+   unabhängig von der Reihenfolge der Module. */
+.karte .aktion > * {
+  --kn-h: 48px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.karte .label {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--wp-linie-fein);
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wp-stark);
+}
+
+.liste {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  align-content: start;
+}
+
+.reihe {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding-block: 14px;
+}
+
+.reihe + .reihe {
+  border-top: 1px solid var(--wp-linie-fein);
+}
+
+.reihe svg {
+  display: block;
+}
+
+.karte .titel {
+  margin-bottom: 4px;
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wp-gedaempft);
+}
+
+.karte .text {
+  font-size: var(--grad-16);
+  line-height: 1.45;
+  color: var(--wp-stark);
+}
+
+/* Regeln in @container prüft css-regeln nicht: Schriftgrade, Rundungen und
+   Farben hier nur über Tokens, von Hand gegengelesen. */
+@container (min-width: 640px) {
+  .karte {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: 40px;
+    padding: 32px 32px 18px;
+  }
+
+  .links,
+  .rechts {
+    display: block;
+  }
+
+  .links {
+    padding-bottom: 16px;
+  }
+
+  .karte .rechts .label {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .mess {
+    font-size: var(--grad-64);
+  }
+}
+
+@container (min-width: 1080px) {
+  .raster {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--pk-zeilen), auto);
+    column-gap: 24px;
+    row-gap: 0;
+  }
+
+  .karte {
+    grid-row: span var(--pk-zeilen);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: subgrid;
+    column-gap: 0;
+    padding: 30px 28px 10px;
+  }
+
+  .links,
+  .rechts {
+    display: contents;
+  }
+
+  .karte .rechts .label {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--wp-linie-fein);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paketkarten * {
+    transition: none !important;
+  }
+}

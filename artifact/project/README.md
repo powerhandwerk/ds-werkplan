@@ -6,7 +6,7 @@ DS Werkplan ist die Gestaltung von powerhandwerk für Kundenseite, Portal und We
 2. **Schriftfeld.** Fakten wie Seite, Abo und Stand stehen im Schriftfeld (`Plankopf`) mit Fugen, nicht im Fließtext.
 3. **Positionen.** Bereiche sind nummeriert wie auf einem Werkplan: „Pos. 01“ bis „Pos. 06“, Blätter mit „Blatt 02 · Zugänge“.
 4. **Messwerte.** Große, leichte Zahlen in `messwert`, darunter `beschriftung` und `quelle`. Fehlt eine Messung, steht das da: „Noch keine Messung“.
-5. **Ein Licht.** Lime erscheint nur, wo gehandelt wird: Lichtkante, aktiver Reiter, Füllung des Maßbalkens, Sucher-Ecken der Hauptkarte, Unterstrich, Etikett.
+5. **Ein Licht.** Lime erscheint nur, wo gehandelt wird: Lichtkante, aktiver Reiter, Füllung des Maßbalkens, Sucher-Ecken der Hauptkarte, Rahmen der empfohlenen Paketkarte, gewählte Laufzeit im Laufzeit-Schalter, Unterstrich, Etikett.
 6. **Maße.** Fortschritt sieht aus wie Vermessung: `Massbalken` und `Masskette` statt bunter Balkendiagramme.
 
 Gelieferte Fakten und Recht gehen vor dem Leserjob, der Leserjob vor der Marke, die Marke vor der Komposition. Macht eine schöne Anordnung eine Zahl unlesbar, ist die Anordnung falsch.
@@ -60,7 +60,7 @@ Schrift erreicht auf ihrer Fläche mindestens 4,5:1, große Schrift, Linien mit 
 ## Farbe
 
 - **Ink** ist eine warme Grauleiter mit zehn Stufen von `ink-950` bis `ink-050`. Zwischentöne entstehen mit `color-mix()` aus zwei Nachbarstufen, nie als neue Stufe.
-- **Lime** (`lime`) ist das Signal des Logos und nur Fläche mit dunkler Schrift (`ink-950`) darauf. `lime-deep` ist der gedrückte Zustand, `lime-soft` die helle Lime-Fläche (Etikett, Icon im Kasten, Glanz der Lichtkante), `lime-glow` das Leuchten um eine Lime-Fläche. Auf Nacht ist Lime zusätzlich Fokusring (`focus-ring-on-dark`) und darf dort Schrift sein.
+- **Lime** (`lime`) ist das Signal des Logos: eine Fläche mit dunkler Schrift (`ink-950`) darauf oder eine Linie (Unterstrich, Sucher-Ecken, Lichtkante, Rahmen der empfohlenen Paketkarte). `lime-deep` ist der gedrückte Zustand, `lime-soft` die helle Lime-Fläche (Etikett, Icon im Kasten, Glanz der Lichtkante), `lime-glow` das Leuchten um eine Lime-Fläche. Auf Nacht ist Lime zusätzlich Fokusring (`focus-ring-on-dark`) und darf dort Schrift sein.
 - **Lime ist auf hellem Grund nie Schriftfarbe.** Eine Hervorhebung auf Papier ist dunkle Schrift mit Lime daneben oder darunter: Etikett `lead`, Lime-Punkt, Unterstrich.
 - **Rot** (`danger`) gibt es nur für Fehler und Löschen, als Fläche. Fehlertext auf Papier setzt `danger-ink`.
 - Fokusringe: auf Papier `focus-ring` (`ink-950`), auf Nacht `focus-ring-on-dark` (`lime`); innerhalb einer Fläche immer über `wp-fokus`.
@@ -122,9 +122,21 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Rahmen und Ordnung:** `Kasten` mit `SucherEcken`, `Info`, `Schritte`, `Liste` mit `Gruppe` und `Listenzeile`, `Filterleiste`, `DetailRahmen`.
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
 - **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A). Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
-- **Preise:** `Modellkarte`, die Preiskarte eines Website-Angebots auf Papier mit Produktzeichen, Preis und Summen; Zahlen kommen fertig formatiert vom Verbraucher, zwei Karten stehen nebeneinander.
+- **Preise:** `Modellkarte`, die Preiskarte eines Website-Angebots auf Papier mit Produktzeichen, Preis und Summen; Zahlen kommen fertig formatiert vom Verbraucher, zwei Karten stehen nebeneinander; `Paketkarten` für die drei Abo-Pakete mit `LaufzeitSchalter` und `LaufzeitBereich` darüber.
 
 Bausteine bekommen Texte und Daten als Props. Sie holen nichts aus einer App und hängen nicht an Next.js.
+
+## Paketkarten
+
+Die Paketkarten (`Paketkarten`) stellen die drei Abo-Pakete Standard, Profi und Platzhirsch nebeneinander.
+
+- **Nutzen zuerst.** Jede Karte beginnt nach Emblem und Name mit dem Nutzen in einem Satz, darunter steht, für wen das Paket passt. Die Leistungen folgen als Beleg.
+- **Nur, was dazukommt.** Jede Karte nennt nur die Leistungen, die gegenüber der vorigen dazukommen; das Label über der Liste sagt es, etwa „Alles aus Standard, dazu“.
+- **Eine Empfehlung.** Die empfohlene Karte steht im Gegenton zur Fläche, auf Papier Nacht und auf Nacht Papier, mit Lime-Rahmen und dem Etikett „Unsere Empfehlung“ auf der oberen Kante. Die übrigen Karten tragen kein Lime.
+- **Produktzeichen in 44 px.** Jede Leistung steht mit ihrem Produktzeichen in 44 px, dekorativ, im Grund ihrer Karte.
+- **Breiten über die eigene Breite.** Der Baustein misst sich selbst: unter 640 px stehen die Karten untereinander, bis 1.080 px untereinander und innen zweispaltig, darüber in drei Spalten. Label und Liste aller Karten stehen auf einer Linie.
+- **Laufzeit darüber.** Der Laufzeit-Schalter steht über den Karten, 24 Monate zuerst und vorgewählt, 12 daneben. Ein Klick tauscht in allen Karten Betrag, Einheit und Zusatz.
+- **Texte und Preise vom Verbraucher.** Nutzen, Leistungen und Preise kommen fertig aus dem Preisregister des Verbrauchers. Das Paket enthält keine Preise und keine Paketinhalte; Muster tragen „00 €“ und „Muster, keine echten Preise und Leistungen.“
 
 ## Icons
 

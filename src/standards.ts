@@ -40,3 +40,38 @@ export const KOPIEREN_TEXTE: KopierenTexte = {
   manuell: "Kopieren ging nicht. Markieren Sie den Text im Feld und kopieren Sie ihn selbst.",
   feld: "Text zum Kopieren",
 };
+
+export interface PaketkartenTexte {
+  /** Etikett der empfohlenen Karte. */
+  empfehlung: string;
+  /** Zugänglicher Name einer Karte; `{paket}` wird zum Namen des Pakets. */
+  karte: string;
+  /** Zugänglicher Name der empfohlenen Karte; `{paket}` wie oben. */
+  karteEmpfohlen: string;
+}
+
+/** Texte der Paketkarten. Ohne Paketinhalte: Nutzen, Leistungen und Preise reicht der Verbraucher hinein. */
+export const PAKETKARTEN_TEXTE: PaketkartenTexte = {
+  empfehlung: "Unsere Empfehlung",
+  karte: "Paket {paket}",
+  karteEmpfohlen: "Paket {paket}, unsere Empfehlung",
+};
+
+export interface LaufzeitTexte {
+  /** Beschriftung über dem Schalter. */
+  label: string;
+  /** Zugänglicher Name der Knopfgruppe. */
+  gruppe: string;
+  /** Text eines Knopfs; `{monate}` wird zur Zahl der Monate. */
+  option: string;
+}
+
+/** Texte des Laufzeit-Schalters. Die Info-Zeilen haben keinen Standard (Sie und du unterscheiden sich). */
+export const LAUFZEIT_TEXTE: LaufzeitTexte = {
+  label: "Laufzeit",
+  gruppe: "Laufzeit wählen",
+  option: "{monate} Monate",
+};
+
+/** Die Laufzeiten in ihrer festen Reihenfolge: 24 zuerst und vorgewählt, 12 daneben. */
+export const PAKET_LAUFZEITEN = [24, 12] as const;

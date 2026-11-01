@@ -17,8 +17,10 @@ dieses Paket mit fester Version (Git-Tag). Entscheidung: ADR-261 im Admin-Repo, 
   `src/werkplan.module.css` (`.papier`, `.aufPapier`, `.nacht`, `.nachtHell`,
   `.aufNacht`), nie auf `:root`: sonst stünde dunkle Schrift auf dunklem Grund außerhalb
   einer Fläche.
-- **Olivgrün ist gestrichen** (ADR-261 Nr. 6). Lime gibt es nur als Fläche mit dunkler
-  Schrift darauf (Etikett, Punkt, Unterstrich). `test/olivgruen.test.ts` sperrt den
+- **Olivgrün ist gestrichen** (ADR-261 Nr. 6). Lime ist nie Schriftfarbe auf hellem
+  Grund. Es steht als Fläche mit dunkler Schrift darauf (Etikett, Punkt, gewählte
+  Laufzeit) oder als Linie (Unterstrich, Sucher-Ecken, Lichtkante, Rahmen der
+  empfohlenen Paketkarte). `test/olivgruen.test.ts` sperrt den
   Hex-Wert, den alten Token-Namen und `--lime-text` der Website in `src/`, `fonts/`,
   `assets/`, `artifact/project/` und `test/`.
 - Die Ink-Rampe hat zehn Stufen. Zwischentöne entstehen mit `color-mix()` aus zwei
