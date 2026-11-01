@@ -5,10 +5,9 @@
 // Beträge darum nur als Platzhalter aus Nullen („00 €“, „000 €“, „0.000 €“).
 // src/ hält der Zaun der Grafik (kein „€“ überhaupt).
 
-import { readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { WURZEL, lies } from "./css-hilfe";
+import { WURZEL, alleDateien, lies } from "./css-hilfe";
 
 /**
  * Schriften und Bilder sind Binärdateien: Als Text gelesen ergäben sie
@@ -16,13 +15,6 @@ import { WURZEL, lies } from "./css-hilfe";
  * mitgeprüft.
  */
 const BINAER = /\.(woff2?|ttf|otf|png|jpe?g|gif|webp|avif|ico|pdf)$/i;
-
-function alleDateien(ordner: string): string[] {
-  return readdirSync(ordner).flatMap((name) => {
-    const voll = join(ordner, name);
-    return statSync(voll).isDirectory() ? alleDateien(voll) : [relative(WURZEL, voll)];
-  });
-}
 
 const DATEIEN = [
   "scripts/artifact-daten.ts",

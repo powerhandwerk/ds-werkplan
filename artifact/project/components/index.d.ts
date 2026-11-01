@@ -1887,7 +1887,7 @@ export declare function Modellkarte({ zeichen, name, ueberschrift: Ueberschrift,
 /** Laufzeit in Monaten. */
 export type PaketLaufzeit = 12 | 24;
 /** Grund, auf dem eine Karte steht. */
-export type PaketGrund = "papier" | "nacht";
+export type PaketGrund = Untergrund;
 /** Preis einer Laufzeit, fertig formatiert vom Verbraucher. Der Baustein rechnet nichts. */
 export type PaketPreis = {
     betrag: string;

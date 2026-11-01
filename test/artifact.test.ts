@@ -3,22 +3,15 @@
 // ds-werkplan-paket Step 8): je Baustein Leitlinie und Vorschau, Formatregeln
 // der Vorschauen, Tokens in tokens.css, verbotene Pfade, keine Gedankenstriche.
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { PROJEKT, TOKENS_KOPF, kopfNamen, textDateien } from "../scripts/artifact";
-import { STELLSCHRAUBEN } from "./css-hilfe";
+import { STELLSCHRAUBEN, alleDateien } from "./css-hilfe";
 
 const lies = (pfad: string) => readFileSync(join(PROJEKT, pfad), "utf8");
 
-function alleDateien(ordner: string): string[] {
-  return readdirSync(ordner).flatMap((name) => {
-    const voll = join(ordner, name);
-    return statSync(voll).isDirectory() ? alleDateien(voll) : [relative(PROJEKT, voll)];
-  });
-}
-
-const dateien = alleDateien(PROJEKT);
+const dateien = alleDateien(PROJEKT, PROJEKT);
 const bausteine = kopfNamen(lies("components/bundle.js"));
 const vorschauen = dateien.filter((d) => d.endsWith("/preview.html"));
 const readmes = dateien.filter((d) => d.endsWith("README.md"));

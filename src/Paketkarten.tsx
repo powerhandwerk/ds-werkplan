@@ -5,6 +5,7 @@ import { AboIcon } from "./icons";
 import css from "./paketkarten.module.css";
 import { Produktzeichen } from "./Produktzeichen";
 import type { ProduktzeichenName } from "./produktzeichen-verzeichnis";
+import type { Untergrund } from "./tokens";
 import { PAKET_LAUFZEITEN, PAKETKARTEN_TEXTE, type PaketkartenTexte } from "./standards";
 import w from "./werkplan.module.css";
 
@@ -12,7 +13,7 @@ import w from "./werkplan.module.css";
 export type PaketLaufzeit = 12 | 24;
 
 /** Grund, auf dem eine Karte steht. */
-export type PaketGrund = "papier" | "nacht";
+export type PaketGrund = Untergrund;
 
 /** Preis einer Laufzeit, fertig formatiert vom Verbraucher. Der Baustein rechnet nichts. */
 export type PaketPreis = { betrag: string; einheit: string; zusatz?: string };
