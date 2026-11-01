@@ -9,7 +9,7 @@ Portal und die Website aus einer Quelle. Entscheidung und Pläne: ADR-261 sowie
 Das Paket kommt als Git-Abhängigkeit mit fester Version, ohne Registry:
 
 ```json
-"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.3.0"
+"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.4.0"
 ```
 
 Es liefert TypeScript, TSX und CSS ohne eigenen Build. Next.js übersetzt es mit:
@@ -79,6 +79,17 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
   import { Produktzeichen } from "@powerhandwerk/ds-werkplan/Produktzeichen";
 
   <Produktzeichen name="feinschliff" untergrund="nacht" groesse={64} />
+  ```
+- **Preise** (`Modellkarte`): die Preiskarte eines Website-Angebots auf Papier, mit
+  Produktzeichen auf eigener Bühne, Etikett, Name, Text, Preis mit Einheit und bis zu
+  zwei Summen. Alle Zahlen kommen fertig formatiert aus dem Preisregister des
+  Verbrauchers, der Baustein rechnet nichts. Die Karte schaltet über ihre eigene
+  Breite (ab 420 px Summen nebeneinander); zwei Karten stehen nebeneinander.
+
+  ```tsx
+  import { Modellkarte } from "@powerhandwerk/ds-werkplan/Modellkarte";
+
+  <Modellkarte zeichen="website" name="Website" etikett="4 Seiten" preis="00 €" einheit="im Monat, netto" />
   ```
 - **Schriften und Marken:** `fonts/` (Big Shoulders Display, Hanken Grotesk, Barlow Semi
   Condensed, je mit OFL-Lizenztext), `assets/` (Logo hell und dunkel, Standort-Pin).
