@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { renderToString } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Modellkarte, type ModellkarteProps } from "../src/Modellkarte";
+import { zeige } from "./dom-hilfe";
 
 // Modellkarte: Server-HTML mit Überschrift, Etikett, Preis, Einheit, Summen
 // als Beschreibungsliste, dekorativem Produktzeichen und benannter section.
@@ -87,5 +88,25 @@ describe("Modellkarte", () => {
     const section = karte({ ...MUSTER, className: "extra" });
     expect(section.className).toContain("extra");
     expect(section.querySelectorAll(":scope > span[aria-hidden='true']")).toHaveLength(4);
+  });
+
+  it("rendert zwei Summen mit gleicher Beschriftung ohne doppelte Schlüssel", () => {
+    const fehler = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const host = zeige(
+        <Modellkarte
+          {...MUSTER}
+          summen={[
+            { label: "Summe", wert: "eins" },
+            { label: "Summe", wert: "zwei" },
+          ]}
+        />,
+      );
+      expect([...host.querySelectorAll("dd")].map((dd) => dd.textContent)).toEqual(["eins", "zwei"]);
+      const meldungen = fehler.mock.calls.map((aufruf) => aufruf.map(String).join(" "));
+      expect(meldungen.filter((m) => m.includes("same key"))).toEqual([]);
+    } finally {
+      fehler.mockRestore();
+    }
   });
 });
