@@ -1846,7 +1846,7 @@ export type ModellkarteProps = {
     einheit?: string;
     /** Summen unter dem Preis, bis zwei; Werte fertig formatiert. */
     summen?: readonly ModellkarteSumme[];
-    /** Kantenlänge des Produktzeichens in px. Standard: 172; in schmalen Karten zeichnet das CSS es mit 150 px. */
+    /** Kantenlänge des Produktzeichens in px, gilt ab 420 px Kartenbreite. Standard: 172. Schmaler zeichnet das CSS es immer mit 150 px. */
     zeichenGroesse?: number;
     className?: string;
 };

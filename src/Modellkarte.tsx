@@ -25,7 +25,7 @@ export type ModellkarteProps = {
   einheit?: string;
   /** Summen unter dem Preis, bis zwei; Werte fertig formatiert. */
   summen?: readonly ModellkarteSumme[];
-  /** Kantenlänge des Produktzeichens in px. Standard: 172; in schmalen Karten zeichnet das CSS es mit 150 px. */
+  /** Kantenlänge des Produktzeichens in px, gilt ab 420 px Kartenbreite. Standard: 172. Schmaler zeichnet das CSS es immer mit 150 px. */
   zeichenGroesse?: number;
   className?: string;
 };
@@ -66,8 +66,8 @@ export function Modellkarte({
       </div>
       {summen !== undefined && summen.length > 0 && (
         <dl className={css.summen}>
-          {summen.map((summe) => (
-            <div key={summe.label}>
+          {summen.map((summe, index) => (
+            <div key={`${index}-${summe.label}`}>
               <dt className={w.beschriftung}>{summe.label}</dt>
               <dd className={w.plankopfWert}>{summe.wert}</dd>
             </div>
