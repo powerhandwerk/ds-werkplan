@@ -39,7 +39,7 @@ export const FARBEN = {
   "ink-050": { oklch: [0.975, 0.006, 85], rolle: "Karte und Schriftfeld auf Papier, starke Schrift auf Nacht." },
   lime: {
     hex: "#b5e545",
-    rolle: "Signalfarbe des Logos. Nur als Fläche mit dunkler Schrift (ink-950) darauf; auf Nacht auch Fokusring.",
+    rolle: "Signalfarbe des Logos. Als Fläche mit dunkler Schrift (ink-950) darauf oder als Linie (Unterstrich, Sucher-Ecken, Lichtkante, Rahmen der empfohlenen Paketkarte), nie als Schrift auf hellem Grund; auf Nacht auch Fokusring.",
   },
   "lime-deep": { hex: "#a3d137", rolle: "Gedrückter Zustand einer Lime-Fläche." },
   "lime-soft": { hex: "#dcf2a0", rolle: "Helle Lime-Fläche mit dunkler Schrift: Etikett, Icon im Kasten, Glanz der Lichtkante." },

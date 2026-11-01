@@ -1,7 +1,7 @@
 /* Erzeugt aus src/tokens.ts mit `bun run erzeuge`. Nicht von Hand ändern. */
 
 :root {
-  /* Farben (Ink-Rampe, Lime nur als Fläche, Rot nur für Fehler, Fokus) */
+  /* Farben (Ink-Rampe, Lime als Fläche oder Linie, Rot nur für Fehler, Fokus) */
   --ink-950: oklch(0.17 0.012 78); /* #120f0a */
   --ink-900: oklch(0.21 0.013 78); /* #1c1812 */
   --ink-800: oklch(0.27 0.013 78); /* #2a261f */

@@ -866,7 +866,7 @@ export declare const FARBEN: {
     };
     readonly lime: {
         readonly hex: "#b5e545";
-        readonly rolle: "Signalfarbe des Logos. Nur als Fläche mit dunkler Schrift (ink-950) darauf; auf Nacht auch Fokusring.";
+        readonly rolle: "Signalfarbe des Logos. Als Fläche mit dunkler Schrift (ink-950) darauf oder als Linie (Unterstrich, Sucher-Ecken, Lichtkante, Rahmen der empfohlenen Paketkarte), nie als Schrift auf hellem Grund; auf Nacht auch Fokusring.";
     };
     readonly "lime-deep": {
         readonly hex: "#a3d137";

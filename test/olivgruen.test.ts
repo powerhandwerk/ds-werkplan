@@ -4,8 +4,10 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { WURZEL } from "./css-hilfe";
 
-// ADR-261 Nr. 6: Das Olivgrün ist gestrichen. Lime gibt es nur als Fläche mit
-// dunkler Schrift darauf (Etikett, Punkt, Unterstrich). Die gesperrten Wörter
+// ADR-261 Nr. 6: Das Olivgrün ist gestrichen. Lime ist nie Schriftfarbe auf
+// hellem Grund. Es steht als Fläche mit dunkler Schrift darauf (Etikett, Punkt,
+// gewählte Laufzeit) oder als Linie (Unterstrich, Sucher-Ecken, Lichtkante,
+// Rahmen der empfohlenen Paketkarte). Die gesperrten Wörter
 // stehen zusammengesetzt, damit dieser Test nicht an sich selbst anschlägt.
 
 const VERBOTEN = [

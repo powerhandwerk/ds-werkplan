@@ -49,7 +49,8 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
 ## Was drin ist
 
 - **Tokens** (`src/tokens.ts`, daraus `src/tokens.css`): Ink-Rampe mit zehn Stufen,
-  Lime nur als Fläche mit dunkler Schrift, Rot nur für Fehler und Löschen, Fokusringe,
+  Lime als Fläche mit dunkler Schrift oder als Linie, nie als Schrift auf hellem Grund,
+  Rot nur für Fehler und Löschen, Fokusringe,
   drei Schriftfamilien, Schriftgrade `--grad-12` bis `--grad-64` plus `--grad-80` für
   große Messwerte, Rundungsrollen `--rund-eckig`, `--rund-fein`, `--rund-kreis` und
   `--rund-pille-faktor` (die Form der Pille im Logo).

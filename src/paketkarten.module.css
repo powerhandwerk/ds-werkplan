@@ -240,8 +240,10 @@
   margin-top: 0;
 }
 
-/* Der Knopf der Aktion: volle Breite, Pfeil am Ende, 48 px hoch. Zwei Klassen
-   schlagen die Knopf-Klassen unabhängig von der Reihenfolge der Module. */
+/* Der Knopf der Aktion: volle Breite, Pfeil am Ende. Der ruhige Knopf wird 48 px
+   hoch; die Lichtkante der Empfehlung behält ihre 54 px wie im Entwurf, weil sie
+   ihre Höhe über `--lk-h` setzt. Zwei Klassen schlagen die Knopf-Klassen
+   unabhängig von der Reihenfolge der Module. */
 .karte .aktion > * {
   --kn-h: 48px;
   width: 100%;

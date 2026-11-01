@@ -43,7 +43,7 @@ export function tokensCss(): string {
     ersteGruppe = false;
   };
 
-  gruppe("Farben (Ink-Rampe, Lime nur als Fläche, Rot nur für Fehler, Fokus)");
+  gruppe("Farben (Ink-Rampe, Lime als Fläche oder Linie, Rot nur für Fehler, Fokus)");
   for (const name of farbNamen) {
     const wert = cssVon(name);
     const hinweis = wert.startsWith("oklch") ? ` /* ${hexVon(name)} */` : "";

@@ -1311,7 +1311,8 @@ function Beispiel() {
       "Mehr als zwei Summen oder mehr als zwei Karten nebeneinander.",
       "Echte Preise in Mustern und Vorschauen: Muster tragen „Muster, keine echten Preise.“",
     ],
-  },  {
+  },
+  {
     name: "Paketkarten",
     gruppe: "Preise",
     hoehe: 1000,
