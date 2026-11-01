@@ -1320,17 +1320,21 @@ function Beispiel() {
     flaeche: "beide",
     skript: `
 var LAUFZEIT_INFO = { 24: "Muster für die Info-Zeile bei 24 Monaten.", 12: "Muster für die Info-Zeile bei 12 Monaten." };
+var EMPFOHLEN = "Profi";
 function preis() {
   return {
-    24: { betrag: "00 €", einheit: "im Monat, netto" },
+    24: { betrag: "00 €", einheit: "im Monat, netto", zusatz: "Muster für den Zusatz bei 24 Monaten." },
     12: { betrag: "00 €", einheit: "im Monat, netto", zusatz: "Muster für den Zusatz bei 12 Monaten." }
   };
 }
 function reihe(zeichen) {
   return { zeichen: zeichen, titel: "Muster-Leistung", text: "Muster für den Satz zu einer Leistung." };
 }
-function aktion(grund) {
+function hauptaktion(grund) {
   return h(D.LichtkanteButton, { href: "#paket", untergrund: grund }, "Paket wählen");
+}
+function nebenaktion(grund) {
+  return h(D.RuhigerKnopf, { nacht: grund === "nacht" }, "Paket wählen");
 }
 function karte(paket, label, zeichen) {
   return {
@@ -1340,7 +1344,7 @@ function karte(paket, label, zeichen) {
     preis: preis(),
     label: label,
     reihen: zeichen.map(reihe),
-    aktion: aktion
+    aktion: paket === EMPFOHLEN ? hauptaktion : nebenaktion
   };
 }
 var KARTEN = [
@@ -1351,7 +1355,7 @@ var KARTEN = [
 function Beispiel(p) {
   return h("div", { className: "stapel" },
     h(D.LaufzeitBereich, { info: LAUFZEIT_INFO },
-      h(D.Paketkarten, { karten: KARTEN, empfohlen: "Profi", untergrund: p.u })),
+      h(D.Paketkarten, { karten: KARTEN, empfohlen: EMPFOHLEN, untergrund: p.u })),
     h("p", { className: W.beschriftung }, "Muster, keine echten Preise und Leistungen."));
 }`,
     zusammenfassung:
