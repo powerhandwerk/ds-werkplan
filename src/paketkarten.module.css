@@ -6,11 +6,13 @@
  * unter 640 px untereinander, 640 bis 1079 px untereinander und innen
  * zweispaltig, ab 1080 px drei Spalten mit Subgrid. Container-Abfragen wirken
  * nur auf Nachfahren, deshalb sind Wurzel und Raster getrennte Elemente.
+ * Der Container bleibt ohne Namen wie bei der Modellkarte: Bun benennt im
+ * Bündel der Lesefassung Namen in @container um, die Deklaration aber nicht.
  */
 
 /* Zeilen je Karte im Subgrid; die Wurzel setzt die echte Zahl inline. */
 .paketkarten {
-  container: paketkarten / inline-size;
+  container-type: inline-size;
   --pk-zeilen: 6;
 }
 
@@ -302,7 +304,7 @@
 
 /* Regeln in @container prüft css-regeln nicht: Schriftgrade, Rundungen und
    Farben hier nur über Tokens, von Hand gegengelesen. */
-@container paketkarten (min-width: 640px) {
+@container (min-width: 640px) {
   .karte {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     column-gap: 40px;
@@ -329,7 +331,7 @@
   }
 }
 
-@container paketkarten (min-width: 1080px) {
+@container (min-width: 1080px) {
   .raster {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: repeat(var(--pk-zeilen), auto);

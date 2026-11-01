@@ -74,6 +74,19 @@ describe("Bündel als Text", () => {
   });
 });
 
+describe("Container im Bündel", () => {
+  it("jeder Name einer @container-Abfrage in bundle.css ist dort als Container deklariert", () => {
+    // Bun benennt Namen in @container um, die Deklaration `container: <name> / …`
+    // aber nicht; eine benannte Abfrage griffe im Bündel dann nie.
+    const css = lies("artifact/project/components/bundle.css");
+    const abgefragt = [...css.matchAll(/@container\s+([A-Za-z_][\w-]*)\s*\(/g)].map((m) => m[1]);
+    const deklariert = new Set(
+      [...css.matchAll(/container(?:-name)?\s*:\s*([A-Za-z_][\w-]*)/g)].map((m) => m[1]).filter((name) => name !== "inline-size"),
+    );
+    expect(abgefragt.filter((name) => !deklariert.has(name))).toEqual([]);
+  });
+});
+
 describe("Lizenz von iso-glow", () => {
   it("steht im Bündel oder als LICENSE-iso-glow.txt unter artifact/project/", () => {
     const imBuendel = /iso-glow/i.test(buendel) && buendel.includes("MIT");
@@ -192,6 +205,19 @@ const PROPS: Record<string, Record<string, unknown>> = {
   Eingabefeld: { label: "Name", name: "name" },
   Produktzeichen: { name: "feinschliff" },
   Modellkarte: { zeichen: "website", name: "Website", preis: "00 €" },
+  Paketkarten: {
+    karten: (["Standard", "Profi", "Platzhirsch"] as const).map((paket) => ({
+      paket,
+      nutzen: "Muster für den Nutzen.",
+      fuerWen: "Muster für die Zielgruppe.",
+      preis: { 24: { betrag: "00 €", einheit: "im Monat" }, 12: { betrag: "00 €", einheit: "im Monat" } },
+      label: "Was wir tun",
+      reihen: [{ zeichen: "feinschliff", titel: "Leistung", text: "Muster" }],
+    })),
+    empfohlen: "Profi",
+  },
+  LaufzeitSchalter: { wert: 24, onWechsel: nichts },
+  LaufzeitBereich: { info: { 24: "Muster für 24 Monate.", 12: "Muster für 12 Monate." }, children: "Karten" },
   // Grafik: Daten aus dem Bündel selbst, darum als Getter (das Bündel lädt erst in beforeAll).
   get Leistungskarten() {
     const D = fenster.DsWerkplan;
