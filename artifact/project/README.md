@@ -123,6 +123,7 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
 - **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A). Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
 - **Preise:** `Modellkarte`, die Preiskarte eines Website-Angebots auf Papier mit Produktzeichen, Preis und Summen; Zahlen kommen fertig formatiert vom Verbraucher, zwei Karten stehen nebeneinander; `Paketkarten` für die drei Abo-Pakete mit `LaufzeitSchalter` und `LaufzeitBereich` darüber.
+- **Fuß:** `Fuss`, der Fuß aller Flächen auf Nacht. Fassungen lassen Teile weg und sortieren nie um; `fokus` zeigt den Kontakt in einer Zeile, Impressum und Datenschutz, auf Wunsch die B2B-Zeile, Logo mit Markenzeile und Plankopf. Firmendaten und Linkziele stehen einmal im Paket (`FIRMA`, `ZIELE`), das `<footer>` stellt die Seite.
 
 Bausteine bekommen Texte und Daten als Props. Sie holen nichts aus einer App und hängen nicht an Next.js.
 

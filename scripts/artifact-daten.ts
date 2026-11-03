@@ -777,6 +777,51 @@ function Beispiel() {
     ],
     lassen: ["Schatten oder Rundung: Der Rahmen ist eckig mit Haarlinie."],
   },
+  {
+    name: "Fuss",
+    gruppe: "Rahmen",
+    hoehe: 1040,
+    breite: 1352,
+    untertitel: "Fassung fokus in 390 und 1280 px",
+    flaeche: "nacht",
+    skript: `
+function Beispiel() {
+  return h("div", { className: "stapel" },
+    h("p", { className: W.beschriftung }, "390 px · Sie · ohne B2B-Zeile"),
+    h(D.SucherEcken, { style: { width: 414, padding: 12, boxSizing: "border-box" } },
+      h(D.Fuss, { variante: "fokus", anrede: "sie", b2b: false, blatt: "Gründung · Website", stand: "03.11.2026" })),
+    h("p", { className: W.beschriftung }, "1280 px · Du · mit B2B-Zeile"),
+    h(D.SucherEcken, { style: { width: 1304, padding: 12, boxSizing: "border-box" } },
+      h(D.Fuss, { variante: "fokus", b2b: true, blatt: "Preise", stand: "03.11.2026" })));
+}`,
+    zusammenfassung:
+      "Der Fuß schließt jede Seite auf Nacht ab: Kontakt, Rechtszeile, auf Wunsch die B2B-Zeile, Logo mit Markenzeile und Plankopf.",
+    wann: [
+      "Unter jeder Seite, im `<footer>` der Seite. Der Baustein liefert nur den Inhalt, damit es genau ein `<footer>` gibt.",
+      "Die Fassung `fokus` gilt für Seiten mit einem Ziel, etwa die Gründungsseiten: Kontakt in einer Zeile, Impressum und Datenschutz, keine Linkgruppen.",
+      "Fassungen lassen Teile weg und sortieren nie um. Text und Ziel jedes Links kommen aus `ZIELE`, die Reihenfolge aus `FUSS_REIHENFOLGE`; `fussLinks()` liefert die Links einer Fassung ohne Rendern.",
+      "Er schaltet über seine eigene Breite: unter 640 px untereinander, ab 640 px der Kontakt in einer Zeile, ab 1.024 px der Plankopf rechts.",
+      "`b2b` ist Pflicht und ohne Standard: Die Seite entscheidet, ob „Nur für Unternehmer · Alle Preise netto zzgl. USt.“ dasteht.",
+      "Mit `leistungsschein` zeigt die Rechtszeile auch AGB und Leistungsschein. `basis` setzt eigenen Seiten einen Vorsatz voran, damit Subdomains auf das zentrale Impressum zeigen.",
+      "Er rendert auf dem Server, ohne Skript und ohne Bewegung. Jeder Fuß trägt `data-fuss` und `data-fuss-version`.",
+    ],
+    props: [
+      ["variante", "\"fokus\"", "Pflicht", "Fassung; „voll“ und „tippgeber“ folgen."],
+      ["b2b", "boolean", "Pflicht", "B2B-Zeile zeigen."],
+      ["blatt", "string", "Pflicht", "Blatt im Plankopf, etwa „Gründung · Website“."],
+      ["stand", "string", "ohne", "Stand im Plankopf; ohne Wert fällt das Feld weg."],
+      ["anrede", "\"du\" \\| \"sie\"", "\"du\"", "Anrede des Kontaktsatzes."],
+      ["basis", "string", "\"\"", "Vorsatz für eigene Seiten; ein Schrägstrich am Ende fällt weg."],
+      ["leistungsschein", "string", "ohne", "Fertige Adresse des Leistungsscheins; zeigt AGB und Leistungsschein."],
+      ["texte", "Partial<FussTexte>", "FUSS_TEXTE", "Überschrift, Kontaktsatz je Anrede, B2B-Zeile, Name der Navigation und Plankopf-Beschriftungen. Linktexte kommen aus `ZIELE`."],
+      ["className", "string", "ohne", "Zusätzliche Klasse an der Wurzel."],
+    ],
+    lassen: [
+      "Ein `<footer>` im Baustein: Das stellt die Seite, genau eines je Seite.",
+      "Links umsortieren oder umbenennen; Text, Ziel und Reihenfolge kommen aus `ZIELE` und `FUSS_REIHENFOLGE`.",
+      "Externe Links in neuem Tab oder Übergänge an den Links.",
+    ],
+  },
 
   /* ---------------- Listen ---------------- */
   {

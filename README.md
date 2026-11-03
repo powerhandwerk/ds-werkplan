@@ -9,7 +9,7 @@ Portal und die Website aus einer Quelle. Entscheidung und Pläne: ADR-261 sowie
 Das Paket kommt als Git-Abhängigkeit mit fester Version, ohne Registry:
 
 ```json
-"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.5.0"
+"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.6.0"
 ```
 
 Es liefert TypeScript, TSX und CSS ohne eigenen Build. Next.js übersetzt es mit:
@@ -111,6 +111,9 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
     <Paketkarten karten={karten} empfohlen="Profi" untergrund="papier" />
   </LaufzeitBereich>
   ```
+- **Fuß** (`Fuss`, Daten in `ziele`, Links in `fuss-links`): der Fuß aller Flächen auf
+  Nacht, aus einer Quelle für Website, Portal und Vermittlerseite. Version 2.6.0 bringt
+  die Fassung `fokus`; Einbau im Abschnitt „Fuß einbauen“.
 - **Schriften und Marken:** `fonts/` (Big Shoulders Display, Hanken Grotesk, Barlow Semi
   Condensed, je mit OFL-Lizenztext), `assets/` (Logo hell und dunkel, Standort-Pin).
 
@@ -174,6 +177,38 @@ export function Profilgrafik() {
 
 Rechnet ein Client die Zeichnung, liefert `useSvgPraefix()` (`@powerhandwerk/ds-werkplan/useSvgPraefix`)
 das Präfix.
+
+## Fuß einbauen
+
+`Fuss` liefert den Inhalt des Seitenfußes auf Nacht. Das `<footer>` stellt die Seite
+selbst, damit es genau eines gibt. Der Baustein rendert auf dem Server, ohne Skript
+und ohne Hooks, und schaltet über seine eigene Breite, nicht über das Fenster: unter
+640 px untereinander, ab 640 px der Kontakt in einer Zeile, ab 1.024 px der Plankopf
+rechts. Die Fassung `fokus` gilt für Seiten mit einem Ziel: Kontakt in einer Zeile,
+Impressum und Datenschutz, auf Wunsch die B2B-Zeile, Logo mit Markenzeile und
+Plankopf.
+
+```tsx
+import { Fuss } from "@powerhandwerk/ds-werkplan/Fuss";
+
+<footer>
+  <Fuss variante="fokus" anrede="sie" b2b={false} blatt="Gründung · Website" stand="03.11.2026" />
+</footer>
+```
+
+- `b2b` ist Pflicht und hat keinen Standard: Die Seite entscheidet, ob „Nur für
+  Unternehmer · Alle Preise netto zzgl. USt.“ dasteht.
+- `basis` setzt eigenen Seiten einen Vorsatz voran, etwa `https://powerhandwerk.de` auf
+  Subdomains, damit Impressum und Datenschutz auf die zentralen Seiten zeigen; ein
+  Schrägstrich am Ende fällt weg.
+- `leistungsschein` nimmt die fertige Adresse des Leistungsscheins; mit ihr zeigt die
+  Rechtszeile auch AGB und Leistungsschein. Leerer Text zählt nicht als Adresse.
+- `texte` ersetzt einzelne Texte außerhalb der Links (Überschrift, Kontaktsatz,
+  B2B-Zeile, Name der Navigation, Plankopf), Standard `FUSS_TEXTE`.
+- Firmendaten, Text und Ziel jedes Links stehen einmal in `ziele` (`FIRMA`, `ZIELE`),
+  die Reihenfolge in `FUSS_REIHENFOLGE`. `fussLinks()` liefert die Links einer Fassung
+  ohne Rendern, etwa für einen Crawler-Test. Jeder Fuß trägt `data-fuss` und
+  `data-fuss-version`.
 
 ## Regeln
 

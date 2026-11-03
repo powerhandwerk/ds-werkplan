@@ -1,0 +1,182 @@
+/*
+ * Fuß des DS Werkplan (Plan fuss-baustein, Teil A „fokus“; Entwurf „Footer-
+ * Entwurf im DS Werkplan“, Flächen „fokus · Gründung“ in 390 und 1440 px).
+ * Der Fuß misst seine Breite an sich selbst (Container), nicht am Fenster:
+ * unter 640 px steht alles untereinander, ab 640 px der Kontakt in einer
+ * Zeile, ab 1024 px rechts der Plankopf (bis 440 px) und links Rechtszeile,
+ * B2B-Zeile und Marke. Container-Abfragen wirken nur auf Nachfahren, deshalb
+ * trägt die Wurzel den Container und `.innen` das Layout. Der Container bleibt
+ * ohne Namen wie bei den Paketkarten (Bun benennt im Bündel der Lesefassung
+ * Namen in @container um, die Deklaration aber nicht).
+ *
+ * Keine Übergänge und keine Animation (Plan D7). Farben aus den Rollen der
+ * Fläche Nacht; Lime nur als Linie unter einem Ziel bei Hover und Fokus.
+ */
+
+.fuss {
+  container-type: inline-size;
+}
+
+/* Inhalt höchstens 1216 px breit (76rem wie die Website), Rand wie dort
+   `--gutter` (20 bis 64 px). `--fuss-logo` ist die Höhe des Logos. */
+.innen {
+  --fuss-logo: 24px;
+  padding-block: 28px 40px;
+  padding-inline: max(clamp(20px, 5cqi, 64px), calc((100cqi - 1216px) / 2));
+}
+
+/* ---------- Schicht 02 Kontakt ---------- */
+
+.kontakt {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---------- Ziele ---------- */
+
+.zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Abwandlung von `.textlink` (werkplan.module.css): 44 px Trefferfläche, kein
+   Strich in Ruhe und kein Übergang (Plan D7); der Lime-Strich steht bei Hover
+   und Fokus sofort da. */
+.ziel {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1px;
+  font-family: var(--font-body);
+  font-size: var(--grad-16);
+  line-height: 1.3;
+  color: var(--wp-text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-repeat: no-repeat;
+  background-position: 0 calc(100% - 9px);
+  background-size: 0 3px;
+  border-radius: var(--rund-fein);
+}
+
+.ziel:hover,
+.ziel:focus-visible {
+  color: var(--wp-stark);
+  background-size: 100% 3px;
+}
+
+.ziel:focus-visible {
+  outline: 2px solid var(--wp-fokus);
+  outline-offset: 2px;
+}
+
+.klein {
+  font-size: var(--grad-14);
+}
+
+/* ---------- Schichten 04 bis 06 ---------- */
+
+/* Die feine Linie trennt Kontakt und Rechtszeile. Abstand zum Plankopf über
+   gap, weil dessen `margin: 0` sonst von der Reihenfolge der CSS-Dateien abhängt. */
+.unten {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--wp-linie-fein);
+}
+
+.recht {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.marke {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 4px;
+}
+
+.markenzeile {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--grad-14);
+  line-height: 1.4;
+  color: var(--wp-quelle);
+}
+
+.planfeld {
+  max-width: 440px;
+}
+
+/* Regeln in @container prüft css-regeln nicht: Schriftgrade und Farben hier
+   nur über Tokens, die Regeln des Fußes prüft test/fuss-vertrag.test.ts. */
+@container (min-width: 640px) {
+  .innen {
+    --fuss-logo: 28px;
+    padding-block: 48px 40px;
+  }
+
+  .kontakt {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 32px;
+    row-gap: 0;
+  }
+
+  .zeile {
+    column-gap: 24px;
+  }
+
+  .kontakt .zeile {
+    column-gap: 32px;
+  }
+
+  .unten {
+    margin-top: 40px;
+    padding-top: 24px;
+  }
+
+  /* Die B2B-Zeile trägt die Rolle `quelle`; breit eine Stufe größer wie im
+     Entwurf. Zwei Klassen, damit die Regel unabhängig von der Reihenfolge der
+     CSS-Dateien gegen `.quelle` gewinnt. */
+  .recht .b2b {
+    font-size: var(--grad-14);
+  }
+
+  .marke {
+    gap: 8px 18px;
+    margin-top: 10px;
+  }
+}
+
+@container (min-width: 1024px) {
+  .innen {
+    padding-block: 64px 48px;
+  }
+
+  .unten {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+    gap: 64px;
+    align-items: end;
+    margin-top: 48px;
+    padding-top: 32px;
+  }
+
+  .recht {
+    gap: 14px;
+  }
+}

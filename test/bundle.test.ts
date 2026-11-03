@@ -218,6 +218,7 @@ const PROPS: Record<string, Record<string, unknown>> = {
   },
   LaufzeitSchalter: { wert: 24, onWechsel: nichts },
   LaufzeitBereich: { info: { 24: "Muster für 24 Monate.", 12: "Muster für 12 Monate." }, children: "Karten" },
+  Fuss: { variante: "fokus", b2b: true, blatt: "Galerie", stand: "03.11.2026" },
   // Grafik: Daten aus dem Bündel selbst, darum als Getter (das Bündel lädt erst in beforeAll).
   get Leistungskarten() {
     const D = fenster.DsWerkplan;
