@@ -1,0 +1,38 @@
+{
+  "url": "https://claude.ai/artifact/82S5SGx1iPk1avi54QYAqk",
+  "titel": "DS Werkplan",
+  "namespace": "DsWerkplan",
+  "bibliotheken": [
+    { "name": "react", "version": "18" },
+    { "name": "react-dom", "version": "18" }
+  ],
+  "createdOnFiles": { "v": 1, "at": "2026-11-03T08:00:06Z" },
+  "assetGruppen": {
+    "Logos": {
+      "tile": "l",
+      "dateien": [
+        {
+          "name": "logo-powerhandwerk.svg",
+          "blob": "1042ad71977caf1363ed2d2461e28cbf",
+          "size": 4874,
+          "type": "image/svg+xml",
+          "sha256": "222e30ba50ba6bcb5b3aa35433b7844a45d0e29f45184c63968250c53cf12d5b"
+        },
+        {
+          "name": "logo-powerhandwerk-dark.svg",
+          "blob": "e67ca227569a32d5472d2c34922e13a2",
+          "size": 4896,
+          "type": "image/svg+xml",
+          "sha256": "307ca8f2debfa7da7b063173cbc75cc550a4ad97b952d5792bf2898f462fb4d7"
+        },
+        {
+          "name": "pin.svg",
+          "blob": "3e120c0c94469a12726f8847186c2572",
+          "size": 1235,
+          "type": "image/svg+xml",
+          "sha256": "68c3d84bb688836acfc30520b0d0f13525b746d169b6e716b144d46f8fcb1c02"
+        }
+      ]
+    }
+  }
+}

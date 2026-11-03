@@ -67,7 +67,7 @@ Teil A · fokus (Tag v2.6.0)
 4. Galerie `artifact/project/components/Fuss/` (README.md, preview.html) zeigt „fokus“ in 390 und 1280 px auf Nacht,
    im Browser angesehen.
 5. PR auf `main` per `/merge-gate` gemergt; Tag `v2.6.0` steht auf dem Merge-Commit (`git rev-list -n1 v2.6.0` gleich
-   `gh pr view <N> --json mergeCommit`) und ist gepusht; Lesefassung https://claude.ai/artifact/VEtPJU9f39nEtauqCZedqN
+   `gh pr view <N> --json mergeCommit`) und ist gepusht; Lesefassung (Adresse in `artifact/ziel.json`)
    neu veröffentlicht.
 6. `fuss-uebergabe.md` nach Skill `einbau-uebergabe` liegt im Notizordner (Tag, Importpfad, Props samt „fokus“,
    Prüfwerte); die Radar-Session hat genau eine Nachricht mit dem vollen Pfad; Flo hat eine Rückmeldung in einfacher

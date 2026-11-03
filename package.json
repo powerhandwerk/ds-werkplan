@@ -79,7 +79,9 @@
     "test": "vitest run",
     "erzeuge": "bun scripts/erzeuge.ts",
     "bundle": "bun scripts/bundle.ts",
-    "artifact": "bun scripts/artifact.ts"
+    "artifact": "bun scripts/artifact.ts",
+    "lesefassung": "bun scripts/lesefassung-paket.ts",
+    "vorschau": "bun scripts/vorschau.ts"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
