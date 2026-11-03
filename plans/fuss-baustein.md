@@ -1,13 +1,21 @@
 # Plan: fuss-baustein
 
-> **Status:** Ready (nach /plan-review: GO-mit-Edits)
+> **Status:** Done Teil A (03.11.2026; Freigabe Flo: „Freigabe, du baust hier“, Lane 2); Teil B offen (eigener Lauf, v2.7.0)
 > **Projekt:** ds-werkplan (Worktree `wt-ds-fuss`, Branch `feature/fuss-baustein` von `origin/main` bee62d7 = v2.5.0)
+> **Ausführung Teil A:** Branch `feature/fuss-baustein-fokus` ab `origin/feature/fuss-baustein` (Session im neuen Account; `wt-ds-fuss` bleibt unberührt)
 > **Erstellt:** 02.11.2026
 > **Scope:** complex
 > **Sprache:** TypeScript
 > **Größe:** L (Teil A „fokus“: M · Teil B „voll“ und „tippgeber“: L)
+> **Prüfrunde lokal:** 1/2
 
 Stand: 02.11.2026
+
+## Tasks
+
+- [x] Code (Teil A, Steps A1 bis A6; tsc und vitest Exit 0, 517 Tests)
+- [x] Gates (/simplify mit fünf Vereinfachungen; /code-review merge, 0 CRITICAL, 2 WARNING; /preflight Ready to ship)
+- [ ] Ship (PR, /pr-review, verify-browser, /merge-gate)
 
 ## Ziel
 
@@ -90,7 +98,7 @@ Teil B · voll und tippgeber (Tag v2.7.0)
 
 ### Teil A · fokus
 
-1. [ ] **A1 Datenmodul `src/ziele.ts`** (M)
+1. [x] **A1 Datenmodul `src/ziele.ts`** (M)
    - `FIRMA` als eine Quelle, Typ mit `string`-Feldern: Herausgeber „KETESO GmbH“, Ansprechpartner „Andreas Keller“,
      Telefon `{ anzeige: "+49 152 295 409 46", href: "tel:+4915229540946" }`, E-Mail „kontakt@powerhandwerk.de“,
      WhatsApp `https://wa.me/4915229540946`, Markenzeile „powerhandwerk ist eine Marke der KETESO GmbH“ (E3, D12).
@@ -106,7 +114,7 @@ Teil B · voll und tippgeber (Tag v2.7.0)
      „Nur für Unternehmer · Alle Preise netto zzgl. USt.“, nav-Name „Rechtliches“, Plankopf-Labels Herausgeber, Blatt,
      Stand, Ansprechpartner); `FUSS_VERSION`.
    - Kein React, kein `"use client"`; benannte Exporte mit deutschem JSDoc.
-2. [ ] **A2 Reine Funktion `src/fuss-links.ts`** (M)
+2. [x] **A2 Reine Funktion `src/fuss-links.ts`** (M)
    - `fussLinks({ variante, basis = "", leistungsschein }): FussEintrag[]`, `FussEintrag` mit `schluessel`, `text`,
      `href`, `name?`, `art`, `schicht`.
    - „fokus“: Schicht 02 `telefon`, `email`, `whatsapp`; Schicht 04 `impressum`, `datenschutz`, dazu `agb` und
@@ -114,7 +122,7 @@ Teil B · voll und tippgeber (Tag v2.7.0)
      Einwilligungs-Werkzeug (dann `<button type="button" data-fuss-einwilligung>`, Skript beim Verbraucher); Schalter
      kommen in Teil B.
    - `basis`: Ziele mit „/“ vorn werden `basis + href` (P1, Subdomains absolut); volle URLs, `tel:`, `mailto:` bleiben.
-3. [ ] **A3 Baustein `src/Fuss.tsx` und `src/fuss.module.css`** (M)
+3. [x] **A3 Baustein `src/Fuss.tsx` und `src/fuss.module.css`** (M)
    - Props Teil A: `variante: "fokus"`, `b2b: boolean` (Pflicht, ohne Standard), `blatt: string`, `stand?: string`,
      `anrede?: "du" | "sie"` (Standard „du“), `basis?`, `leistungsschein?`, `className?`. Server-Komponente ohne
      `"use client"`, ohne Hooks, ohne feste IDs.
@@ -127,12 +135,12 @@ Teil B · voll und tippgeber (Tag v2.7.0)
    - CSS: `container-type: inline-size` an der Wurzel, Umbruch per `@container` (schmal gestapelt, breit links Recht,
      B2B und Marke, rechts Plankopf bis 440 px); Schrift `var(--grad-*)`, Farben nur Rollen `--wp-*` der Fläche, Ziele
      `min-height: 44px`, Fokus `outline: 2px solid var(--wp-fokus)`, keine `transition` und keine `animation`.
-4. [ ] **A4 Paket-Einträge** (S)
+4. [x] **A4 Paket-Einträge** (S)
    - `package.json`: exports `./Fuss`, `./fuss.module.css`, `./ziele`, `./fuss-links`; `version` 2.6.0.
    - `src/index.ts` reicht die neuen Module weiter; `README.md` Pin v2.6.0, Bausteinliste, kurzer Abschnitt „Fuß
      einbauen“ (`<footer><Fuss … /></footer>`, Container-Breite statt Fensterbreite); `artifact/project/README.md`
      Bausteinliste (von Hand).
-5. [ ] **A5 Tests** (M)
+5. [x] **A5 Tests** (M)
    - `test/fuss-vertrag.test.ts` (`@vitest-environment node`): „Fertig heißt“ 2; dazu `FIRMA` fest (Telefon, E-Mail,
      WhatsApp gegen die Schreibweise der Website, Markenzeile gegen E3); `FUSS_VERSION` gleich `package.json`; in allen
      Texten kein „—“ und kein „ – “ (Regel wie `test/artifact.test.ts:84`).
@@ -140,7 +148,7 @@ Teil B · voll und tippgeber (Tag v2.7.0)
      WhatsApp-Links (2.5.3) und `data-fuss-version`.
    - `test/bundle.test.ts` PROPS-Eintrag für `Fuss` (Pflicht-Props, React 18); `test/artifact.test.ts` Anzahl 43 auf
      44.
-6. [ ] **A6 Galerie** (M)
+6. [x] **A6 Galerie** (M)
    - `scripts/artifact-daten.ts` Eintrag `Fuss`: Gruppe „Rahmen“, Fläche „nacht“, Skript zeigt „fokus“ in Sie ohne
      B2B-Zeile in einem 390 px breiten Rahmen und in Du mit B2B-Zeile in 1280 px; Zusammenfassung, Wann, Props,
      Lassen ohne Gedankenstriche.

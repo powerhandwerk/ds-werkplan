@@ -328,6 +328,29 @@ export {
   type LaufzeitBereichProps,
 } from "./LaufzeitSchalter";
 export {
+  Fuss,
+  type FussProps,
+} from "./Fuss";
+export {
+  fussLinks,
+  type FussEintrag,
+  type FussLinksOptionen,
+  type FussSchicht,
+  type FussVariante,
+} from "./fuss-links";
+export {
+  FIRMA,
+  ZIELE,
+  PFLICHT,
+  FUSS_REIHENFOLGE,
+  FUSS_TEXTE,
+  FUSS_VERSION,
+  type Firma,
+  type Ziel,
+  type ZielArt,
+  type ZielSchluessel,
+} from "./ziele";
+export {
   h as isoElement,
   sternPfad,
   filterDefs,

@@ -1,6 +1,6 @@
 {
   "name": "@powerhandwerk/ds-werkplan",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "DS Werkplan 2.0, Design-System von powerhandwerk",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -61,6 +61,10 @@
     "./paketkarten.module.css": "./src/paketkarten.module.css",
     "./Paketkarten": "./src/Paketkarten.tsx",
     "./LaufzeitSchalter": "./src/LaufzeitSchalter.tsx",
+    "./fuss.module.css": "./src/fuss.module.css",
+    "./Fuss": "./src/Fuss.tsx",
+    "./ziele": "./src/ziele.ts",
+    "./fuss-links": "./src/fuss-links.ts",
     "./iso": "./src/iso.ts",
     "./IsoKnoten": "./src/IsoKnoten.tsx",
     "./useSvgPraefix": "./src/useSvgPraefix.ts",

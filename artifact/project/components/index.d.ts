@@ -1953,6 +1953,134 @@ export type LaufzeitBereichProps = {
 /** Hält die Laufzeit, zeigt oben den Schalter und setzt data-laufzeit auf den Rahmen um die Kinder. */
 export declare function LaufzeitBereich({ start, info, texte, children }: LaufzeitBereichProps): React.JSX.Element;
 
+/* ---- Fuss ---- */
+
+export interface FussProps {
+    /** Fassung; Teil A kennt nur „fokus“. */
+    variante: FussVariante;
+    /**
+     * Zeile „Nur für Unternehmer · Alle Preise netto zzgl. USt.“. Pflicht ohne
+     * Standard, damit kein Einbau sie still ein- oder ausschaltet.
+     */
+    b2b: boolean;
+    /** Blatt im Schriftfeld, etwa „Gründung · Website“. */
+    blatt: string;
+    /** Stand im Schriftfeld; ohne Wert fällt das Feld weg. */
+    stand?: string;
+    /** Anrede des Kontaktsatzes. Standard: „du“. */
+    anrede?: "du" | "sie";
+    /** Vorsatz für eigene Seiten, etwa `https://powerhandwerk.de` auf Subdomains. */
+    basis?: string;
+    /** Fertige Adresse des Leistungsscheins; mit ihr zeigt der Fuß AGB und Leistungsschein. */
+    leistungsschein?: string;
+    className?: string;
+}
+/**
+ * Fuß aller powerhandwerk-Flächen (Plan fuss-baustein, Entwurf „Footer-Entwurf
+ * im DS Werkplan“), Teil A: die Fassung „fokus“ für Seiten mit einem Ziel, etwa
+ * /gruendung. Kontakt in einer Zeile, Rechtszeile, B2B-Zeile nach `b2b`, Logo
+ * mit Markenzeile und Plankopf. Server-Komponente ohne Hooks und ohne Skript;
+ * das `<footer>` stellt der Verbraucher, damit es genau eines je Seite gibt.
+ * Der Fuß steht auf Nacht und schaltet über seine eigene Breite.
+ */
+export declare function Fuss({ variante, b2b, blatt, stand, anrede, basis, leistungsschein, className }: FussProps): import("react").JSX.Element;
+
+/* ---- fuss-links ---- */
+
+/** Fassung des Fußes; Teil B ergänzt „voll“ und „tippgeber“. */
+export type FussVariante = "fokus";
+/** Schicht des Fußes nach dem Spezifikationsblatt: 02 Kontakt, 04 Rechtszeile. */
+export type FussSchicht = "02" | "04";
+/** Ein Link des Fußes mit fertiger Adresse. */
+export interface FussEintrag {
+    schluessel: ZielSchluessel;
+    text: string;
+    href: string;
+    /** Zugänglicher Name, wo der Text allein nicht reicht. */
+    name?: string;
+    art: ZielArt;
+    schicht: FussSchicht;
+}
+export interface FussLinksOptionen {
+    variante: FussVariante;
+    /**
+     * Vorsatz für eigene Seiten (Ziele mit „/“ vorn), etwa `https://powerhandwerk.de`
+     * auf Subdomains, ohne Schrägstrich am Ende. Standard: leer, also relativ.
+     */
+    basis?: string;
+    /** Fertige Adresse des Leistungsscheins. In „fokus“ zeigt der Fuß AGB und Leistungsschein nur mit ihr (Bestellen). */
+    leistungsschein?: string;
+}
+/** Die Links einer Fassung in der festen Reihenfolge `FUSS_REIHENFOLGE`. */
+export declare function fussLinks({ variante, basis, leistungsschein }: FussLinksOptionen): FussEintrag[];
+
+/* ---- ziele ---- */
+
+/** Firmendaten, öffentlich wie im Impressum. */
+export interface Firma {
+    /** Herausgeber im Schriftfeld. */
+    herausgeber: string;
+    ansprechpartner: string;
+    /** Anzeige und `tel:`-Adresse derselben Nummer. */
+    telefon: {
+        anzeige: string;
+        href: string;
+    };
+    email: string;
+    /** WhatsApp-Adresse (`wa.me`, nur Ziffern). */
+    whatsapp: string;
+    /** Zeile neben dem Logo (E3 der Entscheidungsvorlage). */
+    markenzeile: string;
+}
+/** Firmendaten in der Schreibweise der Website (`lib/site.ts`). */
+export declare const FIRMA: Firma;
+/** Art eines Ziels: eigene Seite, fremde Adresse, Anruf oder Mail. */
+export type ZielArt = "seite" | "extern" | "telefon" | "mail";
+/**
+ * Ein Ziel: sichtbarer Text, Adresse und, wo der Text allein nicht reicht, ein
+ * zugänglicher Name, der den sichtbaren Text enthält (WCAG 2.5.3). Ohne `href`
+ * kommt die Adresse vom Verbraucher (Leistungsschein).
+ */
+export interface Ziel {
+    text: string;
+    href?: string;
+    name?: string;
+    art: ZielArt;
+}
+/** Schlüssel der Ziele; Teil B ergänzt die Ziele der Fassungen „voll“ und „tippgeber“. */
+export type ZielSchluessel = "telefon" | "email" | "whatsapp" | "impressum" | "datenschutz" | "agb" | "leistungsschein";
+/**
+ * Verzeichnis aller Ziele. Kopf und Fuß teilen Schlüssel, Text und Adresse; die
+ * Reihenfolge führt jeder Baustein selbst (`FUSS_REIHENFOLGE`).
+ */
+export declare const ZIELE: Readonly<Record<ZielSchluessel, Ziel>>;
+/** Ziele, die jede Fassung des Fußes zeigt. */
+export declare const PFLICHT: readonly ["impressum", "datenschutz"];
+/**
+ * Reihenfolge der Ziele im Fuß. Eine Fassung lässt nur weg und sortiert nie um
+ * (WCAG 3.2.3); neue Schlüssel kommen an ihrer Stelle hinzu.
+ */
+export declare const FUSS_REIHENFOLGE: readonly ZielSchluessel[];
+/** Texte des Fußes; der Kontaktsatz je Anrede. */
+export declare const FUSS_TEXTE: {
+    readonly kontakt: "Kontakt";
+    readonly kontaktSatz: {
+        readonly du: "Ruf an oder schreib uns.";
+        readonly sie: "Rufen Sie an oder schreiben Sie uns.";
+    };
+    readonly b2b: "Nur für Unternehmer · Alle Preise netto zzgl. USt.";
+    /** Name der Navigation mit den Rechtsseiten. */
+    readonly recht: "Rechtliches";
+    readonly plankopf: {
+        readonly herausgeber: "Herausgeber";
+        readonly blatt: "Blatt";
+        readonly stand: "Stand";
+        readonly ansprechpartner: "Ansprechpartner";
+    };
+};
+/** Version des Fußes, gleich der Paketversion; steht als `data-fuss-version` an jedem Fuß. */
+export declare const FUSS_VERSION = "2.6.0";
+
 /* ---- iso ---- */
 
 /*!
