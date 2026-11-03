@@ -121,7 +121,7 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Fakten:** `Plankopf` ist das Schriftfeld einer Seite (Werte in normaler Schreibung), `Schriftfeld` die Fassung der Arbeitsfläche (Werte in Versalien); `Messwert` mit `Besch` und Quelle als Kennzahl; `Massbalken`, `Masskette` und `Fortschritt` für Anteile und Stände; `BlattZeile` für die Zeile über einem Blatt.
 - **Rahmen und Ordnung:** `Kasten` mit `SucherEcken`, `Info`, `Schritte`, `Liste` mit `Gruppe` und `Listenzeile`, `Filterleiste`, `DetailRahmen`.
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
-- **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A). Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
+- **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A); `MesslatteSchriftzug` für den Standard Messlatte. Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
 - **Preise:** `Modellkarte`, die Preiskarte eines Website-Angebots auf Papier mit Produktzeichen, Preis und Summen; Zahlen kommen fertig formatiert vom Verbraucher, zwei Karten stehen nebeneinander; `Paketkarten` für die drei Abo-Pakete mit `LaufzeitSchalter` und `LaufzeitBereich` darüber.
 - **Fuß:** `Fuss`, der Fuß aller Flächen auf Nacht. Fassungen lassen Teile weg und sortieren nie um; `fokus` zeigt den Kontakt in einer Zeile, Impressum und Datenschutz, auf Wunsch die B2B-Zeile, Logo mit Markenzeile und Plankopf. Firmendaten und Linkziele stehen einmal im Paket (`FIRMA`, `ZIELE`), das `<footer>` stellt die Seite.
 
@@ -157,7 +157,7 @@ Fotos sind erlaubt. KI-Bilder erscheinen nur gekennzeichnet. Erklärgrafiken sin
 
 Für beide Stile gilt: Musterinhalte tragen „Muster, keine echten Daten.“ Reduzierte Bewegung zeigt sofort das Ende, ohne JavaScript steht der Ruhezustand im HTML, jede Grafik hat eine Beschreibung für Vorleser. Text in einer Figur läuft durch `text()` der Engine oder als Kind durch React, nie als rohes Markup.
 
-**Produktzeichen** (`Produktzeichen`). Ein Produktzeichen steht für ein Produkt oder Werkzeug, das Kunden beim Namen nennen, und steht neben diesem Namen. Es ist eine kleine isometrische Figur auf Papier oder auf Nacht, ab 32 px, mit genau einem Lime-Motiv; fünf Sterne zählen als ein Motiv. Die Strichstärken folgen der Größe: unter 56 px kräftig, ab 96 px Haarlinien, dazwischen mittel. Produktzeichen sind kein Stil A: keine Bühne, keine Geste, eigene Strichstärken. Das Paket führt 14 Zeichen:
+**Produktzeichen** (`Produktzeichen`). Ein Produktzeichen steht für ein Produkt oder Werkzeug, das Kunden beim Namen nennen, und steht neben diesem Namen. Es ist eine kleine isometrische Figur auf Papier oder auf Nacht, ab 32 px (die Messlatte ab 16 px), mit genau einem Lime-Motiv; fünf Sterne zählen als ein Motiv. Die Strichstärken folgen der Größe: unter 56 px kräftig, ab 96 px Haarlinien, dazwischen mittel. Produktzeichen sind kein Stil A: keine Bühne, keine Geste, eigene Strichstärken. Das Paket führt 15 Zeichen:
 
 - `onepager`, One-Pager: eine lange Seite.
 - `website`, Website mit vier Seiten: vier Seiten hintereinander.
@@ -173,8 +173,11 @@ Für beide Stile gilt: Musterinhalte tragen „Muster, keine echten Daten.“ Re
 - `website-bereich`, Bereich Website: die Website läuft.
 - `pruefbericht`, Prüfbericht: der Prüfstand mit Bericht.
 - `kompakt-check`, Kompakt-Check: der Prüfstand allein.
+- `messlatte`, Messlatte: die Wasserwaage mit der Pille, das Zeichen des Standards.
 
 Neue Zeichen entstehen nur mit der Engine und den Bausteinen aus `produktzeichen-formen`. Eine Funktion, die ein normales Icon hat, bekommt kein Produktzeichen, etwa Zugänge, Rückruf oder Neuigkeiten. Die Paket-Embleme (`AboIcon`) für Standard, Profi und Platzhirsch gehören zur selben Familie. Ein Abo-Name steht nie ohne sein Emblem.
+
+**Messlatte** (Produktzeichen `messlatte`, `MesslatteSchriftzug`). Das Zeichen des powerhandwerk-Standards Messlatte ist eine Wasserwaage mit Teilung; die Luftblase ist die Lime-Pille aus dem Logo. Wenn alles stimmt, sitzt sie in der Mitte. Ab 40 px steht das Iso-Modell, darunter die flache Fassung, ab 28 px mit Teilung, nie unter 16 px. Der Schriftzug setzt MESSLATTE aus Big Shoulders Display 800 neben das Zeichen: Die Pille sitzt auf halber Versalhöhe, das Zeichen ist 1,25 Versalhöhen hoch, die Schutzzone ist eine halbe Versalhöhe rundum. Mit Logo ab 32 px Versalhöhe dort, wo powerhandwerk sonst fehlt (LinkedIn, Präsentationen); ohne Logo ab 14 px dort, wo powerhandwerk schon steht; darunter nur das Zeichen. Der Stand eines Projekts steht als `Masskette` mit sechs Positionen neben dem Zeichen, nie darin, beschriftet „5 von 6“. Kein Ring, keine Plakette, kein Band; keine zweite Lime-Fläche; nicht drehen, verzerren oder nachzeichnen; keine Wörter wie geprüft, zertifiziert oder Garantie daneben; nicht auf den Websites der Betriebe.
 
 ## Nicht verwenden
 

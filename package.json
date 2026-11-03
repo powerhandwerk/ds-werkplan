@@ -1,6 +1,6 @@
 {
   "name": "@powerhandwerk/ds-werkplan",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "DS Werkplan 2.0, Design-System von powerhandwerk",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -56,6 +56,10 @@
     "./produktzeichen-reihe1": "./src/produktzeichen-reihe1.ts",
     "./produktzeichen-reihe2": "./src/produktzeichen-reihe2.ts",
     "./produktzeichen-formen": "./src/produktzeichen-formen.ts",
+    "./produktzeichen-messlatte": "./src/produktzeichen-messlatte.ts",
+    "./messlatte-schriftzug": "./src/messlatte-schriftzug.ts",
+    "./messlatte-schriftzug.module.css": "./src/messlatte-schriftzug.module.css",
+    "./MesslatteSchriftzug": "./src/MesslatteSchriftzug.tsx",
     "./modellkarte.module.css": "./src/modellkarte.module.css",
     "./Modellkarte": "./src/Modellkarte.tsx",
     "./paketkarten.module.css": "./src/paketkarten.module.css",

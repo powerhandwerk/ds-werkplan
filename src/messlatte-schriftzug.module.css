@@ -1,0 +1,19 @@
+/*
+ * Schriftzug „Messlatte“: Wurzel-SVG und Schriftfarbe des Wortes je
+ * Untergrund. Das Zeichen trägt die Klassen aus produktzeichen.module.css,
+ * das Logo färbt über die fill-Attribute seiner Datei.
+ */
+
+.schriftzug {
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.papier .wort {
+  fill: var(--ink-950);
+}
+
+.nacht .wort {
+  fill: var(--ink-050);
+}

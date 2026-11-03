@@ -1,12 +1,19 @@
 # Plan: messlatte-zeichen
 
-> **Status:** Ready (nach /plan-review: GO-mit-Edits)
+> **Status:** Executing (Freigabe Flo 03.11.2026: „/build hier“)
 > **Projekt:** ds-werkplan (Worktree `wt-ds-messlatte` im Scratchpad dieser Session, Branch `feature/messlatte-zeichen` von `origin/main` dff2cd8 = Tag v2.6.0 plus PR #10, ohne Upstream)
 > **Erstellt:** 03.11.2026
 > **Scope:** complex (neue Fassung „flach“ im Produktzeichen, neuer Baustein, Lesefassung, 15+ Dateien)
 > **Sprache:** TypeScript (dazu ein Python-Skript für den Wortpfad)
 > **Größe:** L
+> **Prüfrunde lokal:** 1/2
 > **Ausführung:** `/build` hier bis 5d, danach Halt (kein automatischer Ship, siehe „Halt nur, wenn“)
+
+## Tasks
+
+- [x] Code (Steps 1 bis 8; tsc Exit 0, vitest 601 Tests grün, Prüfsummen gleich)
+- [ ] Gates (/simplify, /code-review, /preflight)
+- [ ] Ship (PR, /pr-review, verify-browser, /merge-gate): wartet auf F2
 
 ## Ziel
 
@@ -82,12 +89,12 @@ die Dateien des Markenblatts zu kopieren.
 
 ## Steps
 
-1. [ ] **Step 1: Prüfsummen der 14 Zeichen sichern** (S)
+1. [x] **Step 1: Prüfsummen der 14 Zeichen sichern** (S)
    - Vor jeder Änderung: `renderToStaticMarkup(<Produktzeichen name untergrund groesse />)` für 14 Namen ×
      Papier/Nacht × 16, 32, 40, 44, 64, 96, 172 px, SHA-256 je Fall in die Scratchpad-Datei `messlatte-vorher.json`.
      Nach dem Bau dieselbe Rechnung; Vergleich muss gleich sein (Fertig heißt 2).
 
-2. [ ] **Step 2: Iso-Figur, Rahmen und flache Fassung** (M)
+2. [x] **Step 2: Iso-Figur, Rahmen und flache Fassung** (M)
    - `src/produktzeichen-formen.ts`: reine Funktion `zeichenRahmen(szene)` mit dem engen Rahmen der Figur
      (`x0`, `y0`, `x1`, `y1` aus `Mess`); `zeichenAusschnitt` rechnet damit, Ausgabe unverändert (Prüfsummen).
    - Datei neu: `src/produktzeichen-messlatte.ts`.
@@ -105,7 +112,7 @@ die Dateien des Markenblatts zu kopieren.
      `<g class="motiv">` ohne Glühen (wie im Markenblatt).
    - Konstante `MESSLATTE_FLACH_UNTER = 40`.
 
-3. [ ] **Step 3: Verzeichnis, Baustein und CSS der Produktzeichen** (M)
+3. [x] **Step 3: Verzeichnis, Baustein und CSS der Produktzeichen** (M)
    - `src/produktzeichen-verzeichnis.ts`: Eintrag `messlatte: { titel: "Messlatte", szene: ZEICHEN_MESSLATTE, flach:
      messlatteFlach }` am Ende. `produktzeichenDaten(name, groesse = 64)`: hat der Eintrag `flach` (Eingrenzung per
      `"flach" in eintrag`, weil `as const satisfies` den Typ nicht erweitert) und ist `groesse < 40`, liefert es die
@@ -120,7 +127,7 @@ die Dateien des Markenblatts zu kopieren.
      CSS-Filter wächst mit der Unschärfe und hat keine Kante, der SVG-Filter mit Standardbereich zeigt die eckige
      Kante, vor der der Auftrag warnt. Sichtprüfung in Step 9 bei 160 px auf Nacht und im Schriftzug.
 
-4. [ ] **Step 4: Wortpfad und Logo-Inhalte** (M)
+4. [x] **Step 4: Wortpfad und Logo-Inhalte** (M)
    - Skript neu: `scripts/messlatte-wort.py` (fontTools, Pfad zur TTF als Argument), Port von `Schrift.pfad` aus
      `messlatte.py`: „MESSLATTE“ bei Schriftgröße 100, Grundlinie y = 0, mit GPOS-Unterschneidung, Zahlen auf zwei
      Stellen; gibt die TS-Konstante aus. Quelle `powerhandwerk-fonts/ttf/big-shoulders-display-800.ttf`, dieselbe wie
@@ -134,7 +141,7 @@ die Dateien des Markenblatts zu kopieren.
      0,34 F hoch, 0,16 F über der Versal-Oberkante. Rand nach F3. Mindestgrößen (Pos. 03): unter X = 32 fällt das Logo
      weg; unter X = 14 nur das Zeichen (Konstanten `SCHRIFTZUG_MIN_X = 14`, `SCHRIFTZUG_MIN_X_LOGO = 32`).
 
-5. [ ] **Step 5: Baustein `MesslatteSchriftzug`** (M)
+5. [x] **Step 5: Baustein `MesslatteSchriftzug`** (M)
    - Dateien neu: `src/MesslatteSchriftzug.tsx`, `src/messlatte-schriftzug.module.css`.
    - Props: `untergrund` (`"papier"`, Standard), `mitLogo` (Standard `false`), `versalhoehe` (px, Standard 40),
      `titel` (Standard „Messlatte“, mit Logo „powerhandwerk Messlatte“), `className`.
@@ -145,7 +152,7 @@ die Dateien des Markenblatts zu kopieren.
    - Unter X = 14: `<Produktzeichen name="messlatte">` mit `titel`, so breit wie das Zeichen im Schriftzug bei
      diesem X (`groesse` = Zeichenbreite × 24/22, die Waage füllt 22 von 24 Einheiten), mindestens 16 px.
 
-6. [ ] **Step 6: Paket-Anschluss** (S)
+6. [x] **Step 6: Paket-Anschluss** (S)
    - `package.json`: vier `exports` (`./produktzeichen-messlatte`, `./messlatte-schriftzug`, `./MesslatteSchriftzug`,
      `./messlatte-schriftzug.module.css`), Version auf die nächste freie Minor (heute 2.7.0; vor dem PR gegen
      `git tag` und offene PRs prüfen). Im selben Schritt `src/ziele.ts` `FUSS_VERSION` (der Test
@@ -154,7 +161,7 @@ die Dateien des Markenblatts zu kopieren.
    - Reihenfolge mit Fuß Teil B (`plans/fuss-baustein.md`, plant auch 2.7.0 und berührt dieselben Dateien): Wer als
      Zweiter mergt, nimmt die nächste Minor und erzeugt die Lesefassung neu.
 
-7. [ ] **Step 7: Tests** (M)
+7. [x] **Step 7: Tests** (M)
    - `test/produktzeichen.test.tsx`: Verzeichnis mit 15 Namen; Grenzen 39/40 px (flach/Iso), 20/21 px (Strich) und
      27/28 px (Teilung), dabei die Reihenfolge der Aufrufe wechseln (Cache); flache Fassung je Untergrund mit genau
      einem Lime-Element in `g.motiv`; Lime-Klassen der flachen Fassung in `LIME_KLASSEN`; ein Zeichen ohne `flach`
@@ -167,7 +174,7 @@ die Dateien des Markenblatts zu kopieren.
    - Prüfsummen-Vergleich aus Step 1 als einmaliges Skript im Scratchpad (nicht im Repo).
    - `test/artifact.test.ts` (45 Bausteine), `test/bundle.test.ts` (Beispiel-Props `MesslatteSchriftzug`).
 
-8. [ ] **Step 8: Doku und Lesefassung** (M)
+8. [x] **Step 8: Doku und Lesefassung** (M)
    - `scripts/artifact-daten.ts`: Karte `Produktzeichen`: „Die 14 Namen“ wird 15, „Ab 32 px“ und „Ein Zeichen kleiner
      als 32 px“ bekommen die Ausnahme `messlatte` (unter 40 px flach, ab 16 px), Beispiel um die flachen Größen. Neue
      Karte `MesslatteSchriftzug` (Gruppe Grafik, Papier und Nacht) mit Schriftzug ohne und mit Logo, Zeichen in den

@@ -9,7 +9,7 @@ Portal und die Website aus einer Quelle. Entscheidung und Pläne: ADR-261 sowie
 Das Paket kommt als Git-Abhängigkeit mit fester Version, ohne Registry:
 
 ```json
-"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.6.0"
+"@powerhandwerk/ds-werkplan": "github:powerhandwerk/ds-werkplan#v2.7.0"
 ```
 
 Es liefert TypeScript, TSX und CSS ohne eigenen Build. Next.js übersetzt es mit:
@@ -70,7 +70,7 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
   `IsoSzene`, Beispiel `explosionProfil`). Regeln im Markenbuch, Abschnitt „Bild und
   Grafik“.
 - **Produktzeichen** (`Produktzeichen`, Verzeichnis `PRODUKTZEICHEN`, Szenen in zwei
-  Reihen, Bausteine in `produktzeichen-formen`): 14 isometrische Zeichen für Produkte
+  Reihen, Bausteine in `produktzeichen-formen`): 15 isometrische Zeichen für Produkte
   und Werkzeuge, die Kunden beim Namen nennen, mit genau einem Lime-Motiv, auf Papier
   und Nacht. Die Strichstärke folgt der Größe (unter 56 px kräftig, ab 96 px fein).
   Sie teilen Werkzeug und Projektion mit Stil A, sind aber kein Stil A: keine Bühne,
@@ -80,6 +80,20 @@ Für PDFs (react-pdf kennt weder oklch noch CSS-Variablen) liefert
   import { Produktzeichen } from "@powerhandwerk/ds-werkplan/Produktzeichen";
 
   <Produktzeichen name="feinschliff" untergrund="nacht" groesse={64} />
+  ```
+- **Messlatte** (Produktzeichen `messlatte`, `MesslatteSchriftzug`, Daten in
+  `messlatte-schriftzug`): das Zeichen des Standards Messlatte, eine Wasserwaage mit der
+  Lime-Pille aus dem Logo als Luftblase. Ab 40 px das Iso-Modell, darunter die flache
+  Fassung (ab 28 px mit Teilung, nicht unter 16 px). Der Schriftzug setzt MESSLATTE als
+  Pfad daneben, auf Wunsch mit dem echten Logo, die Schutzzone ist eingebaut. Den Stand
+  zeigt die `Masskette` daneben. Regeln im Markenbuch, Abschnitt „Bild und Grafik“.
+  Noch nicht öffentlich einsetzen: erst nach Markenrecherche, Skill-Einbau und erstem
+  Kunden.
+
+  ```tsx
+  import { MesslatteSchriftzug } from "@powerhandwerk/ds-werkplan/MesslatteSchriftzug";
+
+  <MesslatteSchriftzug untergrund="papier" versalhoehe={40} />
   ```
 - **Preise** (`Modellkarte`): die Preiskarte eines Website-Angebots auf Papier, mit
   Produktzeichen auf eigener Bühne, Etikett, Name, Text, Preis mit Einheit und bis zu

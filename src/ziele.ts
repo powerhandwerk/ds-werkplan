@@ -114,4 +114,4 @@ export const FUSS_TEXTE: FussTexte = {
 };
 
 /** Version des Fußes, gleich der Paketversion; steht als `data-fuss-version` an jedem Fuß. */
-export const FUSS_VERSION = "2.6.0";
+export const FUSS_VERSION = "2.7.0";

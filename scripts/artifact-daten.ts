@@ -1276,10 +1276,11 @@ function Beispiel(p) {
       "Das Produktzeichen ist das isometrische Zeichen eines Produkts oder Werkzeugs, das Kunden beim Namen nennen, mit genau einem Lime-Motiv, auf Papier und auf Nacht.",
     wann: [
       "Neben dem Namen eines Produkts, etwa in einer Website-Karte, auf der Kundenseite oder in der Kundenmappe. Ab 32 px; für kleinere Größen gibt es noch keine Fassung.",
+      "Ausnahme `messlatte`, das Zeichen des Standards Messlatte: unter 40 px steht die flache Fassung im 24er-Raster, ab 28 px mit Teilung, nicht unter 16 px. Schriftzug und Regeln stehen bei `MesslatteSchriftzug`.",
       "Die optische Größe folgt allein aus `groesse`: unter 56 px kräftige Linien, ab 96 px Haarlinien, dazwischen mittel (`optischeGroesse`).",
       "Im Server-HTML steht das Zeichen im Ruhezustand, ohne Bewegung und ohne Zustand.",
       "Ohne `titel` ist das Zeichen dekorativ (`aria-hidden`), der Name steht daneben. Steht es allein, bekommt es `titel`, etwa `PRODUKTZEICHEN[name].titel`; dann trägt es `role=\"img\"` und `aria-label`.",
-      "Die 14 Namen stehen in fester Reihenfolge in `PRODUKTZEICHEN_NAMEN`. Neue Zeichen zeichnen mit der Engine und den Bausteinen aus `produktzeichen-formen`, Bildausschnitt über `zeichenAusschnitt`.",
+      "Die 15 Namen stehen in fester Reihenfolge in `PRODUKTZEICHEN_NAMEN`. Neue Zeichen zeichnen mit der Engine und den Bausteinen aus `produktzeichen-formen`, Bildausschnitt über `zeichenAusschnitt`.",
     ],
     props: [
       ["name", "ProduktzeichenName", "Pflicht", "Welches Zeichen, etwa `\"feinschliff\"` oder `\"google-profil\"`."],
@@ -1292,8 +1293,66 @@ function Beispiel(p) {
       "Mehr als ein Lime-Motiv in einem Zeichen. Fünf Sterne zählen als ein Motiv.",
       "Ein Zeichen für eine Funktion, die ein normales Icon hat, etwa Zugänge, Rückruf oder Neuigkeiten.",
       "Bühne, Geste oder die Strichstärken der Leistungskarte: Produktzeichen sind kein Stil A.",
-      "Ein Zeichen kleiner als 32 px.",
+      "Ein Zeichen kleiner als 32 px; die Messlatte flach nicht kleiner als 16 px.",
       "Ein Zeichen freihand statt mit Engine und `produktzeichen-formen`.",
+    ],
+  },
+  {
+    name: "MesslatteSchriftzug",
+    gruppe: "Grafik",
+    hoehe: 900,
+    flaeche: "beide",
+    untertitel: "Schriftzug, Zeichen in allen Größen, Stand",
+    skript: `
+var FELD = { margin: 0, display: "flex", flexDirection: "column", gap: "var(--abstand-8)" };
+var GROESSEN = [160, 64, 40, 32, 24, 16];
+function Beispiel(p) {
+  return h("div", { className: "stapel" },
+    h("figure", { style: FELD },
+      h(D.MesslatteSchriftzug, { untergrund: p.u, versalhoehe: 40 }),
+      h("figcaption", { className: W.beschriftung }, "Ohne Logo · Versalhöhe 40 px")),
+    h("figure", { style: FELD },
+      h(D.MesslatteSchriftzug, { untergrund: p.u, mitLogo: true, versalhoehe: 40 }),
+      h("figcaption", { className: W.beschriftung }, "Mit Logo · Versalhöhe 40 px")),
+    h("figure", { style: FELD },
+      h("div", { className: "reihe" },
+        GROESSEN.map(function (g) {
+          return h(D.Produktzeichen, { key: g, name: "messlatte", untergrund: p.u, groesse: g });
+        })),
+      h("figcaption", { className: W.beschriftung }, "Zeichen 160, 64, 40 px · flach 32, 24, 16 px")),
+    p.nacht ? null : h("figure", { style: FELD },
+      h("div", { className: "reihe" },
+        h(D.Produktzeichen, { name: "messlatte", groesse: 40 }),
+        h("div", { style: { width: 160 } },
+          h(D.Masskette, { gruppen: [[true, true, true, true, true, false]], label: "5 von 6 Punkten der Messlatte erfüllt" })),
+        h("span", { className: W.beschriftung }, "5 von 6")),
+      h("figcaption", { className: W.beschriftung }, "Stand neben dem Zeichen")));
+}`,
+    zusammenfassung:
+      "Der Schriftzug des Standards Messlatte: das Zeichen, eine Wasserwaage mit der Lime-Pille aus dem Logo als Luftblase, daneben MESSLATTE als Pfad, auf Wunsch mit dem echten Logo darüber.",
+    wann: [
+      "Mit Logo dort, wo powerhandwerk sonst nicht erkennbar ist, etwa auf LinkedIn und in Präsentationen. Ohne Logo dort, wo powerhandwerk schon steht: Website, Kundenseite, Berichte mit powerhandwerk-Kopf.",
+      "Die Pille sitzt auf halber Versalhöhe von MESSLATTE, das Zeichen ist 1,25 Versalhöhen hoch. `versalhoehe` setzt die Größe in px, alles andere folgt daraus.",
+      "Mindestgrößen: ohne Logo ab 14 px Versalhöhe, mit Logo ab 32 px. Darunter fällt das Logo weg, unter 14 px steht nur das Zeichen; `data-mit-logo` sagt, ob das Logo steht.",
+      "Die Fläche enthält die Schutzzone, eine halbe Versalhöhe rundum. Zum bündigen Ausrichten wird der Schriftzug um diese Zone versetzt, nicht beschnitten.",
+      "Allein steht das Zeichen als `Produktzeichen` mit dem Namen `messlatte`: ab 40 px das Modell, darunter die flache Fassung, ab 28 px mit Teilung, nicht unter 16 px.",
+      "Der Stand eines Projekts steht neben dem Zeichen, nie darin: `Masskette` mit einer Gruppe aus sechs Positionen, daneben die Beschriftung „5 von 6“ und als `label` „5 von 6 Punkten der Messlatte erfüllt“. Die Maßkette steht auf Papier.",
+      "Rendert auf dem Server, ohne Zustand und ohne Bewegung. Das Logo kommt unverändert aus `assets/` und färbt über seine `fill`-Attribute.",
+    ],
+    props: [
+      ["untergrund", "\"papier\" \\| \"nacht\"", "\"papier\"", "Fläche, auf der der Schriftzug steht."],
+      ["mitLogo", "boolean", "false", "Das powerhandwerk-Logo über MESSLATTE, erst ab 32 px Versalhöhe."],
+      ["versalhoehe", "number", "40", "Versalhöhe von MESSLATTE in px; bestimmt die ganze Größe."],
+      ["titel", "string", "„Messlatte“, mit Logo „powerhandwerk Messlatte“", "Zugänglicher Name des Bilds."],
+      ["className", "string", "ohne", "Zusätzliche Klasse am SVG."],
+    ],
+    lassen: [
+      "Ring, Plakette, Band oder Rosette um Zeichen oder Schriftzug: Die Messlatte ist ein Werkzeug, kein Siegel.",
+      "Eine zweite Lime-Fläche im Zeichen oder die Pille außerhalb der Mitte.",
+      "Zeichen oder Schriftzug drehen, verzerren oder nachzeichnen; das Logo als Text setzen.",
+      "Wörter wie geprüft, zertifiziert oder Garantie neben dem Zeichen.",
+      "Die Messlatte auf den Websites der Betriebe. Dort bleibt der Herstellerhinweis, wie er ist.",
+      "Den Stand im Zeichen zeigen. Das Zeichen zeigt immer den vollen Standard.",
     ],
   },
   /* ---------------- Preise ---------------- */

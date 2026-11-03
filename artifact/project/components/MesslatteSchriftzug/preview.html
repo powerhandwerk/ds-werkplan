@@ -1,0 +1,71 @@
+<!-- @dsCard group="Grafik" height=900 subtitle="Schriftzug, Zeichen in allen Größen, Stand" -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>MesslatteSchriftzug</title>
+<style>
+  html, body { margin: 0; }
+  body { background: var(--wp-grund); color: var(--wp-text); font-family: var(--font-body); }
+  .flaeche { box-sizing: border-box; min-height: 100vh; padding: var(--abstand-24); }
+  .beide { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); min-height: 100vh; }
+  .titel { margin: 0 0 var(--abstand-16); }
+  .stapel { display: flex; flex-direction: column; gap: var(--abstand-16); }
+  .stapel.eng { gap: var(--abstand-8); }
+  .schmal { max-width: 560px; }
+  .reihe { display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-12); }
+  .mitIcon { display: inline-flex; align-items: center; gap: var(--abstand-8); }
+  .schwebe { position: relative; transform: translateZ(0); height: 128px; }
+  .sucher { padding: var(--abstand-24); max-width: 560px; }
+  .seitenluft { padding-inline: var(--abstand-8); }
+  .kopfzeile { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-32); }
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); }
+  .icon { margin: 0; display: flex; align-items: center; gap: var(--abstand-12); padding: var(--abstand-12) var(--abstand-8); border-bottom: 1px solid var(--wp-linie-fein); color: var(--wp-stark); }
+  .icon figcaption { font-family: var(--font-werkplan); font-weight: 600; font-size: var(--grad-12); letter-spacing: 0.06em; color: var(--wp-text); }
+</style>
+</head>
+<body>
+<div id="wurzel"></div>
+<script>
+(function () {
+  "use strict";
+  var h = React.createElement;
+  var D = window.DsWerkplan;
+  var W = D.WERKPLAN_KLASSEN;
+  var BS = D.WERKPLAN_BAUSTEINE_SEITE;
+  function nichts() {}
+  var FELD = { margin: 0, display: "flex", flexDirection: "column", gap: "var(--abstand-8)" };
+  var GROESSEN = [160, 64, 40, 32, 24, 16];
+  function Beispiel(p) {
+    return h("div", { className: "stapel" },
+      h("figure", { style: FELD },
+        h(D.MesslatteSchriftzug, { untergrund: p.u, versalhoehe: 40 }),
+        h("figcaption", { className: W.beschriftung }, "Ohne Logo · Versalhöhe 40 px")),
+      h("figure", { style: FELD },
+        h(D.MesslatteSchriftzug, { untergrund: p.u, mitLogo: true, versalhoehe: 40 }),
+        h("figcaption", { className: W.beschriftung }, "Mit Logo · Versalhöhe 40 px")),
+      h("figure", { style: FELD },
+        h("div", { className: "reihe" },
+          GROESSEN.map(function (g) {
+            return h(D.Produktzeichen, { key: g, name: "messlatte", untergrund: p.u, groesse: g });
+          })),
+        h("figcaption", { className: W.beschriftung }, "Zeichen 160, 64, 40 px · flach 32, 24, 16 px")),
+      p.nacht ? null : h("figure", { style: FELD },
+        h("div", { className: "reihe" },
+          h(D.Produktzeichen, { name: "messlatte", groesse: 40 }),
+          h("div", { style: { width: 160 } },
+            h(D.Masskette, { gruppen: [[true, true, true, true, true, false]], label: "5 von 6 Punkten der Messlatte erfüllt" })),
+          h("span", { className: W.beschriftung }, "5 von 6")),
+        h("figcaption", { className: W.beschriftung }, "Stand neben dem Zeichen")));
+  }
+
+  function Flaeche(p) {
+    return h("div", { className: [p.klasse, W.seite, BS, "flaeche"].join(" ") },
+      p.titel ? h("p", { className: W.beschriftung + " titel" }, p.titel) : null,
+      h(Beispiel, { u: p.u, nacht: p.u === "nacht" }));
+  }
+  ReactDOM.createRoot(document.getElementById("wurzel")).render(h("div", { className: "beide" }, h(Flaeche, { klasse: W.papier, u: "papier", titel: "Papier" }), h(Flaeche, { klasse: W.nacht, u: "nacht", titel: "Nacht" })));
+})();
+</script>
+</body>
+</html>
