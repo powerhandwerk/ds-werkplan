@@ -220,8 +220,8 @@ Grund.
 ## Lesefassung in Claude
 
 Das Design-System in Claude zeigt dieses Paket als Lesefassung: Markenbuch, Tokens für
-Papier und Nacht, jeden Baustein mit Live-Vorschau und Leitlinie, Logos und Schriften:
-https://claude.ai/artifact/VEtPJU9f39nEtauqCZedqN
+Papier und Nacht, jeden Baustein mit Live-Vorschau und Leitlinie, Logos und Schriften.
+Die Adresse steht in `artifact/ziel.json`.
 
 Die Seite ist schreibgeschützt (`"editing": "code"`). Ihre Dateien liegen unter
 `artifact/project/` und entstehen aus dem Paket: `bun run erzeuge` (Tokens), `bun run
@@ -230,6 +230,13 @@ Schriften, Logos, Vorschauen und Leitlinien). Markenbuch (`artifact/project/READ
 und Cover sind von Hand geschrieben. Geändert wird nur im Paket, danach werden die
 Dateien neu veröffentlicht.
 
+Veröffentlichen: `bun run lesefassung -- <ordner>` legt die Dateien, den Index
+`project/design-system.json` und die Dateiliste `files.json` in einen Ordner. Hochladen
+kann nur eine Claude-Session mit dem Artifact-Werkzeug, Ablauf im Skill `ds-baustein`.
+Die Logos liegen als hochgeladene Bilder im Artifact; ändert sich eins, bricht das
+Skript ab, bis es neu hochgeladen und in `artifact/ziel.json` eingetragen ist. Welcher
+Baustein gerade entworfen, freigegeben oder gebaut ist, steht in `docs/bausteine.md`.
+
 ## Entwickeln
 
 ```bash
@@ -237,6 +244,8 @@ bun install
 bun run erzeuge      # tokens.css, schriften.css und tokens.json aus src/tokens.ts
 bun run bundle       # Bündel der Lesefassung (artifact/project/components/)
 bun run artifact     # übrige Dateien der Lesefassung
+bun run vorschau     # Lesefassung lokal ansehen, http://127.0.0.1:4387/
+bun run lesefassung -- <ordner>   # Lesefassung zum Hochladen vorbereiten
 bun x tsc --noEmit
 bun x vitest run
 ```
