@@ -199,9 +199,12 @@ import { Fuss } from "@powerhandwerk/ds-werkplan/Fuss";
 - `b2b` ist Pflicht und hat keinen Standard: Die Seite entscheidet, ob „Nur für
   Unternehmer · Alle Preise netto zzgl. USt.“ dasteht.
 - `basis` setzt eigenen Seiten einen Vorsatz voran, etwa `https://powerhandwerk.de` auf
-  Subdomains, damit Impressum und Datenschutz auf die zentralen Seiten zeigen.
+  Subdomains, damit Impressum und Datenschutz auf die zentralen Seiten zeigen; ein
+  Schrägstrich am Ende fällt weg.
 - `leistungsschein` nimmt die fertige Adresse des Leistungsscheins; mit ihr zeigt die
-  Rechtszeile auch AGB und Leistungsschein.
+  Rechtszeile auch AGB und Leistungsschein. Leerer Text zählt nicht als Adresse.
+- `texte` ersetzt einzelne Texte außerhalb der Links (Überschrift, Kontaktsatz,
+  B2B-Zeile, Name der Navigation, Plankopf), Standard `FUSS_TEXTE`.
 - Firmendaten, Text und Ziel jedes Links stehen einmal in `ziele` (`FIRMA`, `ZIELE`),
   die Reihenfolge in `FUSS_REIHENFOLGE`. `fussLinks()` liefert die Links einer Fassung
   ohne Rendern, etwa für einen Crawler-Test. Jeder Fuß trägt `data-fuss` und

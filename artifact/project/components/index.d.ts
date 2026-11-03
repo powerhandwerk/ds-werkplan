@@ -1973,6 +1973,8 @@ export interface FussProps {
     basis?: string;
     /** Fertige Adresse des Leistungsscheins; mit ihr zeigt der Fuß AGB und Leistungsschein. */
     leistungsschein?: string;
+    /** Eigene Texte außerhalb der Links; Standard `FUSS_TEXTE`. */
+    texte?: Partial<FussTexte>;
     className?: string;
 }
 /**
@@ -1983,7 +1985,7 @@ export interface FussProps {
  * das `<footer>` stellt der Verbraucher, damit es genau eines je Seite gibt.
  * Der Fuß steht auf Nacht und schaltet über seine eigene Breite.
  */
-export declare function Fuss({ variante, b2b, blatt, stand, anrede, basis, leistungsschein, className }: FussProps): import("react").JSX.Element;
+export declare function Fuss({ variante, b2b, blatt, stand, anrede, basis, leistungsschein, texte, className }: FussProps): import("react").JSX.Element;
 
 /* ---- fuss-links ---- */
 
@@ -2005,10 +2007,13 @@ export interface FussLinksOptionen {
     variante: FussVariante;
     /**
      * Vorsatz für eigene Seiten (Ziele mit „/“ vorn), etwa `https://powerhandwerk.de`
-     * auf Subdomains, ohne Schrägstrich am Ende. Standard: leer, also relativ.
+     * auf Subdomains; ein Schrägstrich am Ende fällt weg. Standard: leer, also relativ.
      */
     basis?: string;
-    /** Fertige Adresse des Leistungsscheins. In „fokus“ zeigt der Fuß AGB und Leistungsschein nur mit ihr (Bestellen). */
+    /**
+     * Fertige Adresse des Leistungsscheins. In „fokus“ zeigt der Fuß AGB und
+     * Leistungsschein nur mit ihr (Bestellen); leerer Text gilt als keine Adresse.
+     */
     leistungsschein?: string;
 }
 /** Die Links einer Fassung in der festen Reihenfolge `FUSS_REIHENFOLGE`. */
@@ -2061,23 +2066,30 @@ export declare const PFLICHT: readonly ["impressum", "datenschutz"];
  * (WCAG 3.2.3); neue Schlüssel kommen an ihrer Stelle hinzu.
  */
 export declare const FUSS_REIHENFOLGE: readonly ZielSchluessel[];
-/** Texte des Fußes; der Kontaktsatz je Anrede. */
-export declare const FUSS_TEXTE: {
-    readonly kontakt: "Kontakt";
-    readonly kontaktSatz: {
-        readonly du: "Ruf an oder schreib uns.";
-        readonly sie: "Rufen Sie an oder schreiben Sie uns.";
-    };
-    readonly b2b: "Nur für Unternehmer · Alle Preise netto zzgl. USt.";
+/**
+ * Texte des Fußes außerhalb der Links; ein Verbraucher ersetzt einzelne über die
+ * Prop `texte`. Linktexte kommen aus `ZIELE`, damit gleiche Ziele überall gleich
+ * heißen.
+ */
+export interface FussTexte {
+    /** Überschrift des Kontakts. */
+    kontakt: string;
+    /** Satz neben der Überschrift in Du-Form. */
+    kontaktSatzDu: string;
+    /** Derselbe Satz in Sie-Form. */
+    kontaktSatzSie: string;
+    /** Zeile für Unternehmer, nur mit `b2b`. */
+    b2b: string;
     /** Name der Navigation mit den Rechtsseiten. */
-    readonly recht: "Rechtliches";
-    readonly plankopf: {
-        readonly herausgeber: "Herausgeber";
-        readonly blatt: "Blatt";
-        readonly stand: "Stand";
-        readonly ansprechpartner: "Ansprechpartner";
-    };
-};
+    recht: string;
+    /** Beschriftungen im Plankopf. */
+    plankopfHerausgeber: string;
+    plankopfBlatt: string;
+    plankopfStand: string;
+    plankopfAnsprechpartner: string;
+}
+/** Standardtexte des Fußes, flach wie die übrigen `*_TEXTE`, damit `texte` jeden einzeln ersetzt. */
+export declare const FUSS_TEXTE: FussTexte;
 /** Version des Fußes, gleich der Paketversion; steht als `data-fuss-version` an jedem Fuß. */
 export declare const FUSS_VERSION = "2.6.0";
 

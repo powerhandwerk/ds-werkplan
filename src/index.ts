@@ -346,6 +346,7 @@ export {
   FUSS_TEXTE,
   FUSS_VERSION,
   type Firma,
+  type FussTexte,
   type Ziel,
   type ZielArt,
   type ZielSchluessel,

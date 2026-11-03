@@ -8,13 +8,14 @@
 > **Sprache:** TypeScript
 > **Größe:** L (Teil A „fokus“: M · Teil B „voll“ und „tippgeber“: L)
 > **Prüfrunde lokal:** 1/2
+> **Prüfrunde PR:** 2/2 (Fix des Blockers aus /pr-review: Texte als Prop `texte` mit Standard; dazu leerer Leistungsschein und Schrägstrich am Ende von `basis`)
 
 Stand: 02.11.2026
 
 ## Tasks
 
 - [x] Code (Teil A, Steps A1 bis A6; tsc und vitest Exit 0, 517 Tests)
-- [x] Gates (/simplify mit fünf Vereinfachungen; /code-review merge, 0 CRITICAL, 2 WARNING; /preflight Ready to ship)
+- [x] Gates (/simplify mit fünf Vereinfachungen; /code-review merge, 0 CRITICAL, 2 WARNING; /preflight Ready to ship). Fix-Runde nach /pr-review: /simplify mit vier Vereinfachungen (Texte flach), /code-review merge ohne WARNING, /preflight Ready to ship, 548 Tests
 - [ ] Ship (PR, /pr-review, verify-browser, /merge-gate)
 
 ## Ziel

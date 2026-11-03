@@ -19,8 +19,9 @@ Der Fuß schließt jede Seite auf Nacht ab: Kontakt, Rechtszeile, auf Wunsch die
 | `blatt` | `string` | Pflicht | Blatt im Plankopf, etwa „Gründung · Website“. |
 | `stand` | `string` | ohne | Stand im Plankopf; ohne Wert fällt das Feld weg. |
 | `anrede` | `"du" \| "sie"` | `"du"` | Anrede des Kontaktsatzes. |
-| `basis` | `string` | `""` | Vorsatz für eigene Seiten, ohne Schrägstrich am Ende. |
+| `basis` | `string` | `""` | Vorsatz für eigene Seiten; ein Schrägstrich am Ende fällt weg. |
 | `leistungsschein` | `string` | ohne | Fertige Adresse des Leistungsscheins; zeigt AGB und Leistungsschein. |
+| `texte` | `Partial<FussTexte>` | `FUSS_TEXTE` | Überschrift, Kontaktsatz je Anrede, B2B-Zeile, Name der Navigation und Plankopf-Beschriftungen. Linktexte kommen aus `ZIELE`. |
 | `className` | `string` | ohne | Zusätzliche Klasse an der Wurzel. |
 
 Import aus `@powerhandwerk/ds-werkplan/Fuss`, im Bündel `DsWerkplan.Fuss`.

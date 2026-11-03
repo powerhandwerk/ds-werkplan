@@ -25,10 +25,13 @@ export interface FussLinksOptionen {
   variante: FussVariante;
   /**
    * Vorsatz für eigene Seiten (Ziele mit „/“ vorn), etwa `https://powerhandwerk.de`
-   * auf Subdomains, ohne Schrägstrich am Ende. Standard: leer, also relativ.
+   * auf Subdomains; ein Schrägstrich am Ende fällt weg. Standard: leer, also relativ.
    */
   basis?: string;
-  /** Fertige Adresse des Leistungsscheins. In „fokus“ zeigt der Fuß AGB und Leistungsschein nur mit ihr (Bestellen). */
+  /**
+   * Fertige Adresse des Leistungsscheins. In „fokus“ zeigt der Fuß AGB und
+   * Leistungsschein nur mit ihr (Bestellen); leerer Text gilt als keine Adresse.
+   */
   leistungsschein?: string;
 }
 
@@ -52,12 +55,14 @@ const FASSUNGEN: Record<FussVariante, Partial<Record<ZielSchluessel, { schicht: 
 /** Die Links einer Fassung in der festen Reihenfolge `FUSS_REIHENFOLGE`. */
 export function fussLinks({ variante, basis = "", leistungsschein }: FussLinksOptionen): FussEintrag[] {
   const fassung = FASSUNGEN[variante];
+  const vorsatz = basis.replace(/\/+$/, "");
+  const schein = leistungsschein?.trim() || undefined;
   return FUSS_REIHENFOLGE.flatMap((schluessel) => {
     const regel = fassung[schluessel];
-    if (regel === undefined || (regel.mitLeistungsschein && leistungsschein === undefined)) return [];
+    if (regel === undefined || (regel.mitLeistungsschein && schein === undefined)) return [];
     const { href, ...ziel } = ZIELE[schluessel];
     // Ein Ziel ohne eigene Adresse bekommt sie vom Verbraucher; `basis` gilt nur für eigene Seiten.
-    const adresse = href === undefined ? leistungsschein : href.startsWith("/") ? basis + href : href;
+    const adresse = href === undefined ? schein : href.startsWith("/") ? vorsatz + href : href;
     return adresse === undefined ? [] : [{ schluessel, ...ziel, href: adresse, schicht: regel.schicht }];
   });
 }

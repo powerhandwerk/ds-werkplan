@@ -77,15 +77,41 @@ export const FUSS_REIHENFOLGE: readonly ZielSchluessel[] = [
   "leistungsschein",
 ];
 
-/** Texte des Fußes; der Kontaktsatz je Anrede. */
-export const FUSS_TEXTE = {
-  kontakt: "Kontakt",
-  kontaktSatz: { du: "Ruf an oder schreib uns.", sie: "Rufen Sie an oder schreiben Sie uns." },
-  b2b: "Nur für Unternehmer · Alle Preise netto zzgl. USt.",
+/**
+ * Texte des Fußes außerhalb der Links; ein Verbraucher ersetzt einzelne über die
+ * Prop `texte`. Linktexte kommen aus `ZIELE`, damit gleiche Ziele überall gleich
+ * heißen.
+ */
+export interface FussTexte {
+  /** Überschrift des Kontakts. */
+  kontakt: string;
+  /** Satz neben der Überschrift in Du-Form. */
+  kontaktSatzDu: string;
+  /** Derselbe Satz in Sie-Form. */
+  kontaktSatzSie: string;
+  /** Zeile für Unternehmer, nur mit `b2b`. */
+  b2b: string;
   /** Name der Navigation mit den Rechtsseiten. */
+  recht: string;
+  /** Beschriftungen im Plankopf. */
+  plankopfHerausgeber: string;
+  plankopfBlatt: string;
+  plankopfStand: string;
+  plankopfAnsprechpartner: string;
+}
+
+/** Standardtexte des Fußes, flach wie die übrigen `*_TEXTE`, damit `texte` jeden einzeln ersetzt. */
+export const FUSS_TEXTE: FussTexte = {
+  kontakt: "Kontakt",
+  kontaktSatzDu: "Ruf an oder schreib uns.",
+  kontaktSatzSie: "Rufen Sie an oder schreiben Sie uns.",
+  b2b: "Nur für Unternehmer · Alle Preise netto zzgl. USt.",
   recht: "Rechtliches",
-  plankopf: { herausgeber: "Herausgeber", blatt: "Blatt", stand: "Stand", ansprechpartner: "Ansprechpartner" },
-} as const;
+  plankopfHerausgeber: "Herausgeber",
+  plankopfBlatt: "Blatt",
+  plankopfStand: "Stand",
+  plankopfAnsprechpartner: "Ansprechpartner",
+};
 
 /** Version des Fußes, gleich der Paketversion; steht als `data-fuss-version` an jedem Fuß. */
 export const FUSS_VERSION = "2.6.0";

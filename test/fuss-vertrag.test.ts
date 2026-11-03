@@ -12,11 +12,15 @@ import { lies, ohneKommentare } from "./css-hilfe";
 // Regeln für Quelle und CSS (Fertig heißt 3), die css-regeln in @container
 // nicht prüft.
 
-const FAELLE = ["", "https://powerhandwerk.de"].flatMap((basis) =>
-  [undefined, "/agb-anlage-1-leistungsschein.pdf"].map((leistungsschein) => ({ basis, leistungsschein })),
-);
+// Dazu die Fehlbedienungen: `basis` mit Schrägstrich am Ende, leerer Leistungsschein.
+// `vorsatz` ist der erwartete Vorsatz vor eigenen Seiten.
+const FAELLE = [
+  { basis: "", vorsatz: "" },
+  { basis: "https://powerhandwerk.de", vorsatz: "https://powerhandwerk.de" },
+  { basis: "https://powerhandwerk.de/", vorsatz: "https://powerhandwerk.de" },
+].flatMap((fall) => [undefined, "", "/agb-anlage-1-leistungsschein.pdf"].map((leistungsschein) => ({ ...fall, leistungsschein })));
 
-describe.each(FAELLE)("fokus mit basis „$basis“ und Leistungsschein $leistungsschein", ({ basis, leistungsschein }) => {
+describe.each(FAELLE)("fokus mit basis „$basis“ und Leistungsschein $leistungsschein", ({ basis, vorsatz, leistungsschein }) => {
   const eintraege = fussLinks({ variante: "fokus", basis, leistungsschein });
   const schluessel = eintraege.map((eintrag) => eintrag.schluessel);
 
@@ -40,17 +44,17 @@ describe.each(FAELLE)("fokus mit basis „$basis“ und Leistungsschein $leistun
     }
   });
 
-  it("setzt basis vor eigene Seiten, lässt fremde Ziele und nimmt den Leistungsschein wie übergeben", () => {
+  it("setzt basis ohne Schrägstrich am Ende vor eigene Seiten, lässt fremde Ziele und nimmt den Leistungsschein wie übergeben", () => {
     for (const eintrag of eintraege) {
       const href = ZIELE[eintrag.schluessel].href;
       if (eintrag.schluessel === "leistungsschein") expect(eintrag.href).toBe(leistungsschein);
-      else if (href?.startsWith("/")) expect(eintrag.href, eintrag.schluessel).toBe(basis + href);
+      else if (href?.startsWith("/")) expect(eintrag.href, eintrag.schluessel).toBe(vorsatz + href);
       else expect(eintrag.href, eintrag.schluessel).toBe(href);
     }
   });
 
-  it("zeigt AGB und Leistungsschein nur mit Leistungsschein", () => {
-    const erwartet = leistungsschein === undefined ? [] : ["agb", "leistungsschein"];
+  it("zeigt AGB und Leistungsschein nur mit Leistungsschein, leerer Text zählt nicht", () => {
+    const erwartet = leistungsschein ? ["agb", "leistungsschein"] : [];
     expect(schluessel.filter((s) => s === "agb" || s === "leistungsschein")).toEqual(erwartet);
   });
 

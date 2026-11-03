@@ -52,9 +52,9 @@ describe.each(FAELLE)("fokus in $anrede, b2b $b2b", ({ anrede, b2b }) => {
   });
 
   it("wählt den Kontaktsatz nach der Anrede", () => {
-    const andere = anrede === "du" ? "sie" : "du";
-    expect(wurzel.textContent).toContain(FUSS_TEXTE.kontaktSatz[anrede]);
-    expect(wurzel.textContent).not.toContain(FUSS_TEXTE.kontaktSatz[andere]);
+    const { kontaktSatzDu: du, kontaktSatzSie: sie } = FUSS_TEXTE;
+    expect(wurzel.textContent).toContain(anrede === "sie" ? sie : du);
+    expect(wurzel.textContent).not.toContain(anrede === "sie" ? du : sie);
   });
 
   it("zeigt die B2B-Zeile nur mit b2b", () => {
@@ -69,6 +69,9 @@ describe.each(FAELLE)("fokus in $anrede, b2b $b2b", ({ anrede, b2b }) => {
 });
 
 describe("Fuss", () => {
+  const labels = (props: Partial<FussProps>) => [...fuss(props).querySelectorAll("dt")].map((dt) => dt.textContent);
+  const { plankopfHerausgeber, plankopfBlatt, plankopfStand, plankopfAnsprechpartner } = FUSS_TEXTE;
+
   it("ordnet den Kontakt unter einer Überschrift und das Recht in einer benannten Navigation", () => {
     const wurzel = fuss();
     expect(wurzel.querySelector("section > h2")?.textContent).toBe("Kontakt");
@@ -86,10 +89,9 @@ describe("Fuss", () => {
   });
 
   it("zeigt das Feld Stand nur mit Stand", () => {
-    const labels = (props: Partial<FussProps>) => [...fuss(props).querySelectorAll("dt")].map((dt) => dt.textContent);
-    expect(labels({})).toEqual(["Herausgeber", "Blatt", "Stand", "Ansprechpartner"]);
-    expect(labels({ stand: undefined })).toEqual(["Herausgeber", "Blatt", "Ansprechpartner"]);
-    expect(labels({ stand: " " })).toEqual(["Herausgeber", "Blatt", "Ansprechpartner"]);
+    expect(labels({})).toEqual([plankopfHerausgeber, plankopfBlatt, plankopfStand, plankopfAnsprechpartner]);
+    expect(labels({ stand: undefined })).toEqual([plankopfHerausgeber, plankopfBlatt, plankopfAnsprechpartner]);
+    expect(labels({ stand: " " })).toEqual([plankopfHerausgeber, plankopfBlatt, plankopfAnsprechpartner]);
     expect(fuss().querySelector("dl")?.textContent).toContain("03.11.2026");
   });
 
@@ -107,6 +109,16 @@ describe("Fuss", () => {
       expect(links(fuss(optionen))).toEqual(fussLinks({ variante: "fokus", ...optionen }).map((eintrag) => [eintrag.href, eintrag.text]));
     },
   );
+
+  it("ersetzt einzelne Texte über texte und behält die übrigen", () => {
+    const texte = { kontakt: "Ansprechpartner", b2b: "Nur für Betriebe", plankopfBlatt: "Seite" };
+    const wurzel = fuss({ b2b: true, texte });
+    expect(wurzel.querySelector("section > h2")?.textContent).toBe("Ansprechpartner");
+    expect(wurzel.textContent).toContain("Nur für Betriebe");
+    expect(wurzel.textContent).not.toContain(FUSS_TEXTE.b2b);
+    expect(wurzel.querySelector("nav")?.getAttribute("aria-label")).toBe(FUSS_TEXTE.recht);
+    expect(labels({ texte })).toEqual([plankopfHerausgeber, "Seite", plankopfStand, plankopfAnsprechpartner]);
+  });
 
   it("hängt eine zusätzliche Klasse an die Wurzel", () => {
     expect(fuss({ className: "extra" }).className).toContain("extra");

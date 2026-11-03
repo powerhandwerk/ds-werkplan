@@ -83,11 +83,12 @@
 
 /* ---------- Schichten 04 bis 06 ---------- */
 
-/* Die feine Linie trennt Kontakt und Rechtszeile. */
+/* Die feine Linie trennt Kontakt und Rechtszeile. Abstand zum Plankopf über
+   gap, weil dessen `margin: 0` sonst von der Reihenfolge der CSS-Dateien abhängt. */
 .unten {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   margin-top: 24px;
   padding-top: 12px;
   border-top: 1px solid var(--wp-linie-fein);
@@ -117,11 +118,10 @@
 
 .planfeld {
   max-width: 440px;
-  margin-top: 4px;
 }
 
 /* Regeln in @container prüft css-regeln nicht: Schriftgrade und Farben hier
-   nur über Tokens, die Regeln des Fußes prüft test/fuss.test.tsx. */
+   nur über Tokens, die Regeln des Fußes prüft test/fuss-vertrag.test.ts. */
 @container (min-width: 640px) {
   .innen {
     --fuss-logo: 28px;
@@ -178,9 +178,5 @@
 
   .recht {
     gap: 14px;
-  }
-
-  .planfeld {
-    margin-top: 0;
   }
 }

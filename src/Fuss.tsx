@@ -3,7 +3,7 @@ import { fussLinks, type FussEintrag, type FussVariante } from "./fuss-links";
 import { Logo } from "./Logo";
 import { Plankopf, type PlankopfFeld } from "./Plankopf";
 import w from "./werkplan.module.css";
-import { FIRMA, FUSS_TEXTE, FUSS_VERSION } from "./ziele";
+import { FIRMA, FUSS_TEXTE, FUSS_VERSION, type FussTexte } from "./ziele";
 
 export interface FussProps {
   /** Fassung; Teil A kennt nur „fokus“. */
@@ -23,6 +23,8 @@ export interface FussProps {
   basis?: string;
   /** Fertige Adresse des Leistungsscheins; mit ihr zeigt der Fuß AGB und Leistungsschein. */
   leistungsschein?: string;
+  /** Eigene Texte außerhalb der Links; Standard `FUSS_TEXTE`. */
+  texte?: Partial<FussTexte>;
   className?: string;
 }
 
@@ -34,16 +36,16 @@ export interface FussProps {
  * das `<footer>` stellt der Verbraucher, damit es genau eines je Seite gibt.
  * Der Fuß steht auf Nacht und schaltet über seine eigene Breite.
  */
-export function Fuss({ variante, b2b, blatt, stand, anrede = "du", basis, leistungsschein, className }: FussProps) {
+export function Fuss({ variante, b2b, blatt, stand, anrede = "du", basis, leistungsschein, texte, className }: FussProps) {
   const eintraege = fussLinks({ variante, basis, leistungsschein });
+  const t = { ...FUSS_TEXTE, ...texte };
   const mitStand = Boolean(stand?.trim());
-  const t = FUSS_TEXTE.plankopf;
   const felder: PlankopfFeld[] = [
-    { label: t.herausgeber, wert: FIRMA.herausgeber },
-    { label: t.blatt, wert: blatt },
-    ...(mitStand ? [{ label: t.stand, wert: stand }] : []),
+    { label: t.plankopfHerausgeber, wert: FIRMA.herausgeber },
+    { label: t.plankopfBlatt, wert: blatt },
+    ...(mitStand ? [{ label: t.plankopfStand, wert: stand }] : []),
     // Ohne Stand zieht der Ansprechpartner über beide Spalten, statt eine leere Zelle zu lassen.
-    { label: t.ansprechpartner, wert: FIRMA.ansprechpartner, breit: !mitStand },
+    { label: t.plankopfAnsprechpartner, wert: FIRMA.ansprechpartner, breit: !mitStand },
   ];
   const liste = (schicht: FussEintrag["schicht"], klasse: string) => (
     <ul className={css.zeile}>
@@ -62,14 +64,14 @@ export function Fuss({ variante, b2b, blatt, stand, anrede = "du", basis, leistu
     <div className={[w.nacht, css.fuss, className].filter(Boolean).join(" ")} data-fuss={variante} data-fuss-version={FUSS_VERSION}>
       <div className={css.innen}>
         <section className={css.kontakt}>
-          <h2 className={w.beschriftung}>{FUSS_TEXTE.kontakt}</h2>
-          <p className={w.text}>{FUSS_TEXTE.kontaktSatz[anrede]}</p>
+          <h2 className={w.beschriftung}>{t.kontakt}</h2>
+          <p className={w.text}>{anrede === "sie" ? t.kontaktSatzSie : t.kontaktSatzDu}</p>
           {liste("02", css.ziel)}
         </section>
         <div className={css.unten}>
           <div className={css.recht}>
-            <nav aria-label={FUSS_TEXTE.recht}>{liste("04", `${css.ziel} ${css.klein}`)}</nav>
-            {b2b && <p className={`${w.quelle} ${css.b2b}`}>{FUSS_TEXTE.b2b}</p>}
+            <nav aria-label={t.recht}>{liste("04", `${css.ziel} ${css.klein}`)}</nav>
+            {b2b && <p className={`${w.quelle} ${css.b2b}`}>{t.b2b}</p>}
             <div className={css.marke}>
               <Logo variant="dark" height="var(--fuss-logo)" />
               <p className={css.markenzeile}>{FIRMA.markenzeile}</p>
