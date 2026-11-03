@@ -230,15 +230,18 @@ die Dateien des Markenblatts zu kopieren.
 
 ## Offene Fragen
 
-- [ ] **F1 Rundung der Pille:** Das Markenblatt nennt die Luftblase „die Lime-Pille aus dem Logo“; die Dateien runden
+Antworten Flo, 03.11.2026: Ausführung „/build hier“; F1 → „Logo-Maß 0,433“; F2 → „Erst nach Recherche“ (kein Push
+und kein PR in diesem Lauf, bis die Markenrecherche durch ist oder Flo ausdrücklich Ja sagt); F3 → „Fest eingebaut“.
+
+- [x] **F1 Rundung der Pille:** Das Markenblatt nennt die Luftblase „die Lime-Pille aus dem Logo“; die Dateien runden
   in Iso und flach aber voll (0,5 der Höhe). Das Logo rundet mit 0,433 (`PILLE_FAKTOR` im Paket; „Das Logo ist die
   Wahrheit“ steht in `keteso/CLAUDE.md`). Bei 64 px unter 0,5 px Unterschied. Empfehlung: 0,433 aus `PILLE_FAKTOR` in
   beiden Fassungen; dann weichen die 14 Werkstatt-Dateien minimal ab (Folgepunkt: neu erzeugen).
-- [ ] **F2 Öffentliches Repo:** `powerhandwerk/ds-werkplan` ist öffentlich. Ein Push zeigt Name und Zeichen vor der
+- [x] **F2 Öffentliches Repo:** `powerhandwerk/ds-werkplan` ist öffentlich. Ein Push zeigt Name und Zeichen vor der
   Markenrecherche (Markenblatt Pos. 07: Recherche, „bevor der Name öffentlich steht“) und vor Skill-Einbau und erstem
   Kunden. Empfehlung: jetzt bauen, lokal prüfen und im Pane zeigen; Push und PR erst nach der Markenrecherche oder
   deinem ausdrücklichen Ja.
-- [ ] **F3 Rand des Schriftzugs:** `lockup` hat 2 bis 4 Einheiten Rand, die ½ X des Markenblatts kommen dort aus dem
+- [x] **F3 Rand des Schriftzugs:** `lockup` hat 2 bis 4 Einheiten Rand, die ½ X des Markenblatts kommen dort aus dem
   Abstand der Seite. Eingebaut heißt: der Baustein ersetzt den kleinen Rand durch ½ X rundum, bündiges Ausrichten heißt
   dann um ½ X versetzen. Sonst: enger Rand, Schutzzone nur als Regel. Empfehlung: eingebaut, weil der Baustein die
   Regel dann selbst hält.
