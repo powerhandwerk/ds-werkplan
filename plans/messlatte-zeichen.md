@@ -1,6 +1,6 @@
 # Plan: messlatte-zeichen
 
-> **Status:** Executing (Freigabe Flo 03.11.2026: „/build hier“)
+> **Status:** Done mit offenen Punkten (Sichtfreigabe Flo und Ship offen; Ship erst nach Markenrecherche, F2)
 > **Projekt:** ds-werkplan (Worktree `wt-ds-messlatte` im Scratchpad dieser Session, Branch `feature/messlatte-zeichen` von `origin/main` dff2cd8 = Tag v2.6.0 plus PR #10, ohne Upstream)
 > **Erstellt:** 03.11.2026
 > **Scope:** complex (neue Fassung „flach“ im Produktzeichen, neuer Baustein, Lesefassung, 15+ Dateien)
@@ -12,7 +12,7 @@
 ## Tasks
 
 - [x] Code (Steps 1 bis 8; tsc Exit 0, vitest 601 Tests grün, Prüfsummen gleich)
-- [ ] Gates (/simplify, /code-review, /preflight)
+- [x] Gates (/simplify mit sieben Vereinfachungen; /code-review merge, 0 CRITICAL, 1 WARNING; /preflight Layer 1 PASS, Layer 2 bis 4 nicht anwendbar)
 - [ ] Ship (PR, /pr-review, verify-browser, /merge-gate): wartet auf F2
 
 ## Ziel
@@ -184,7 +184,7 @@ die Dateien des Markenblatts zu kopieren.
      aus Pos. 02, 03, 05 und 06.
    - `README.md` (Root): 15 Zeichen, Schriftzug, Version; `docs/bausteine.md`: zwei Zeilen im Register.
 
-9. [ ] **Step 9: Verify und Sichtprüfung, dann Halt** (M)
+9. [x] **Step 9: Verify und Sichtprüfung, dann Halt** (M)
    - Alle Prüfungen aus Fertig heißt 5, Prüfsummen aus Step 1 vergleichen.
    - Vorschau `ds-messlatte-vorschau` (Port 4391) im Pane: Karten `Produktzeichen` und `MesslatteSchriftzug` bei 1280
      und 390 px, Lichtrand auf Nacht gezoomt, Vergleich gegen die SVG-Dateien des Markenblatts. Screenshot an Flo,
