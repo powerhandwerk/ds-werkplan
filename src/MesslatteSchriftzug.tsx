@@ -45,7 +45,7 @@ export function MesslatteSchriftzug({ untergrund = "papier", mitLogo = false, ve
           y={g.logo.y}
           width={g.logo.breite}
           height={g.logo.hoehe}
-          viewBox={LOGO_INHALT[g.logo.variante].viewBox}
+          viewBox={LOGO_INHALT[g.logo.variante].ausschnitt}
           dangerouslySetInnerHTML={{ __html: LOGO_INHALT[g.logo.variante].inhalt }}
         />
       ) : null}

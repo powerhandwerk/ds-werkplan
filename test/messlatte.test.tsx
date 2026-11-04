@@ -111,7 +111,7 @@ describe("Mindestgrößen", () => {
     const mit = svgAus(renderToString(<MesslatteSchriftzug untergrund={untergrund} versalhoehe={32} mitLogo />));
     expect(mit.getAttribute("data-mit-logo")).toBe("true");
     const logo = mit.querySelector(":scope > svg");
-    expect(logo?.getAttribute("viewBox")).toBe(LOGO_INHALT[untergrund === "nacht" ? "dunkel" : "hell"].viewBox);
+    expect(logo?.getAttribute("viewBox")).toBe(LOGO_INHALT[untergrund === "nacht" ? "dunkel" : "hell"].ausschnitt);
     expect(mit.getAttribute("aria-label")).toBe("powerhandwerk Messlatte");
   });
 
@@ -161,6 +161,21 @@ describe("Logo", () => {
       expect(form.getAttribute("class")).toBeNull();
     }
     expect(svg.querySelector("style")).toBeNull();
+  });
+
+  // Gemessen im Browser (getBBox der Zeichnung, 04.11.2026): Beide Dateien zeigen dieselbe Zeichnung, die
+  // dunkle liegt aber um 14,51 und 11,57 Einheiten versetzt in einem größeren Rahmen (Innenrand).
+  it("auf Nacht steht das Logo gleich groß und bündig wie auf Papier", () => {
+    const papier = schriftzugGeometrie({ versalhoehe: 48, mitLogo: true, untergrund: "papier" });
+    const nacht = schriftzugGeometrie({ versalhoehe: 48, mitLogo: true, untergrund: "nacht" });
+    if (papier.nurZeichen || nacht.nurZeichen || !papier.logo || !nacht.logo) throw new Error("Logo fehlt");
+    const { variante: _p, ...lageP } = papier.logo;
+    const { variante: _n, ...lageN } = nacht.logo;
+    expect(lageN).toEqual(lageP);
+    expect(LOGO_INHALT.dunkel.ausschnitt).toBe("14.51 11.57 434.02 63.35");
+    expect(LOGO_INHALT.hell.ausschnitt).toBe(LOGO_INHALT.hell.viewBox);
+    const logo = svgAus(renderToString(<MesslatteSchriftzug untergrund="nacht" versalhoehe={48} mitLogo />)).querySelector(":scope > svg");
+    expect(logo?.getAttribute("viewBox")).toBe(LOGO_INHALT.dunkel.ausschnitt);
   });
 
   it("zwei Schriftzüge auf einer Seite doppeln keine id", () => {

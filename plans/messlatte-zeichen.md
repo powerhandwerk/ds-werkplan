@@ -7,6 +7,7 @@
 > **Sprache:** TypeScript (dazu ein Python-Skript für den Wortpfad)
 > **Größe:** L
 > **Prüfrunde lokal:** 1/2
+> **Prüfrunde PR:** 2/2 (Blocker aus /pr-review: Logo auf Nacht über den Ausschnitt der Zeichnung)
 > **Ausführung:** `/build` hier bis 5d, danach Halt (kein automatischer Ship, siehe „Halt nur, wenn“)
 
 ## Tasks
