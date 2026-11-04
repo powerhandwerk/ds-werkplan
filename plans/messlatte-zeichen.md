@@ -294,3 +294,10 @@ und kein PR in diesem Lauf, bis die Markenrecherche durch ist oder Flo ausdrück
 | I4 F1 und F3 präzisiert | F1 nennt beide Fassungen und die Fundstelle, F3 die richtige Herkunft der ½ X |
 | I5 Erzeugung des Wortpfads sichern | Step 4: `scripts/messlatte-wort.py` im Paket; Probe: woff2 bei 800 weicht ab |
 | I6 Größe L, kein Verbraucher wartet | Größe L; F2 bietet den späteren Push |
+
+## Nach der Sichtprüfung (Flo, 03.11.2026)
+
+- Zeichen und Schriftzug im Pane gesehen: „Passt“.
+- Mindestgröße des Schriftzugs ohne Logo: „Auf 20 px anheben“ (Markenblatt: 14 px). Umgesetzt in
+  `SCHRIFTZUG_MIN_X = 20`, Doku der Karte, Brand-Book und Tests (Grenze 19/20). Die Werkstatt-Dateien und das
+  Markenblatt nennen noch 14 px (Folgepunkt, außerhalb dieses Repos).

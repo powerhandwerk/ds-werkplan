@@ -43,8 +43,11 @@ export const LOGO_INHALT = {
   },
 } as const;
 
-/** Unter dieser Versalhöhe in px steht nur das Zeichen. */
-export const SCHRIFTZUG_MIN_X = 14;
+/**
+ * Unter dieser Versalhöhe in px steht nur das Zeichen. Das Markenblatt nannte 14;
+ * Flo hob die Grenze am 03.11.2026 auf 20, weil das Zeichen darunter zu fein wird.
+ */
+export const SCHRIFTZUG_MIN_X = 20;
 
 /** Unter dieser Versalhöhe in px fällt das Logo weg. */
 export const SCHRIFTZUG_MIN_X_LOGO = 32;

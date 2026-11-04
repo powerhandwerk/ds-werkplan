@@ -4,7 +4,7 @@ Der Schriftzug des Standards Messlatte: das Zeichen, eine Wasserwaage mit der Li
 
 - Mit Logo dort, wo powerhandwerk sonst nicht erkennbar ist, etwa auf LinkedIn und in Präsentationen. Ohne Logo dort, wo powerhandwerk schon steht: Website, Kundenseite, Berichte mit powerhandwerk-Kopf.
 - Die Pille sitzt auf halber Versalhöhe von MESSLATTE, das Zeichen ist 1,25 Versalhöhen hoch. `versalhoehe` setzt die Größe in px, alles andere folgt daraus.
-- Mindestgrößen: ohne Logo ab 14 px Versalhöhe, mit Logo ab 32 px. Darunter fällt das Logo weg, unter 14 px steht nur das Zeichen; `data-mit-logo` sagt, ob das Logo steht.
+- Mindestgrößen: ohne Logo ab 20 px Versalhöhe, mit Logo ab 32 px. Darunter fällt das Logo weg, unter 20 px steht nur das Zeichen; `data-mit-logo` sagt, ob das Logo steht.
 - Die Fläche enthält die Schutzzone, eine halbe Versalhöhe rundum. Zum bündigen Ausrichten wird der Schriftzug um diese Zone versetzt, nicht beschnitten.
 - Allein steht das Zeichen als `Produktzeichen` mit dem Namen `messlatte`: ab 40 px das Modell, darunter die flache Fassung, ab 28 px mit Teilung, nicht unter 16 px.
 - Der Stand eines Projekts steht neben dem Zeichen, nie darin: `Masskette` mit einer Gruppe aus sechs Positionen, daneben die Beschriftung „5 von 6“ und als `label` „5 von 6 Punkten der Messlatte erfüllt“. Die Maßkette steht auf Papier.

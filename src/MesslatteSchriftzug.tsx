@@ -8,7 +8,7 @@ export type MesslatteSchriftzugProps = {
   untergrund?: Untergrund;
   /** Logo über dem Wort; ab Versalhöhe 32 px, darunter fällt es weg. Standard: ohne. */
   mitLogo?: boolean;
-  /** Versalhöhe X des Wortes in px; unter 14 px steht nur das Zeichen. Standard: 40. */
+  /** Versalhöhe X des Wortes in px; unter 20 px steht nur das Zeichen. Standard: 40. */
   versalhoehe?: number;
   /** Zugänglicher Name. Standard: „Messlatte“, mit Logo „powerhandwerk Messlatte“. */
   titel?: string;

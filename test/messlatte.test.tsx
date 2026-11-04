@@ -60,7 +60,7 @@ function vermiss(svg: SVGSVGElement) {
 }
 
 describe("Verbindungsregel", () => {
-  describe.each([14, 40, 64])("X = %i", (x) => {
+  describe.each([20, 40, 64])("X = %i", (x) => {
     it("Geometrie: Zeichen 1,25 X hoch, links in der Schutzzone", () => {
       const g = schriftzugGeometrie({ versalhoehe: x });
       if (g.nurZeichen) throw new Error("unerwartet nur Zeichen");
@@ -82,7 +82,7 @@ describe("Schutzzone", () => {
     [40, false, "papier"],
     [40, true, "papier"],
     [64, true, "nacht"],
-    [14, false, "nacht"],
+    [20, false, "nacht"],
   ] as const)("X = %i, Logo %s, %s: jedes Teil mindestens ½ X vom Rand, eines genau", (x, mitLogo, untergrund) => {
     const svg = svgAus(renderToString(<MesslatteSchriftzug versalhoehe={x} mitLogo={mitLogo} untergrund={untergrund} />));
     const g = schriftzugGeometrie({ versalhoehe: x, mitLogo, untergrund });
@@ -115,16 +115,16 @@ describe("Mindestgrößen", () => {
     expect(mit.getAttribute("aria-label")).toBe("powerhandwerk Messlatte");
   });
 
-  it.each(UNTERGRUENDE)("auf %s: unter X = 14 nur das Zeichen, ab 14 der Schriftzug", (untergrund) => {
-    const g = schriftzugGeometrie({ versalhoehe: 13 });
+  it.each(UNTERGRUENDE)("auf %s: unter X = 20 nur das Zeichen, ab 20 der Schriftzug", (untergrund) => {
+    const g = schriftzugGeometrie({ versalhoehe: 19 });
     expect(g.nurZeichen).toBe(true);
-    const klein = svgAus(renderToString(<MesslatteSchriftzug untergrund={untergrund} versalhoehe={13} mitLogo />));
+    const klein = svgAus(renderToString(<MesslatteSchriftzug untergrund={untergrund} versalhoehe={19} mitLogo />));
     expect(klein.getAttribute("data-mit-logo")).toBeNull();
     expect(klein.querySelector(":scope > path")).toBeNull();
     expect(klein.getAttribute("width")).toBe(String(g.nurZeichen ? g.groesse : NaN));
     expect(klein.getAttribute("aria-label")).toBe("Messlatte");
     expect(klein.getAttribute("class")).toContain(untergrund);
-    const voll = svgAus(renderToString(<MesslatteSchriftzug untergrund={untergrund} versalhoehe={14} />));
+    const voll = svgAus(renderToString(<MesslatteSchriftzug untergrund={untergrund} versalhoehe={20} />));
     expect(voll.getAttribute("data-mit-logo")).toBe("false");
     expect(voll.querySelectorAll(":scope > path")).toHaveLength(1);
   });
