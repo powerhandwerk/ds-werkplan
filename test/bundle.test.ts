@@ -204,6 +204,7 @@ const PROPS: Record<string, Record<string, unknown>> = {
   KopierenKnopf: { wert: "ABC-123" },
   Eingabefeld: { label: "Name", name: "name" },
   Produktzeichen: { name: "feinschliff" },
+  MesslatteSchriftzug: { untergrund: "papier" },
   Modellkarte: { zeichen: "website", name: "Website", preis: "00 €" },
   Paketkarten: {
     karten: (["Standard", "Profi", "Platzhirsch"] as const).map((paket) => ({

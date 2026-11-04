@@ -6,6 +6,10 @@
  * sie hier als :global unter der gehashten Wurzel .zeichen.
  * Strichstärken in Bildeinheiten des Bildausschnitts: --zk Kontur, --zf feine
  * Linie; ein Element skaliert sie mit --m.
+ * Die flache Fassung (Wurzel zusätzlich .flach, 24er-Raster) nutzt eigene
+ * Klassen in der Strichfarbe --z-flach-strich: fg Grund mit Strich, fs Fläche
+ * in Strichfarbe, fl Linie in Strichfarbe, fa Lime-Fläche mit Strich; die
+ * Strichstärken setzt sie fest am Element.
  */
 
 .zeichen {
@@ -34,6 +38,7 @@
   --z-ton-2: var(--ink-500);
   --z-ton-3: var(--ink-200);
   --z-schatten: 0.06;
+  --z-flach-strich: var(--ink-950);
 }
 
 .nacht {
@@ -51,6 +56,7 @@
   --z-ton-2: var(--ink-400);
   --z-ton-3: color-mix(in oklch, var(--ink-800) 66%, var(--ink-600));
   --z-schatten: 0.3;
+  --z-flach-strich: var(--ink-050);
 }
 
 /* ---------- Optische Größe ---------- */
@@ -222,4 +228,27 @@
 .zeichen :global(.fk) {
   fill: var(--z-funke);
   stroke: none;
+}
+
+/* ---------- Flache Fassung ---------- */
+
+.zeichen.flach {
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+.zeichen :global(.fg) {
+  fill: var(--z-front);
+  stroke: var(--z-flach-strich);
+}
+.zeichen :global(.fs) {
+  fill: var(--z-flach-strich);
+  stroke: none;
+}
+.zeichen :global(.fl) {
+  fill: none;
+  stroke: var(--z-flach-strich);
+}
+.zeichen :global(.fa) {
+  fill: var(--lime);
+  stroke: var(--z-flach-strich);
 }

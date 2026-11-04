@@ -3,7 +3,8 @@
  * Reihenfolge. Rein, ohne React; die Komponente `Produktzeichen` liest von hier.
  */
 import { zeichneRuhe, type Szene } from "./leistungskarten-engine";
-import { zeichenAusschnitt } from "./produktzeichen-formen";
+import { zeichenAusschnitt, type FlacheFassung } from "./produktzeichen-formen";
+import { MESSLATTE_FLACH, ZEICHEN_MESSLATTE } from "./produktzeichen-messlatte";
 import {
   ZEICHEN_DATEI_ANFRAGE,
   ZEICHEN_FEINSCHLIFF,
@@ -26,7 +27,8 @@ import {
 /**
  * Die Produktzeichen in fester Reihenfolge. `titel` ist der Name des Produkts,
  * wie ihn Kunden kennen; er taugt als `titel` der Komponente, wenn das Zeichen
- * ohne sichtbaren Namen daneben steht.
+ * ohne sichtbaren Namen daneben steht. `flach` beschreibt, wo es eine gibt, die
+ * flache Fassung für kleine Größen; heute nur `messlatte`.
  */
 export const PRODUKTZEICHEN = {
   onepager: { titel: "One-Pager", szene: ZEICHEN_ONEPAGER },
@@ -43,7 +45,8 @@ export const PRODUKTZEICHEN = {
   "website-bereich": { titel: "Bereich Website", szene: ZEICHEN_WEBSITE_BEREICH },
   pruefbericht: { titel: "Prüfbericht", szene: ZEICHEN_PRUEFBERICHT },
   "kompakt-check": { titel: "Kompakt-Check", szene: ZEICHEN_KOMPAKT_CHECK },
-} as const satisfies Record<string, { titel: string; szene: Szene }>;
+  messlatte: { titel: "Messlatte", szene: ZEICHEN_MESSLATTE, flach: MESSLATTE_FLACH },
+} as const satisfies Record<string, { titel: string; szene: Szene; flach?: FlacheFassung }>;
 
 export type ProduktzeichenName = keyof typeof PRODUKTZEICHEN;
 
@@ -59,15 +62,28 @@ export function optischeGroesse(groesse: number): OptischeGroesse {
   return "gross";
 }
 
-const DATEN = new Map<ProduktzeichenName, { viewBox: string; markup: string }>();
+/** Bildausschnitt und Markup; `flach` nur an der flachen Fassung. */
+export type ProduktzeichenDaten = { viewBox: string; markup: string; flach?: true };
 
-/** Bildausschnitt und Markup eines Zeichens im Ruhezustand, einmal gerechnet. */
-export function produktzeichenDaten(name: ProduktzeichenName): { viewBox: string; markup: string } {
-  let daten = DATEN.get(name);
+const DATEN = new Map<string, ProduktzeichenDaten>();
+
+/**
+ * Bildausschnitt und Markup eines Zeichens im Ruhezustand, je Fassung einmal
+ * gerechnet. Ein Zeichen mit `flach` liefert unter 40 px die flache Fassung
+ * (viewBox 0 0 24 24); alle übrigen bleiben in jeder Größe Iso.
+ */
+export function produktzeichenDaten(name: ProduktzeichenName, groesse = 64): ProduktzeichenDaten {
+  const eintrag = PRODUKTZEICHEN[name];
+  const flach = "flach" in eintrag && groesse < eintrag.flach.unter ? eintrag.flach : null;
+  const stufe = flach?.stufe(groesse);
+  const schluessel = flach ? `${name}|flach-${stufe}` : `${name}|iso`;
+  let daten = DATEN.get(schluessel);
   if (!daten) {
-    const { szene } = PRODUKTZEICHEN[name];
-    daten = { viewBox: zeichenAusschnitt(szene), markup: zeichneRuhe(szene) };
-    DATEN.set(name, daten);
+    daten =
+      flach && stufe !== undefined
+        ? { viewBox: "0 0 24 24", markup: flach.zeichne(stufe), flach: true }
+        : { viewBox: zeichenAusschnitt(eintrag.szene), markup: zeichneRuhe(eintrag.szene) };
+    DATEN.set(schluessel, daten);
   }
   return daten;
 }

@@ -255,6 +255,7 @@ export {
 } from "./leistungskarten-beispiele";
 export {
   Produktzeichen,
+  produktzeichenKlassen,
   type ProduktzeichenProps,
 } from "./Produktzeichen";
 export {
@@ -264,6 +265,7 @@ export {
   produktzeichenDaten,
   type ProduktzeichenName,
   type OptischeGroesse,
+  type ProduktzeichenDaten,
 } from "./produktzeichen-verzeichnis";
 export {
   ZEICHEN_ONEPAGER,
@@ -304,9 +306,31 @@ export {
   PIN_PFADE,
   zeichenBildmarke,
   zeichenSzene,
+  zeichenRahmen,
   zeichenAusschnitt,
   type ZeichenEbene,
+  type FlacheFassung,
 } from "./produktzeichen-formen";
+export {
+  ZEICHEN_MESSLATTE,
+  ZEICHEN_MESSLATTE_OHNE_BODEN,
+  MESSLATTE_FLACH,
+  type MesslatteFlachStufe,
+} from "./produktzeichen-messlatte";
+export {
+  MESSLATTE_WORT,
+  LOGO_INHALT,
+  SCHRIFTZUG_MIN_X,
+  SCHRIFTZUG_MIN_X_LOGO,
+  schriftzugGeometrie,
+  messlatteZeichen,
+  type SchriftzugFlaeche,
+  type SchriftzugGeometrie,
+} from "./messlatte-schriftzug";
+export {
+  MesslatteSchriftzug,
+  type MesslatteSchriftzugProps,
+} from "./MesslatteSchriftzug";
 export {
   Modellkarte,
   type ModellkarteProps,

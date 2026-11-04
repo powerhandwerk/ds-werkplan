@@ -1,0 +1,159 @@
+/**
+ * Schriftzug „Messlatte“: das Produktzeichen links, daneben MESSLATTE als
+ * Umrisspfad, darüber auf Wunsch das powerhandwerk-Logo. Rein, ohne React; der
+ * Baustein `MesslatteSchriftzug` liest von hier. Die Rechnung ist ein Port von
+ * `lockup("a", …)` aus dem Markenblatt: Zeichen 1,25 X hoch, Pillenmitte auf
+ * halber Versalhöhe X, Wort im Abstand 0,28 F, Logo 0,34 F hoch und 0,16 F über
+ * der Versal-Oberkante (F = Schriftgröße). Die Schutzzone ½ X rundum ist fest
+ * eingebaut.
+ */
+import { zeichneRuhe, type Mess } from "./leistungskarten-engine";
+import { zeichenRahmen } from "./produktzeichen-formen";
+import { MESSLATTE_FLACH_KOERPER, messlatteLibelleMitte, runde, ZEICHEN_MESSLATTE_OHNE_BODEN } from "./produktzeichen-messlatte";
+import type { Untergrund } from "./tokens";
+
+/**
+ * „MESSLATTE“ aus Big Shoulders Display 800 als Pfad, Schriftgröße 100,
+ * Grundlinie y = 0, x ab 0, mit GPOS-Unterschneidung. `breite` ist die
+ * Laufweite, `versalhoehe` der Anteil an der Schriftgröße (OS/2.sCapHeight 1600
+ * bei 2000 Einheiten). Erzeugt mit
+ * `python3 scripts/messlatte-wort.py <pfad>/powerhandwerk-fonts/ttf/big-shoulders-display-800.ttf`.
+ */
+export const MESSLATTE_WORT = {
+  d: "M4.3 0V-80H25.45L31.6 -49.1L33.35 -11.5H35.8L37.45 -49.1L43.7 -80H64.75V0H51.8V-24.3L54.3 -68.6H51.7L47.2 -23.45L41.65 -0.1H27.35L21.9 -23.45L17.35 -68.6H14.85L17.25 -24.3V0Z M73.35 0V-80H104.95V-68.6H86.3V-46.3H103.95V-34.9H86.3V-11.4H104.95V0Z M129.3 0.9Q119.35 0.9 115.1 -3.35Q110.85 -7.6 110.4 -17.45Q110.35 -19.4 110.35 -21.5Q110.35 -23.6 110.45 -25.68Q110.55 -27.75 110.75 -29.75H122.9Q122.7 -25.9 122.67 -22.12Q122.65 -18.35 122.9 -15.1Q123.15 -12.4 124.67 -11.03Q126.2 -9.65 129.3 -9.65Q132.35 -9.65 133.75 -11.03Q135.15 -12.4 135.4 -15.1Q135.6 -17.1 135.68 -18.9Q135.75 -20.7 135.68 -22.55Q135.6 -24.4 135.4 -26.45Q135.25 -28.95 134.18 -30.85Q133.1 -32.75 130.6 -33.4L123.15 -35.3Q118.3 -36.55 115.5 -38.93Q112.7 -41.3 111.47 -44.9Q110.25 -48.5 110.1 -53.4Q110.05 -55.85 110.05 -58.12Q110.05 -60.4 110.1 -62.65Q110.35 -69.2 112.27 -73.22Q114.2 -77.25 118.32 -79.08Q122.45 -80.9 129.3 -80.9Q138.95 -80.9 143.27 -76.68Q147.6 -72.45 148 -62.65Q148.1 -60.35 148.05 -57Q148 -53.65 147.85 -50.55H135.45Q135.6 -54.15 135.65 -57.78Q135.7 -61.4 135.55 -65Q135.45 -67.65 133.82 -69Q132.2 -70.35 129.3 -70.35Q126.2 -70.35 124.75 -69Q123.3 -67.65 123 -65Q122.75 -62.1 122.75 -59.2Q122.75 -56.3 123 -53.4Q123.25 -50.8 124.32 -49Q125.4 -47.2 128.1 -46.55L134.65 -45Q139.8 -43.75 142.75 -41.28Q145.7 -38.8 146.97 -35.1Q148.25 -31.4 148.4 -26.45Q148.45 -24.8 148.45 -23.33Q148.45 -21.85 148.42 -20.43Q148.4 -19 148.3 -17.45Q147.9 -7.6 143.62 -3.35Q139.35 0.9 129.3 0.9Z M173.4 0.9Q163.45 0.9 159.2 -3.35Q154.95 -7.6 154.5 -17.45Q154.45 -19.4 154.45 -21.5Q154.45 -23.6 154.55 -25.68Q154.65 -27.75 154.85 -29.75H167Q166.8 -25.9 166.77 -22.12Q166.75 -18.35 167 -15.1Q167.25 -12.4 168.77 -11.03Q170.3 -9.65 173.4 -9.65Q176.45 -9.65 177.85 -11.03Q179.25 -12.4 179.5 -15.1Q179.7 -17.1 179.77 -18.9Q179.85 -20.7 179.77 -22.55Q179.7 -24.4 179.5 -26.45Q179.35 -28.95 178.27 -30.85Q177.2 -32.75 174.7 -33.4L167.25 -35.3Q162.4 -36.55 159.6 -38.93Q156.8 -41.3 155.57 -44.9Q154.35 -48.5 154.2 -53.4Q154.15 -55.85 154.15 -58.12Q154.15 -60.4 154.2 -62.65Q154.45 -69.2 156.38 -73.22Q158.3 -77.25 162.42 -79.08Q166.55 -80.9 173.4 -80.9Q183.05 -80.9 187.38 -76.68Q191.7 -72.45 192.1 -62.65Q192.2 -60.35 192.15 -57Q192.1 -53.65 191.95 -50.55H179.55Q179.7 -54.15 179.75 -57.78Q179.8 -61.4 179.65 -65Q179.55 -67.65 177.92 -69Q176.3 -70.35 173.4 -70.35Q170.3 -70.35 168.85 -69Q167.4 -67.65 167.1 -65Q166.85 -62.1 166.85 -59.2Q166.85 -56.3 167.1 -53.4Q167.35 -50.8 168.42 -49Q169.5 -47.2 172.2 -46.55L178.75 -45Q183.9 -43.75 186.85 -41.28Q189.8 -38.8 191.07 -35.1Q192.35 -31.4 192.5 -26.45Q192.55 -24.8 192.55 -23.33Q192.55 -21.85 192.52 -20.43Q192.5 -19 192.4 -17.45Q192 -7.6 187.72 -3.35Q183.45 0.9 173.4 0.9Z M199.7 0V-80H212.65V-11.4H231.4V0Z M234.1 0 244.55 -80H265.35L275.8 0H262.55L260.75 -18.35H249.15L247.35 0ZM250.35 -29.75H259.55L257.8 -47.35L256.35 -68.6H253.55L252.1 -47.35Z M285.6 0V-68.6H273.45V-80H310.7V-68.6H298.5V0Z M325.05 0V-68.6H312.9V-80H350.15V-68.6H337.95V0Z M355.05 0V-80H386.65V-68.6H368V-46.3H385.65V-34.9H368V-11.4H386.65V0Z",
+  breite: 388.9,
+  versalhoehe: 0.8,
+} as const;
+
+/**
+ * Inhalt der Logo-Dateien `assets/logo-powerhandwerk.svg` (hell, für Papier)
+ * und `assets/logo-powerhandwerk-dark.svg` (dunkel, für Nacht): alles zwischen
+ * `<svg …>` und `</svg>`, Zeichen für Zeichen gleich, nur ohne `id` und
+ * `data-name`, damit zwei Schriftzüge auf einer Seite keine IDs doppeln. Die
+ * Farben stehen als `fill` in den Pfaden. `viewBox` ist der Rahmen der Datei,
+ * `ausschnitt` der Rahmen der Zeichnung: Die dunkle Datei zeigt dieselbe
+ * Zeichnung wie die helle, aber mit Innenrand, um 14,51 und 11,57 Einheiten
+ * versetzt (gemessen per getBBox, 04.11.2026). Gesetzt wird über `ausschnitt`,
+ * damit das Logo auf beiden Untergründen gleich groß und bündig steht.
+ */
+export const LOGO_INHALT = {
+  hell: {
+    viewBox: "0 0 434.02 63.35",
+    ausschnitt: "0 0 434.02 63.35",
+    inhalt: "\n  <g>\n    <rect fill=\"#b5e545\" x=\"198.7\" y=\"6.63\" width=\"235.32\" height=\"50.1\" rx=\"21.7\" ry=\"21.7\" transform=\"translate(-1.43 21.95) rotate(-3.96)\"/>\n    <g>\n      <path fill=\"#000\" d=\"M75.11,24.07h3.8l-1.03,4.57c1.75-2.21,5.14-5.09,8.27-5.09,4.63,0,6.68,2.88,6.68,7.55,0,8.43-4.52,19.17-12.85,19.17-2.21,0-5.24-.57-6.89-.98l-2.72,11.87h-3.8l8.53-37.1ZM88.89,31.26c0-2.83-1.13-4.32-3.8-4.32-2.42,0-6.06,3.39-8.17,6.01l-3.03,13.16c1.44.36,4.11.82,6.12.82,5.86,0,8.89-9.61,8.89-15.67Z\"/>\n      <path fill=\"#000\" d=\"M96.14,41.85c0-9.56,5.24-18.3,12.95-18.3,5.76,0,8.89,2.83,8.89,8.74,0,9.4-4.88,17.99-13.05,17.99-5.7,0-8.79-2.52-8.79-8.43ZM114.12,32.24c0-3.19-1.59-5.34-5.04-5.34-5.5,0-9.04,7.3-9.04,14.96,0,3.29,1.59,5.09,4.88,5.09,5.6,0,9.2-6.99,9.2-14.7Z\"/>\n      <path fill=\"#000\" d=\"M123.79,24.07h3.85l-.46,22.35h.98l10.54-21.84h4.52l.21,21.84h.98l10.07-22.35h3.91l-11.61,25.7h-6.94l-.1-20.15-9.56,20.15h-6.78l.41-25.7Z\"/>\n      <path fill=\"#000\" d=\"M158.23,42.47c0-8.89,4.21-18.91,13.82-18.91,4.63,0,7.66,1.85,7.66,6.27,0,6.32-4.83,8.22-14.39,8.22h-2.67c-.31,1.28-.51,2.98-.51,4.16,0,3.03,2,4.68,4.88,4.68s6.48-.67,8.48-1.18l-.31,3.08c-1.95.67-5.81,1.49-9.2,1.49-4.93,0-7.76-2.57-7.76-7.81ZM165.99,35.02c6.73,0,9.87-1.13,9.87-5.14,0-2.26-1.44-3.08-3.96-3.08-4.68,0-7.3,3.29-8.74,8.22h2.83Z\"/>\n      <path fill=\"#000\" d=\"M186.65,24.07h3.8l-.87,3.8c2-1.49,5.96-3.7,9.25-4.37l-1.03,4.01c-2.42.56-6.53,2.52-8.99,3.8l-4.27,18.45h-3.85l5.96-25.7Z\"/>\n      <path fill=\"#000\" d=\"M215.94,13.79h6.89l-2.88,12.69c1.28-1.29,3.96-3.03,6.42-3.03,4.68,0,6.27,3.24,6.27,7.25,0,1.8-.72,4.93-1.08,6.48l-2.88,12.59h-6.89l2.78-12.08c.31-1.28.92-4.11.92-5.29,0-1.9-.26-2.98-2.06-2.98-1.18,0-3.49,1.75-4.93,3.08l-3.96,17.27h-6.89l8.27-35.97Z\"/>\n      <path fill=\"#000\" d=\"M235.32,41.03c0-6.99,3.7-17.58,13.05-17.58,2.72,0,8.94.98,12.85,1.7l-3.85,16.6c-.52,2.31-1.08,5.86-1.39,7.86l-6.83.26c.21-1.34.51-3.39.67-4.01-1.44,1.95-4.37,4.52-7.25,4.52-5.24,0-7.25-4.01-7.25-9.35ZM250.95,39.95l2.36-9.92c-1.44-.31-3.75-.72-4.73-.72-4.16,0-6.27,7.04-6.27,11.72,0,2.21.51,3.49,2.62,3.49,1.54,0,4.32-2.62,6.01-4.57Z\"/>\n      <path fill=\"#000\" d=\"M267.09,24.07h6.58l-.31,2.52c1.34-1.34,4.06-3.13,6.53-3.13,4.68,0,6.27,3.24,6.27,7.25,0,1.7-.72,4.93-1.08,6.48l-2.88,12.59h-6.89l2.78-12.08c.31-1.28.92-4.11.92-5.29,0-1.9-.21-2.98-2.11-2.98-1.18,0-3.5,1.75-4.88,3.08l-3.96,17.27h-6.89l5.91-25.7Z\"/>\n      <path fill=\"#000\" d=\"M288.83,41.29c0-8.33,4.42-17.78,12.95-17.78,1.59,0,4.42.62,6.17,1.08l2.52-10.79h6.89l-8.33,35.97h-6.68l.46-2.67c-1.23,1.44-3.85,3.29-6.58,3.29-4.93,0-7.4-3.34-7.4-9.1ZM304.24,40.82l2.47-10.74c-1.28-.31-3.49-.72-4.93-.72-3.85,0-5.96,7.19-5.96,11.87,0,1.85.77,3.29,2.62,3.29,1.39,0,4.11-2.11,5.81-3.7Z\"/>\n      <path fill=\"#000\" d=\"M318.79,24.07h6.94l-1.64,19.84h1.18l8.17-19.32h7.81l-1.03,19.32h1.18l7.66-19.84h6.94l-10.48,25.7h-11.46l.98-15.98-6.48,15.98h-11.25l1.49-25.7Z\"/>\n      <path fill=\"#000\" d=\"M355.18,41.65c0-9.3,4.06-18.14,14.08-18.14,5.5,0,8.99,2.16,8.99,7.66,0,6.73-4.42,8.58-14.24,8.58h-1.8c-.1.41-.15,1.13-.15,1.75,0,2.06,1.7,3.03,3.75,3.03,2.57,0,6.37-.36,8.53-.67l-.77,5.09c-2.06.62-6.12,1.44-9.71,1.44-5.91,0-8.68-2.72-8.68-8.74ZM365.1,34.66c4.83,0,6.37-.98,6.37-3.39,0-1.64-.92-2.21-2.57-2.21-3.03,0-5.04,1.9-5.91,5.6h2.11Z\"/>\n      <path fill=\"#000\" d=\"M384.22,24.07h6.83l-.92,3.7c1.8-1.64,5.24-3.96,8.07-4.32l-2,7.19c-1.85.57-5.19,2-7.25,2.93l-3.75,16.19h-6.89l5.91-25.7Z\"/>\n      <path fill=\"#000\" d=\"M403.75,13.79h6.89l-4.63,19.99,1.75-.36,6.53-9.3h7.55l-8.94,12.33,3.39,13.31h-7.04l-2.47-10.64-2.06.31-2.36,10.33h-6.89l8.27-35.97Z\"/>\n    </g>\n    <g>\n      <g>\n        <g>\n          <path fill=\"#b5e545\" d=\"M23.23,63.1h-.61c-.57-.1-1.2-.39-1.59-.87l-5.36-6.58c-4.97-6.1-11.25-16.13-13.89-23.57-.87-2.46-1.53-4.91-1.72-7.45C-.87,12.21,8.5.8,20.94.33l2.18-.08c12.22.14,22.26,10.15,22.39,22.48.06,5.19-2,10.57-4.3,15.23-4.23,8.57-10.44,16.88-16.62,24.14-.41.48-.85.76-1.36,1ZM34.22,23c0-6.33-5.13-11.46-11.46-11.46s-11.46,5.13-11.46,11.46,5.13,11.46,11.46,11.46,11.46-5.13,11.46-11.46Z\"/>\n          <path fill=\"#fff\" d=\"M22.76,11.54c6.33,0,11.46,5.13,11.46,11.46s-5.13,11.46-11.46,11.46\"/>\n        </g>\n      </g>\n      <path fill=\"#fff\" d=\"M23.05,34.74V11.25c-6.49,0-11.75,5.26-11.75,11.75s5.26,11.75,11.75,11.75Z\"/>\n      <path fill=\"#88ac34\" d=\"M23.2.25h-.37v11.29c6.33,0,11.46,5.13,11.46,11.46s-5.13,11.46-11.46,11.46v28.64h.47c.51-.24.95-.52,1.36-1,6.18-7.26,12.39-15.57,16.62-24.14,2.3-4.66,4.36-10.03,4.3-15.23C45.46,10.4,35.42.39,23.2.25Z\"/>\n      <path fill=\"#c5d8df\" d=\"M22.84,11.25v23.49c6.49,0,11.75-5.26,11.75-11.75s-5.26-11.75-11.75-11.75Z\"/>\n    </g>\n  </g>\n",
+  },
+  dunkel: {
+    viewBox: "0 0 487.56 81.26",
+    ausschnitt: "14.51 11.57 434.02 63.35",
+    inhalt: "\n  <g>\n    <g>\n      <g>\n        <g>\n          <path fill=\"#b5e545\" d=\"M37.74,75.09h-.61c-.57-.1-1.2-.39-1.59-.87l-5.36-6.58c-4.97-6.1-11.25-16.13-13.89-23.57-.87-2.46-1.53-4.91-1.72-7.45-.94-12.43,8.43-23.84,20.88-24.31l2.18-.08c12.22.14,22.26,10.15,22.39,22.48.06,5.19-2,10.57-4.3,15.23-4.23,8.57-10.44,16.88-16.62,24.14-.41.48-.85.76-1.36,1ZM48.72,34.98c0-6.33-5.13-11.46-11.46-11.46s-11.46,5.13-11.46,11.46,5.13,11.46,11.46,11.46,11.46-5.13,11.46-11.46Z\"/>\n          <path fill=\"#fff\" d=\"M37.27,23.53c6.33,0,11.46,5.13,11.46,11.46s-5.13,11.46-11.46,11.46\"/>\n        </g>\n      </g>\n      <path fill=\"#fff\" d=\"M37.55,46.73v-23.49c-6.49,0-11.75,5.26-11.75,11.75s5.26,11.75,11.75,11.75Z\"/>\n      <path fill=\"#88ac34\" d=\"M37.71,12.24h-.37v11.29c6.33,0,11.46,5.13,11.46,11.46s-5.13,11.46-11.46,11.46v28.64h.47c.51-.24.95-.52,1.36-1,6.18-7.26,12.39-15.57,16.62-24.14,2.3-4.66,4.36-10.03,4.3-15.23-.13-12.34-10.17-22.35-22.39-22.48Z\"/>\n      <path fill=\"#c5d8df\" d=\"M37.35,23.24v23.49c6.49,0,11.75-5.26,11.75-11.75s-5.26-11.75-11.75-11.75Z\"/>\n    </g>\n    <rect fill=\"#b5e545\" x=\"214.62\" y=\"18.2\" width=\"235.32\" height=\"50.1\" rx=\"21.7\" ry=\"21.7\" transform=\"translate(-2.2 23.08) rotate(-3.96)\"/>\n    <g>\n      <path fill=\"#fff\" d=\"M91.03,35.65h3.8l-1.03,4.57c1.75-2.21,5.14-5.09,8.27-5.09,4.63,0,6.68,2.88,6.68,7.55,0,8.43-4.52,19.17-12.85,19.17-2.21,0-5.24-.57-6.89-.98l-2.72,11.87h-3.8l8.53-37.1ZM104.81,42.84c0-2.83-1.13-4.32-3.8-4.32-2.42,0-6.06,3.39-8.17,6.01l-3.03,13.16c1.44.36,4.11.82,6.12.82,5.86,0,8.89-9.61,8.89-15.67Z\"/>\n      <path fill=\"#fff\" d=\"M112.06,53.43c0-9.56,5.24-18.3,12.95-18.3,5.76,0,8.89,2.83,8.89,8.74,0,9.4-4.88,17.99-13.05,17.99-5.7,0-8.79-2.52-8.79-8.43ZM130.04,43.82c0-3.19-1.59-5.34-5.04-5.34-5.5,0-9.04,7.3-9.04,14.96,0,3.29,1.59,5.09,4.88,5.09,5.6,0,9.2-6.99,9.2-14.7Z\"/>\n      <path fill=\"#fff\" d=\"M139.71,35.65h3.85l-.46,22.35h.98l10.54-21.84h4.52l.21,21.84h.98l10.07-22.35h3.91l-11.61,25.7h-6.94l-.1-20.15-9.56,20.15h-6.78l.41-25.7Z\"/>\n      <path fill=\"#fff\" d=\"M174.15,54.04c0-8.89,4.21-18.91,13.82-18.91,4.63,0,7.66,1.85,7.66,6.27,0,6.32-4.83,8.22-14.39,8.22h-2.67c-.31,1.28-.51,2.98-.51,4.16,0,3.03,2,4.68,4.88,4.68s6.48-.67,8.48-1.18l-.31,3.08c-1.95.67-5.81,1.49-9.2,1.49-4.93,0-7.76-2.57-7.76-7.81ZM181.91,46.59c6.73,0,9.87-1.13,9.87-5.14,0-2.26-1.44-3.08-3.96-3.08-4.68,0-7.3,3.29-8.74,8.22h2.83Z\"/>\n      <path fill=\"#fff\" d=\"M202.57,35.65h3.8l-.87,3.8c2-1.49,5.96-3.7,9.25-4.37l-1.03,4.01c-2.42.56-6.53,2.52-8.99,3.8l-4.27,18.45h-3.85l5.96-25.7Z\"/>\n      <path fill=\"#000\" d=\"M231.86,25.37h6.89l-2.88,12.69c1.28-1.29,3.96-3.03,6.42-3.03,4.68,0,6.27,3.24,6.27,7.25,0,1.8-.72,4.93-1.08,6.48l-2.88,12.59h-6.89l2.78-12.08c.31-1.28.92-4.11.92-5.29,0-1.9-.26-2.98-2.06-2.98-1.18,0-3.49,1.75-4.93,3.08l-3.96,17.27h-6.89l8.27-35.97Z\"/>\n      <path fill=\"#000\" d=\"M251.24,52.6c0-6.99,3.7-17.58,13.05-17.58,2.72,0,8.94.98,12.85,1.7l-3.85,16.6c-.52,2.31-1.08,5.86-1.39,7.86l-6.83.26c.21-1.34.51-3.39.67-4.01-1.44,1.95-4.37,4.52-7.25,4.52-5.24,0-7.25-4.01-7.25-9.35ZM266.87,51.52l2.36-9.92c-1.44-.31-3.75-.72-4.73-.72-4.16,0-6.27,7.04-6.27,11.72,0,2.21.51,3.49,2.62,3.49,1.54,0,4.32-2.62,6.01-4.57Z\"/>\n      <path fill=\"#000\" d=\"M283.01,35.65h6.58l-.31,2.52c1.34-1.34,4.06-3.13,6.53-3.13,4.68,0,6.27,3.24,6.27,7.25,0,1.7-.72,4.93-1.08,6.48l-2.88,12.59h-6.89l2.78-12.08c.31-1.28.92-4.11.92-5.29,0-1.9-.21-2.98-2.11-2.98-1.18,0-3.5,1.75-4.88,3.08l-3.96,17.27h-6.89l5.91-25.7Z\"/>\n      <path fill=\"#000\" d=\"M304.75,52.86c0-8.33,4.42-17.78,12.95-17.78,1.59,0,4.42.62,6.17,1.08l2.52-10.79h6.89l-8.33,35.97h-6.68l.46-2.67c-1.23,1.44-3.85,3.29-6.58,3.29-4.93,0-7.4-3.34-7.4-9.1ZM320.16,52.4l2.47-10.74c-1.28-.31-3.49-.72-4.93-.72-3.85,0-5.96,7.19-5.96,11.87,0,1.85.77,3.29,2.62,3.29,1.39,0,4.11-2.11,5.81-3.7Z\"/>\n      <path fill=\"#000\" d=\"M334.71,35.65h6.94l-1.64,19.84h1.18l8.17-19.32h7.81l-1.03,19.32h1.18l7.66-19.84h6.94l-10.48,25.7h-11.46l.98-15.98-6.48,15.98h-11.25l1.49-25.7Z\"/>\n      <path fill=\"#000\" d=\"M371.1,53.22c0-9.3,4.06-18.14,14.08-18.14,5.5,0,8.99,2.16,8.99,7.66,0,6.73-4.42,8.58-14.24,8.58h-1.8c-.1.41-.15,1.13-.15,1.75,0,2.06,1.7,3.03,3.75,3.03,2.57,0,6.37-.36,8.53-.67l-.77,5.09c-2.06.62-6.12,1.44-9.71,1.44-5.91,0-8.68-2.72-8.68-8.74ZM381.02,46.23c4.83,0,6.37-.98,6.37-3.39,0-1.64-.92-2.21-2.57-2.21-3.03,0-5.04,1.9-5.91,5.6h2.11Z\"/>\n      <path fill=\"#000\" d=\"M400.14,35.65h6.83l-.92,3.7c1.8-1.64,5.24-3.96,8.07-4.32l-2,7.19c-1.85.57-5.19,2-7.25,2.93l-3.75,16.19h-6.89l5.91-25.7Z\"/>\n      <path fill=\"#000\" d=\"M419.67,25.37h6.89l-4.63,19.99,1.75-.36,6.53-9.3h7.55l-8.94,12.33,3.39,13.31h-7.04l-2.47-10.64-2.06.31-2.36,10.33h-6.89l8.27-35.97Z\"/>\n    </g>\n  </g>\n",
+  },
+} as const;
+
+/**
+ * Unter dieser Versalhöhe in px steht nur das Zeichen. Das Markenblatt nannte 14;
+ * Flo hob die Grenze am 03.11.2026 auf 20, weil das Zeichen darunter zu fein wird.
+ */
+export const SCHRIFTZUG_MIN_X = 20;
+
+/** Unter dieser Versalhöhe in px fällt das Logo weg. */
+export const SCHRIFTZUG_MIN_X_LOGO = 32;
+
+/** Rechteck in px: links, oben, Breite, Höhe. */
+export type SchriftzugFlaeche = { x: number; y: number; breite: number; hoehe: number };
+
+export type SchriftzugGeometrie =
+  | {
+      nurZeichen: false;
+      mitLogo: boolean;
+      /** Gesamtmaß samt Schutzzone, Ursprung 0, auf drei Stellen gerundet. */
+      breite: number;
+      hoehe: number;
+      viewBox: string;
+      zeichen: SchriftzugFlaeche & { transform: string };
+      wort: SchriftzugFlaeche & { transform: string };
+      logo: (SchriftzugFlaeche & { variante: keyof typeof LOGO_INHALT }) | null;
+    }
+  | {
+      nurZeichen: true;
+      mitLogo: false;
+      /** Kantenlänge für `<Produktzeichen name="messlatte">`. */
+      groesse: number;
+    };
+
+let zeichenDaten: { rahmen: Mess; mitteY: number; markup: string } | null = null;
+
+/**
+ * Enger Rahmen, Höhe der Pillenmitte und Markup des Zeichens ohne Boden. Sie
+ * hängen an keiner Prop und werden beim ersten Gebrauch einmal gerechnet.
+ */
+export function messlatteZeichen(): { rahmen: Mess; mitteY: number; markup: string } {
+  zeichenDaten ??= {
+    rahmen: zeichenRahmen(ZEICHEN_MESSLATTE_OHNE_BODEN),
+    mitteY: messlatteLibelleMitte()[1],
+    markup: zeichneRuhe(ZEICHEN_MESSLATTE_OHNE_BODEN),
+  };
+  return zeichenDaten;
+}
+
+/**
+ * Lage aller Teile des Schriftzugs in px bei Versalhöhe `versalhoehe` (X).
+ * Unter `SCHRIFTZUG_MIN_X_LOGO` ohne Logo, unter `SCHRIFTZUG_MIN_X` nur das
+ * Zeichen, so breit wie im Schriftzug bei diesem X (die flache Waage füllt 22
+ * von 24 Einheiten), mindestens 16 px.
+ */
+export function schriftzugGeometrie({
+  versalhoehe: x,
+  mitLogo = false,
+  untergrund = "papier",
+}: {
+  versalhoehe: number;
+  mitLogo?: boolean;
+  untergrund?: Untergrund;
+}): SchriftzugGeometrie {
+  const f = x / MESSLATTE_WORT.versalhoehe;
+  const { rahmen, mitteY } = messlatteZeichen();
+  const k = (1.25 * x) / (rahmen.y1 - rahmen.y0);
+  const zeichenBreite = (rahmen.x1 - rahmen.x0) * k;
+  if (x < SCHRIFTZUG_MIN_X) {
+    return { nurZeichen: true, mitLogo: false, groesse: Math.max(16, Math.round((zeichenBreite * 24) / MESSLATTE_FLACH_KOERPER)) };
+  }
+
+  // Erst mit Grundlinie 0 und Zeichen bei x = 0 rechnen, dann um die Schutzzone schieben.
+  const zeichenTy = -x / 2 - mitteY * k;
+  const zeichenOben = rahmen.y0 * k + zeichenTy;
+  const wortX = zeichenBreite + 0.28 * f;
+  const wortBreite = (MESSLATTE_WORT.breite * f) / 100;
+  const variante = untergrund === "nacht" ? "dunkel" : "hell";
+  const logoDa = mitLogo && x >= SCHRIFTZUG_MIN_X_LOGO;
+  const logoHoehe = 0.34 * f;
+  const [, , vbB, vbH] = LOGO_INHALT[variante].ausschnitt.split(" ").map(Number);
+  const logoRoh = logoDa ? { x: wortX, y: -x - 0.16 * f - logoHoehe, breite: (logoHoehe * vbB) / vbH, hoehe: logoHoehe } : null;
+
+  const teile: SchriftzugFlaeche[] = [
+    { x: 0, y: zeichenOben, breite: zeichenBreite, hoehe: (rahmen.y1 - rahmen.y0) * k },
+    { x: wortX, y: -x, breite: wortBreite, hoehe: x },
+    ...(logoRoh ? [logoRoh] : []),
+  ];
+  const x0 = Math.min(...teile.map((t) => t.x));
+  const y0 = Math.min(...teile.map((t) => t.y));
+  const x1 = Math.max(...teile.map((t) => t.x + t.breite));
+  const y1 = Math.max(...teile.map((t) => t.y + t.hoehe));
+  const dx = x / 2 - x0;
+  const dy = x / 2 - y0;
+  const schiebe = (t: SchriftzugFlaeche): SchriftzugFlaeche => ({ ...t, x: t.x + dx, y: t.y + dy });
+
+  const breite = x1 - x0 + x;
+  const hoehe = y1 - y0 + x;
+  const zeichen = schiebe(teile[0]);
+  const wort = schiebe(teile[1]);
+  return {
+    nurZeichen: false,
+    mitLogo: logoDa,
+    breite: runde(breite),
+    hoehe: runde(hoehe),
+    viewBox: `0 0 ${runde(breite)} ${runde(hoehe)}`,
+    zeichen: { ...zeichen, transform: `translate(${runde(-rahmen.x0 * k + dx)} ${runde(zeichenTy + dy)}) scale(${runde(k)})` },
+    wort: { ...wort, transform: `translate(${runde(wortX + dx)} ${runde(dy)}) scale(${runde(f / 100)})` },
+    logo: logoRoh ? { x: runde(logoRoh.x + dx), y: runde(logoRoh.y + dy), breite: runde(logoRoh.breite), hoehe: runde(logoRoh.hoehe), variante } : null,
+  };
+}

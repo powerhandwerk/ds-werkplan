@@ -308,8 +308,25 @@ export const zeichenSzene = (zeichne: (w: Werkzeug) => string): Szene => ({
   zeichne: (_s, w) => zeichne(w),
 });
 
+/**
+ * Flache Fassung eines Zeichens für kleine Größen: steht unter `unter` px;
+ * `stufe` ordnet eine Größe ihrer Stufe zu, `zeichne` liefert deren Markup im
+ * 24er-Raster. Das Markup hängt nur an der Stufe, deshalb rechnet das
+ * Verzeichnis es je Stufe einmal.
+ */
+export type FlacheFassung = { unter: number; stufe(groesse: number): string; zeichne(stufe: string): string };
+
 /** Rand um die Figur als Anteil der Kantenlänge: 4 von 64. */
 const RAND_ANTEIL = 4 / 64;
+
+/** Enger Rahmen der Figur in Bildkoordinaten, über alle Proben gemessen, ohne Rand. */
+export function zeichenRahmen(szene: Szene): Mess {
+  const mess: Mess = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
+  const w = werkzeug(mess);
+  const basis = ruheWert(szene);
+  for (const p of szene.proben) szene.zeichne({ ...basis, ...p, gepr: 0 }, w);
+  return mess;
+}
 
 /**
  * Quadratischer Bildausschnitt eines Zeichens als viewBox-String: die Figur
@@ -317,10 +334,7 @@ const RAND_ANTEIL = 4 / 64;
  * Strichstärke gleich, egal wie breit oder hoch die Figur ist.
  */
 export function zeichenAusschnitt(szene: Szene): string {
-  const mess: Mess = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
-  const w = werkzeug(mess);
-  const basis = ruheWert(szene);
-  for (const p of szene.proben) szene.zeichne({ ...basis, ...p, gepr: 0 }, w);
+  const mess = zeichenRahmen(szene);
   const bw = mess.x1 - mess.x0;
   const bh = mess.y1 - mess.y0;
   const seite = Math.max(bw, bh) / (1 - 2 * RAND_ANTEIL);
