@@ -2272,7 +2272,7 @@ export interface FussTexte {
 /** Standardtexte des Fußes, flach wie die übrigen `*_TEXTE`, damit `texte` jeden einzeln ersetzt. */
 export declare const FUSS_TEXTE: FussTexte;
 /** Version des Fußes, gleich der Paketversion; steht als `data-fuss-version` an jedem Fuß. */
-export declare const FUSS_VERSION = "2.7.0";
+export declare const FUSS_VERSION = "2.8.0";
 
 /* ---- iso ---- */
 
@@ -2549,16 +2549,27 @@ export interface BerichtsblattProps {
     stand: string;
     /** `intern`: schmaler Fuß mit Vermerk; `betrieb`: der `Fuss` in der Fassung `fokus`, Anrede Sie. */
     adressat?: "intern" | "betrieb";
+    /** Zeile „Nur für Unternehmer · Alle Preise netto zzgl. USt.“ im `Fuss` der Fassung „betrieb“. */
+    b2b?: boolean;
     /** Kapitelleiste zeigen; Standard: ab drei Positionen. */
     kapitelleiste?: boolean;
     texte?: Partial<BerichtsblattTexte>;
     /** Nur `Position`-Elemente. */
     children?: ReactNode;
 }
-export declare function Berichtsblatt({ blatt, art, titel, lead, felder, kennzahlen, stand, adressat, kapitelleiste, texte, children, }: BerichtsblattProps): import("react").JSX.Element;
+export declare function Berichtsblatt({ blatt, art, titel, lead, felder, kennzahlen, stand, adressat, b2b, kapitelleiste, texte, children, }: BerichtsblattProps): import("react").JSX.Element;
 
 /* ---- Berichtsteile ---- */
 
+/**
+ * Teile eines Berichtsblatts (Vertrag „Berichtsblatt“, 12.11.2026): Lauftext,
+ * Tabelle, Bildbeleg, Kennzahlen, Merksatz und Spalten. Vorbild ist die
+ * Prüfbericht-Leseseite im Admin (components/pruefbericht/). Server-Komponenten
+ * ohne Zustand; Farben kommen aus den Rollen der Fläche (`--wp-*`), damit jedes
+ * Teil auf Papier und auf Nacht lesbar bleibt.
+ */
+/** Klassen verbinden, leere Teile fallen weg; auch für das Berichtsblatt. */
+declare const klassen: (...teile: (string | false | null | undefined)[]) => string;
 /**
  * Lauftext in der Rolle `text`: Absätze, Listen, `strong`, Links und `h3`.
  * `html` wird unverändert eingesetzt; der Inhalt kommt vom Verfasser der Seite,

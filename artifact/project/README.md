@@ -120,12 +120,22 @@ In Oberflächen hebt der Lime-Unterstrich (`Unterstrich`) ein Wort hervor. Die s
 - **Status und Meldung:** `Etikett` in sechs Arten (`linie`, `gestrichelt`, `voll`, `lead`, `warn`, `still`); `Hinweisband` für Warnungen, mit Rahmen und Fläche in Warnfarbe, nie als Seitenbalken; `Toast` für eine kurze Rückmeldung; `Tastenkappe` für eine Taste im Text.
 - **Fakten:** `Plankopf` ist das Schriftfeld einer Seite (Werte in normaler Schreibung), `Schriftfeld` die Fassung der Arbeitsfläche (Werte in Versalien); `Messwert` mit `Besch` und Quelle als Kennzahl; `Massbalken`, `Masskette` und `Fortschritt` für Anteile und Stände; `BlattZeile` für die Zeile über einem Blatt.
 - **Rahmen und Ordnung:** `Kasten` mit `SucherEcken`, `Info`, `Schritte`, `Liste` mit `Gruppe` und `Listenzeile`, `Filterleiste`, `DetailRahmen`.
+- **Bericht:** `Berichtsblatt` ist die Seitenhülle für Berichte, Analysen und Entscheidungsvorlagen: Titelfläche auf Nacht mit Logo, Blattzeile, Titel, Schriftfeld und Kennzahlen, Lesebereich auf Papier mit Kapitelleiste und nummerierten Positionen (`Position`), Fuß auf Nacht. In den Positionen stehen `Fliesstext`, `Tabelle`, `Bildbeleg`, `Kennzahlen`, `Merksatz` und `Spalten`.
 - **Kundenseite:** `Reiter` (Navigation mit Handy-Menü), `KapitelLeiste`, `ZiffernFelder` für Codes, `KopierenKnopf`, `Eingabefeld`.
 - **Grafik:** `Leistungskarten` (Stil A) mit Engine, Formen-Helfern und einem Szenen-Register beim Verbraucher; `IsoSzene` und `IsoKnoten` (Stil B) mit dem Iso-Kern; `Produktzeichen` für Produkte und Werkzeuge, die Kunden beim Namen nennen (kein Stil A); `MesslatteSchriftzug` für den Standard Messlatte. Beispiele zum Weiterzeichnen: `LEISTUNGSKARTEN_BEISPIELE` (Profil, Sanierung) und `explosionProfil`.
 - **Preise:** `Modellkarte`, die Preiskarte eines Website-Angebots auf Papier mit Produktzeichen, Preis und Summen; Zahlen kommen fertig formatiert vom Verbraucher, zwei Karten stehen nebeneinander; `Paketkarten` für die drei Abo-Pakete mit `LaufzeitSchalter` und `LaufzeitBereich` darüber.
 - **Fuß:** `Fuss`, der Fuß aller Flächen auf Nacht. Fassungen lassen Teile weg und sortieren nie um; `fokus` zeigt den Kontakt in einer Zeile, Impressum und Datenschutz, auf Wunsch die B2B-Zeile, Logo mit Markenzeile und Plankopf. Firmendaten und Linkziele stehen einmal im Paket (`FIRMA`, `ZIELE`), das `<footer>` stellt die Seite.
 
 Bausteine bekommen Texte und Daten als Props. Sie holen nichts aus einer App und hängen nicht an Next.js.
+
+## Berichtsblatt
+
+- Jede Berichtsseite steht auf dem Berichtsblatt (`Berichtsblatt`). Kopf, Schriftfeld, Abschnittsköpfe, Tabellen und Bildrahmen werden nicht nachgebaut.
+- Die Positionen zählt das Blatt selbst: „Pos. 01 · Name“. Der Name ist kurz, die Überschrift sagt, worum es geht.
+- `Kennzahlen` im Kopf zeigen das Ergebnis auf einen Blick, höchstens vier. Anteile stehen als `Massbalken` oder `Fortschritt`, Stände als `Masskette`.
+- Ein Bild steht als `Bildbeleg` mit Quellenzeile. Eine Folgerung steht als `Merksatz`, höchstens einer je Fund.
+- `adressat` entscheidet den Fuß: „intern“ trägt den Vermerk „nicht zur Weitergabe“, „betrieb“ den `Fuss` in Sie-Form.
+- Eigenes CSS ist die Ausnahme für Sonderfälle und nutzt nur Tokens.
 
 ## Paketkarten
 
@@ -187,6 +197,7 @@ Neue Zeichen entstehen nur mit der Engine und den Bausteinen aus `produktzeichen
 - Karten mit großem Radius und Schatten. Kästen sind eckig.
 - Neue Ink-Stufen, Farbverläufe hinter Titeln, Rundungen in Prozent.
 - Erklärgrafiken freihand oder als fertiges Bild statt mit Engine und Iso-Kern.
+- Eine Berichtsseite mit eigenem Layout statt `Berichtsblatt`.
 
 ## Im Code
 

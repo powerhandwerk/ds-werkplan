@@ -2,7 +2,7 @@ import { Children, cloneElement, isValidElement, type ReactElement, type ReactNo
 
 import { WERKPLAN_BAUSTEINE_SEITE } from "./Bausteine";
 import css from "./berichtsblatt.module.css";
-import { Kennzahlen, type KennzahlDaten } from "./Berichtsteile";
+import { Kennzahlen, klassen, type KennzahlDaten } from "./Berichtsteile";
 import { Fuss } from "./Fuss";
 import { KapitelLeiste, type KapitelEintrag } from "./KapitelLeiste";
 import { Logo } from "./Logo";
@@ -35,8 +35,6 @@ export const BERICHTSBLATT_TEXTE: BerichtsblattTexte = {
   vermerk: "Internes Arbeitsblatt von powerhandwerk · nicht zur Weitergabe",
   position: "Pos.",
 };
-
-const klassen = (...teile: (string | false | null | undefined)[]) => teile.filter(Boolean).join(" ");
 
 /** Sprungziel einer Position ohne eigene id: `pos-01`, `pos-02`, … */
 const standardId = (nummer: number) => `pos-${kapitelNummer(nummer)}`;
@@ -94,6 +92,8 @@ export interface BerichtsblattProps {
   stand: string;
   /** `intern`: schmaler Fuß mit Vermerk; `betrieb`: der `Fuss` in der Fassung `fokus`, Anrede Sie. */
   adressat?: "intern" | "betrieb";
+  /** Zeile „Nur für Unternehmer · Alle Preise netto zzgl. USt.“ im `Fuss` der Fassung „betrieb“. */
+  b2b?: boolean;
   /** Kapitelleiste zeigen; Standard: ab drei Positionen. */
   kapitelleiste?: boolean;
   texte?: Partial<BerichtsblattTexte>;
@@ -122,6 +122,7 @@ export function Berichtsblatt({
   kennzahlen,
   stand,
   adressat = "intern",
+  b2b = false,
   kapitelleiste,
   texte,
   children,
@@ -177,7 +178,7 @@ export function Berichtsblatt({
           <Fuss
             variante="fokus"
             anrede="sie"
-            b2b={false}
+            b2b={b2b}
             blatt={blatt}
             stand={stand.replace(/^Stand\s+/i, "")}
             basis="https://powerhandwerk.de"

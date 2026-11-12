@@ -2,7 +2,9 @@ Der Fließtext setzt Lauftext in der Rolle `text`: Absätze, Listen, starke Wör
 
 ## Wann
 
-- Für den Text einer Position, als `html` oder als Kinder. `html` kommt vom Verfasser der Seite, nie von außen.
+- Für den Text einer Position, als `html` oder als Kinder.
+- `h3` steht in der Rolle `h3` (`grad-24`), Links sehen aus wie `Textlink`: 1 px Unterstrich, bei Hover und Fokus 3 px Lime.
+- `html` wird unverändert eingesetzt; es kommt vom Verfasser der Seite, nie von außen. Die Farben nimmt der Text von der Fläche.
 
 ## Was der Verbraucher liefert
 
@@ -15,4 +17,5 @@ Import aus `@powerhandwerk/ds-werkplan/Berichtsteile`, im Bündel `DsWerkplan.Fl
 
 ## Was man lässt
 
-- Fremdes Markup aus Formularen oder Quellen außerhalb der Seite.
+- Fremdes Markup aus Formularen, Mails oder Quellen außerhalb der Seite.
+- Eigene Schriftgrößen oder Farben im Markup.

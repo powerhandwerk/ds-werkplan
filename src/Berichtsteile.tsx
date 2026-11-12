@@ -12,7 +12,8 @@ import w from "./werkplan.module.css";
  * Teil auf Papier und auf Nacht lesbar bleibt.
  */
 
-const klassen = (...teile: (string | false | null | undefined)[]) => teile.filter(Boolean).join(" ");
+/** Klassen verbinden, leere Teile fallen weg; auch für das Berichtsblatt. */
+export const klassen = (...teile: (string | false | null | undefined)[]) => teile.filter(Boolean).join(" ");
 
 /**
  * Lauftext in der Rolle `text`: Absätze, Listen, `strong`, Links und `h3`.
@@ -145,7 +146,7 @@ export function Kennzahlen({ zahlen }: { zahlen: readonly KennzahlDaten[] }) {
     <div className={css.kennzahlen}>
       <div className={css.kennzahlenReihe} data-anzahl={Math.min(zahlen.length, 4)}>
         {zahlen.map((z, i) => (
-          <Kennzahl key={i} kopf={z.kopf} wert={z.wert} text={z.text} groesse={groesse} />
+          <Kennzahl key={i} {...z} groesse={groesse} />
         ))}
       </div>
     </div>
