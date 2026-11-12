@@ -101,6 +101,18 @@ export interface BerichtsblattProps {
   children?: ReactNode;
 }
 
+/**
+ * Bei ungerader Zahl sichtbarer Felder bekommt das letzte `breit`, damit im
+ * Schriftfeld keine leere Zelle bleibt; setzt der Verfasser selbst `breit`,
+ * bleibt alles, wie es ist. Leere Textfelder lässt `Plankopf` weg, sie zählen
+ * deshalb nicht mit.
+ */
+function plankopfFelder(felder: readonly PlankopfFeld[]): readonly PlankopfFeld[] {
+  const sichtbar = felder.filter((feld) => typeof feld.wert !== "string" || feld.wert.trim().length > 0);
+  if (sichtbar.length % 2 === 0 || sichtbar.some((feld) => feld.breit)) return sichtbar;
+  return sichtbar.map((feld, i) => (i === sichtbar.length - 1 ? { ...feld, breit: true } : feld));
+}
+
 export function Berichtsblatt({
   blatt,
   art = "Analyse",
@@ -136,7 +148,7 @@ export function Berichtsblatt({
           </div>
           {felder.length > 0 ? (
             <div className={css.plan}>
-              <Plankopf untergrund="nacht" felder={felder} />
+              <Plankopf untergrund="nacht" felder={plankopfFelder(felder)} />
             </div>
           ) : null}
         </div>
