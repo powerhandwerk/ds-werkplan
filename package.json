@@ -74,6 +74,9 @@
     "./useSvgPraefix": "./src/useSvgPraefix.ts",
     "./IsoSzene": "./src/IsoSzene.tsx",
     "./explosion": "./src/explosion.ts",
+    "./berichtsblatt.module.css": "./src/berichtsblatt.module.css",
+    "./Berichtsblatt": "./src/Berichtsblatt.tsx",
+    "./Berichtsteile": "./src/Berichtsteile.tsx",
     "./fonts/*": "./fonts/*",
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"

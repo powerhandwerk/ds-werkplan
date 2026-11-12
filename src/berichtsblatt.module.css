@@ -1,0 +1,497 @@
+/*
+ * Berichtsblatt und seine Teile (Vertrag „Berichtsblatt“, 12.11.2026). Maße,
+ * Raster und Muster aus der Prüfbericht-Leseseite im Admin
+ * (components/pruefbericht/pruefbericht.module.css, held.module.css,
+ * befunde.module.css): Seitenkante wie der DS-Fuß, Titel auf Nacht über die
+ * volle Breite, Lesebereich auf Papier mit Kapitelleiste, Abschnittskopf mit
+ * Maßstrich. Farben nur über die Flächenrollen --wp-* und die Ink-Stufen.
+ *
+ * Container bleiben ohne Namen (Bun benennt im Bündel Namen in @container um,
+ * die Deklaration aber nicht). Eine Container-Abfrage wirkt nur auf
+ * Nachfahren: das Blatt misst sich an der Wurzel, Kennzahlen und Spalten an
+ * ihrer eigenen Hülle.
+ */
+
+/* ---------- Rahmen ---------- */
+
+.blatt {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--grad-16);
+  line-height: 1.55;
+  color: var(--ink-800);
+  background: var(--ink-100);
+}
+
+/* Seitenkante wie der DS-Fuß: 20 bis 64 px, Inhalt höchstens 1216 px. */
+.blatt > * {
+  --kante: max(clamp(20px, 5cqi, 64px), calc((100cqi - 1216px) / 2));
+}
+
+.blatt [id] {
+  scroll-margin-top: 24px;
+}
+
+/* ---------- Titel auf Nacht ---------- */
+
+.titelFlaeche {
+  display: grid;
+  gap: 32px;
+  padding-block: 32px 48px;
+  padding-inline: var(--kante);
+}
+
+.marke {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--wp-linie-fein);
+}
+
+.titelRaster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+
+.titel {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.h1 {
+  font-size: var(--grad-32);
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.plan {
+  min-width: 0;
+}
+
+/* ---------- Lesebereich auf Papier ---------- */
+
+.lesebereich {
+  flex: 1 0 auto;
+  padding-inline: var(--kante);
+  padding-block: 0 48px;
+}
+
+.leseRaster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.kapitelSpalte,
+.positionen {
+  min-width: 0;
+}
+
+/* Ohne Kapitelleiste beginnt die erste Position mit Luft zur Titelfläche. */
+.leseRaster:not(.leseRasterMitLeiste) {
+  padding-top: 16px;
+}
+
+/* ---------- Position ---------- */
+
+.position {
+  padding-block: 32px;
+}
+
+.positionKopf {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+/* In CSS gezeichnet wie auf der Website: 1-px-Linie mit Endstrichen. */
+.massstrich {
+  position: relative;
+  height: 13px;
+  border-inline: 1px solid var(--wp-linie);
+}
+
+.massstrich::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
+  border-top: 1px solid var(--wp-linie);
+}
+
+.positionKopfText {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.h2 {
+  font-size: var(--grad-32);
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.positionInhalt {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+/* ---------- Fließtext ---------- */
+
+.fliesstext {
+  max-width: 62ch;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--grad-16);
+  line-height: 1.55;
+  color: var(--wp-text, currentColor);
+  overflow-wrap: break-word;
+}
+
+.fliesstext > * {
+  margin: 0;
+}
+
+.fliesstext > * + * {
+  margin-top: 12px;
+}
+
+.fliesstext > h3 {
+  margin-top: 24px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--grad-24);
+  line-height: 1.04;
+  text-transform: uppercase;
+  color: var(--wp-stark, currentColor);
+}
+
+.fliesstext > h3:first-child {
+  margin-top: 0;
+}
+
+.fliesstext ul,
+.fliesstext ol {
+  padding-left: 20px;
+}
+
+.fliesstext li + li {
+  margin-top: 4px;
+}
+
+.fliesstext strong {
+  font-weight: 600;
+  color: var(--wp-stark, currentColor);
+}
+
+/* Links wie `Textlink`: 1 px Unterstrich, bei Hover und Fokus 3 px Lime. */
+.fliesstext a {
+  color: var(--wp-stark, currentColor);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.fliesstext a:hover,
+.fliesstext a:focus-visible {
+  text-decoration-color: var(--lime);
+  text-decoration-thickness: 3px;
+}
+
+.fliesstext a:focus-visible {
+  outline: 2px solid var(--wp-fokus, currentColor);
+  outline-offset: 3px;
+  border-radius: var(--rund-fein);
+}
+
+/* ---------- Tabelle ---------- */
+
+.tabelle {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tabelleRolle {
+  overflow-x: auto;
+  border: 1px solid var(--wp-linie-fein);
+  background: var(--wp-blatt);
+}
+
+.tabelleRolle:focus-visible {
+  outline: 2px solid var(--wp-fokus, currentColor);
+  outline-offset: 2px;
+}
+
+.tabelleInhalt {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--grad-14);
+  line-height: 1.45;
+  color: var(--wp-text, currentColor);
+}
+
+.tabelleInhalt th,
+.tabelleInhalt td {
+  min-width: 112px;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--wp-linie-fein);
+}
+
+.tabelleInhalt tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.tabelleInhalt thead th {
+  font-family: var(--font-werkplan), var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-12);
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp-gedaempft, currentColor);
+  border-bottom-color: var(--wp-linie);
+}
+
+.tabelleInhalt tbody th {
+  font-weight: 600;
+  color: var(--wp-stark, currentColor);
+}
+
+/* ---------- Bildbeleg ---------- */
+
+.bild {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.bildRahmen {
+  padding: 8px;
+  border: 1px solid var(--wp-linie);
+  border-radius: var(--rund-eckig);
+  background: var(--wp-blatt);
+}
+
+.bildRahmen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bildUnter {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.bildText {
+  font-family: var(--font-body);
+  font-size: var(--grad-14);
+  line-height: 1.5;
+  color: var(--wp-text, currentColor);
+}
+
+/* ---------- Kennzahlen ---------- */
+
+.zahl32 {
+  font-size: var(--grad-32);
+}
+
+.zahl48 {
+  font-size: var(--grad-48);
+}
+
+.zahl64 {
+  font-size: var(--grad-64);
+}
+
+.kennzahl {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.kennzahlWert {
+  margin: 4px 0 0;
+  overflow-wrap: break-word;
+}
+
+.kennzahlText {
+  font-size: var(--grad-14);
+}
+
+.kennzahlen {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+/* Trennlinien über den Abstand der Zellen, damit jede Anordnung sauber bleibt. */
+.kennzahlenReihe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+  border: 1px solid var(--wp-linie-fein);
+  background: var(--wp-linie-fein);
+}
+
+.kennzahlenReihe > .kennzahl {
+  padding: 16px 18px;
+  background: var(--wp-blatt);
+}
+
+/* ---------- Merksatz ---------- */
+
+.merksatz {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  max-width: 62ch;
+}
+
+.merksatzText {
+  flex: 1 1 240px;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--grad-18);
+  line-height: 1.45;
+  color: var(--wp-stark, currentColor);
+}
+
+/* ---------- Spalten ---------- */
+
+.spalten {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.spaltenInnen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+
+.spaltenInnen > * {
+  min-width: 0;
+}
+
+/* ---------- Abschluss (Fassung intern) ---------- */
+
+.abschluss {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding-block: 24px;
+  padding-inline: var(--kante);
+}
+
+.abschluss > p:last-child {
+  margin-left: auto;
+}
+
+/* ---------- Bedingte Regeln (nach den Grundregeln) ---------- */
+
+@container (min-width: 480px) {
+  .kennzahlenReihe[data-anzahl="2"],
+  .kennzahlenReihe[data-anzahl="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kennzahlenReihe[data-anzahl="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 720px) {
+  .spaltenInnen[data-anzahl="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spaltenInnen[data-verhaeltnis="2:3"] {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+
+  .spaltenInnen[data-verhaeltnis="3:2"] {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+
+  .spaltenInnen[data-anzahl="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .kennzahlenReihe[data-anzahl="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 768px) {
+  .titelFlaeche {
+    padding-block: 40px 64px;
+  }
+
+  .h1 {
+    font-size: var(--grad-48);
+  }
+}
+
+@container (min-width: 1024px) {
+  .titelFlaeche {
+    padding-block: 40px 88px;
+    gap: 48px;
+  }
+
+  .titelRaster {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: 48px;
+  }
+
+  .plan {
+    padding-top: 30px;
+  }
+
+  .lesebereich {
+    padding-block: 24px 88px;
+  }
+
+  .leseRasterMitLeiste {
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 56px;
+  }
+
+  .kapitelSpalte {
+    padding-top: 44px;
+  }
+
+  .position {
+    padding-block: 44px;
+  }
+
+  .h2 {
+    font-size: var(--grad-48);
+  }
+}
+
+@media print {
+  .kapitelSpalte {
+    display: none;
+  }
+}

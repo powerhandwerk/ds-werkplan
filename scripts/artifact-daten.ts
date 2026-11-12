@@ -1560,6 +1560,204 @@ function Beispiel(p) {
       "Zwei Bereiche um dieselben Karten.",
     ],
   },
+
+  /* ---------------- Bericht (erste Fassung, Karten folgen nach der Abnahme) ---------------- */
+  {
+    name: "Berichtsblatt",
+    gruppe: "Rahmen",
+    hoehe: 1200,
+    breite: 1280,
+    flaeche: "thema",
+    skript: `
+function Beispiel() {
+  return h(D.Berichtsblatt, {
+    blatt: "Berichtsvergleich",
+    titel: ["Ein Bericht in ", h(D.Unterstrich, { key: "u" }, "drei"), " Positionen."],
+    lead: "Muster, keine echten Daten.",
+    stand: "Stand 12.11.2026",
+    felder: [{ label: "Gegenstand", wert: "Muster" }, { label: "Stand", wert: "12.11.2026" }],
+    kennzahlen: [{ kopf: "Funde", wert: "5", text: "mit Beleg" }, { kopf: "Seiten", wert: "12", text: "geprüft" }]
+  },
+    h(D.Position, { name: "Funde", titel: "Fünf Funde mit Beleg" }, h(D.Fliesstext, null, h("p", null, "Muster, keine echten Daten."))),
+    h(D.Position, { name: "Folge", titel: "Was daraus folgt" }, h(D.Merksatz, { label: "Folge" }, "Ein Satz, der bleibt.")),
+    h(D.Position, { name: "Quellen", titel: "Woher die Zahlen kommen" }));
+}`,
+    zusammenfassung:
+      "Das Berichtsblatt ist die Seitenhülle für Berichte, Analysen und Entscheidungsvorlagen: Titel auf Nacht, Lesebereich auf Papier mit Kapitelleiste, Abschluss auf Nacht.",
+    wann: [
+      "Für jedes powerhandwerk-Artifact mit Bericht, Analyse oder Entscheidungsvorlage. Kinder sind nur `Position`-Elemente.",
+      "Es nummeriert die Positionen fortlaufend und baut aus ihnen die Kapitel der Kapitelleiste, ab drei Positionen.",
+    ],
+    props: [
+      ["blatt", "string", "Pflicht", "Blattzeile im Titel."],
+      ["art", "string", "\"Analyse\"", "Beschriftung über dem Titel."],
+      ["titel", KINDER, "Pflicht", "Seitentitel, darf `Unterstrich` enthalten."],
+      ["lead", KINDER, "ohne", "Einleitung unter dem Titel."],
+      ["felder", "readonly PlankopfFeld[]", "Pflicht", "Schriftfeld im Titel."],
+      ["kennzahlen", "readonly KennzahlDaten[]", "ohne", "Kennzahlen unter dem Titel."],
+      ["stand", "string", "Pflicht", "Stand, etwa „Stand 12.11.2026“."],
+      ["adressat", "\"intern\" \\| \"betrieb\"", "\"intern\"", "Schmaler Fuß mit Vermerk oder `Fuss` in der Fassung `fokus`."],
+      ["kapitelleiste", "boolean", "ab drei Positionen", "Kapitelleiste zeigen."],
+      ["texte", "Partial<BerichtsblattTexte>", "BERICHTSBLATT_TEXTE", "Titel der Kapitelleiste, Vermerk, Kürzel der Position."],
+    ],
+    lassen: ["Eigenes Layout um das Blatt herum.", "Andere Kinder als `Position`."],
+  },
+  {
+    name: "Position",
+    gruppe: "Rahmen",
+    hoehe: 320,
+    flaeche: "papier",
+    skript: `
+function Beispiel() {
+  return h(D.Position, { name: "Funde", titel: "Fünf Funde mit Beleg", text: "Muster, keine echten Daten.", nummer: 1 },
+    h(D.Fliesstext, null, h("p", null, "Lauftext der Position.")));
+}`,
+    zusammenfassung: "Die Position ist ein Abschnitt im Lesebereich des Berichtsblatts: Maßstrich, Beschriftung „Pos. 01 · Name“, Überschrift und Einleitung.",
+    wann: ["Als Kind des `Berichtsblatt`; die Nummer und das Sprungziel setzt das Blatt."],
+    props: [
+      ["name", "string", "Pflicht", "Kurzer Name für Kapitelleiste und Beschriftung."],
+      ["titel", KINDER, "Pflicht", "Überschrift (`h2`)."],
+      ["text", KINDER, "ohne", "Einleitung."],
+      ["id", "string", "pos-01, pos-02, …", "Sprungziel."],
+      ["children", KINDER, "ohne", "Inhalt der Position."],
+    ],
+    lassen: ["Die Nummer von Hand setzen, wenn die Position in einem Berichtsblatt steht."],
+  },
+  {
+    name: "Fliesstext",
+    gruppe: "Rahmen",
+    hoehe: 280,
+    flaeche: "beide",
+    skript: `
+function Beispiel() {
+  return h(D.Fliesstext, { html: "<h3>Zwischentitel</h3><p>Muster, keine echten Daten. <strong>Stark</strong> und ein <a href=\\"#\\">Link</a>.</p><ul><li>Punkt eins</li><li>Punkt zwei</li></ul>" });
+}`,
+    zusammenfassung: "Der Fließtext setzt Lauftext in der Rolle `text`: Absätze, Listen, starke Wörter, Links und Zwischentitel, höchstens 62 Zeichen breit.",
+    wann: ["Für den Text einer Position, als `html` oder als Kinder. `html` kommt vom Verfasser der Seite, nie von außen."],
+    props: [
+      ["html", "string", "ohne", "Fertiges Markup, unverändert eingesetzt."],
+      ["children", KINDER, "ohne", "Inhalt statt `html`."],
+    ],
+    lassen: ["Fremdes Markup aus Formularen oder Quellen außerhalb der Seite."],
+  },
+  {
+    name: "Tabelle",
+    gruppe: "Fakten",
+    hoehe: 280,
+    flaeche: "papier",
+    skript: `
+function Beispiel() {
+  return h(D.Tabelle, {
+    label: "Vergleich",
+    kopf: ["Punkt", "Bericht A", "Bericht B"],
+    zeilen: [["Umfang", "12 Seiten", "4 Seiten"], ["Belege", "ja", "nein"]],
+    quelle: "Muster, keine echten Daten."
+  });
+}`,
+    zusammenfassung: "Die Tabelle steht auf `wp-blatt` mit Haarlinien, die erste Spalte ist der Zeilenkopf.",
+    wann: ["Für Vergleiche mit wenigen Spalten. Bei Überbreite rollt sie waagrecht, der Bereich hat einen Namen und den Tastaturfokus."],
+    props: [
+      ["label", "string", "Pflicht", "Name für Vorleser."],
+      ["kopf", "readonly string[]", "Pflicht", "Spaltenköpfe."],
+      ["zeilen", "readonly (readonly ReactNode[])[]", "Pflicht", "Zeilen, erste Zelle als Zeilenkopf."],
+      ["breiten", "readonly string[]", "ohne", "Breite je Spalte."],
+      ["quelle", "string", "ohne", "Quellenzeile darunter."],
+    ],
+    lassen: ["Farbige Zellen oder Schatten."],
+  },
+  {
+    name: "Bildbeleg",
+    gruppe: "Fakten",
+    hoehe: 360,
+    flaeche: "papier",
+    skript: `
+var BILD = "data:image/svg+xml,%3Csvg xmlns=%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox=%220 0 320 120%22%3E%3Crect width=%22320%22 height=%22120%22 fill=%22%23d9d5cc%22%2F%3E%3C%2Fsvg%3E";
+function Beispiel() {
+  return h("div", { className: "schmal" },
+    h(D.Bildbeleg, { src: BILD, alt: "Graue Musterfläche", titel: "Ausschnitt", text: "Muster, keine echten Daten.", quelle: "Quelle Muster" }));
+}`,
+    zusammenfassung: "Der Bildbeleg zeigt ein Bild im Rahmen mit Haarlinie, darunter Text und Quellenzeile.",
+    wann: ["Für Bildschirmfotos und Ausschnitte, die einen Fund belegen."],
+    props: [
+      ["src", "string", "Pflicht", "Adresse des Bildes."],
+      ["alt", "string", "Pflicht", "Bildbeschreibung."],
+      ["titel", "string", "ohne", "Beschriftung über dem Bild."],
+      ["text", KINDER, "ohne", "Bildunterschrift."],
+      ["quelle", "string", "ohne", "Quellenzeile."],
+    ],
+    lassen: ["Runde Ecken oder Schatten am Bild."],
+  },
+  {
+    name: "Kennzahl",
+    gruppe: "Fakten",
+    hoehe: 200,
+    flaeche: "beide",
+    skript: `
+function Beispiel() {
+  return h(D.Kennzahl, { kopf: "Funde", wert: "5", text: "Muster, keine echten Daten." });
+}`,
+    zusammenfassung: "Die Kennzahl setzt Beschriftung, große leichte Zahl und Klartext; die Zahl nimmt `wp-stark` und ist auf Papier und Nacht lesbar.",
+    wann: ["Einzeln oder in `Kennzahlen`."],
+    props: [
+      ["kopf", "string", "ohne", "Beschriftung."],
+      ["wert", KINDER, "Pflicht", "Die Zahl, fertig formatiert."],
+      ["text", KINDER, "ohne", "Klartext darunter."],
+      ["groesse", "32 \\| 48 \\| 64", "48", "Grad der Zahl."],
+    ],
+    lassen: ["Eine Zahl, die eine Wirkung zeigt, ohne Messzeitraum und Quelle."],
+  },
+  {
+    name: "Kennzahlen",
+    gruppe: "Fakten",
+    hoehe: 240,
+    flaeche: "beide",
+    skript: `
+function Beispiel() {
+  return h(D.Kennzahlen, { zahlen: [{ kopf: "Funde", wert: "5", text: "mit Beleg" }, { kopf: "Seiten", wert: "12", text: "geprüft" }, { kopf: "Stand", wert: "11", text: "Muster" }] });
+}`,
+    zusammenfassung: "Kennzahlen stellen zwei bis vier Kennzahlen in eine Reihe, schmal untereinander.",
+    wann: ["Unter dem Titel eines Berichtsblatts oder in einer Position. Der Baustein schaltet über seine eigene Breite."],
+    props: [["zahlen", "readonly KennzahlDaten[]", "Pflicht", "Je Zahl `kopf`, `wert` und `text`."]],
+    lassen: ["Mehr als vier Zahlen in einer Reihe."],
+  },
+  {
+    name: "Merksatz",
+    gruppe: "Hervorhebung",
+    hoehe: 160,
+    flaeche: "beide",
+    skript: `
+function Beispiel() {
+  return h(D.Merksatz, { label: "Folge" }, "Muster, keine echten Daten.");
+}`,
+    zusammenfassung: "Der Merksatz hebt einen Satz hervor: ein Etikett `lead` mit dem Label, daneben der Satz stark.",
+    wann: ["Für die eine Folgerung einer Position."],
+    props: [
+      ["label", "string", "ohne", "Text des Etiketts, etwa „Folge“."],
+      ["children", KINDER, "Pflicht", "Der Satz."],
+    ],
+    lassen: ["Einen Seitenstreifen statt des Etiketts."],
+  },
+  {
+    name: "Spalten",
+    gruppe: "Rahmen",
+    hoehe: 240,
+    breite: 960,
+    flaeche: "papier",
+    skript: `
+function Beispiel() {
+  return h(D.Spalten, { verhaeltnis: "2:3" },
+    h(D.Fliesstext, null, h("p", null, "Linke Spalte.")),
+    h(D.Fliesstext, null, h("p", null, "Rechte Spalte. Muster, keine echten Daten.")));
+}`,
+    zusammenfassung: "Spalten ordnen Text neben Bild oder Bildreihen; unter 720 px eigener Breite stehen sie untereinander.",
+    wann: ["Zwei Spalten mit `verhaeltnis`, drei Spalten für Bildreihen."],
+    props: [
+      ["anzahl", "2 \\| 3", "2", "Zahl der Spalten."],
+      ["verhaeltnis", "\"1:1\" \\| \"2:3\" \\| \"3:2\"", "\"1:1\"", "Verhältnis bei zwei Spalten."],
+      ["children", KINDER, "Pflicht", "Je Spalte ein Kind."],
+    ],
+    lassen: ["Mehr als drei Spalten."],
+  },
 ];
 
 /**
