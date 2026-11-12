@@ -1647,17 +1647,17 @@ function Beispiel() {
     flaeche: "beide",
     skript: `
 function Beispiel() {
-  return h(D.Fliesstext, { html: "<h3>Zwischentitel</h3><p>Muster, keine echten Daten. <strong>Stark</strong> und ein <a href=\\"#\\">Link</a>.</p><ul><li>Punkt eins</li><li>Punkt zwei</li></ul>" });
+  return h(D.Fliesstext, { vertrauenswuerdigesHtml: "<h3>Zwischentitel</h3><p>Muster, keine echten Daten. <strong>Stark</strong> und ein <a href=\\"#\\">Link</a>.</p><ul><li>Punkt eins</li><li>Punkt zwei</li></ul>" });
 }`,
     zusammenfassung: "Der Fließtext setzt Lauftext in der Rolle `text`: Absätze, Listen, starke Wörter, Links und Zwischentitel, höchstens 62 Zeichen breit.",
     wann: [
-      "Für den Text einer Position, als `html` oder als Kinder.",
+      "Für den Text einer Position, als `vertrauenswuerdigesHtml` oder als Kinder.",
       "`h3` steht in der Rolle `h3` (`grad-24`), Links sehen aus wie `Textlink`: 1 px Unterstrich, bei Hover und Fokus 3 px Lime.",
-      "`html` wird unverändert eingesetzt; es kommt vom Verfasser der Seite, nie von außen. Die Farben nimmt der Text von der Fläche.",
+      "Der Inhalt wird unverändert eingesetzt und darf nur vom Verfasser der Seite stammen, nie aus Daten von außen (Scan-Ergebnisse, Formulare); dafür `children` nehmen. Die Farben nimmt der Text von der Fläche.",
     ],
     props: [
-      ["html", "string", "ohne", "Fertiges Markup, unverändert eingesetzt."],
-      ["children", KINDER, "ohne", "Inhalt statt `html`."],
+      ["vertrauenswuerdigesHtml", "string", "ohne", "Fertiges Markup des Verfassers, unverändert eingesetzt."],
+      ["children", KINDER, "ohne", "Inhalt statt `vertrauenswuerdigesHtml`; für alles aus Daten von außen."],
     ],
     lassen: [
       "Fremdes Markup aus Formularen, Mails oder Quellen außerhalb der Seite.",

@@ -128,10 +128,18 @@ export function Berichtsblatt({
   children,
 }: BerichtsblattProps) {
   const t = { ...BERICHTSBLATT_TEXTE, ...texte };
-  const positionen = Children.toArray(children).filter(
+  const kinder = Children.toArray(children);
+  const positionen = kinder.filter(
     (kind): kind is ReactElement<PositionProps> => isValidElement(kind) && kind.type === Position,
   );
   const kapitel: KapitelEintrag[] = positionen.map((p, i) => ({ id: p.props.id ?? standardId(i + 1), name: p.props.name }));
+  // Hinweise für den Verfasser, kein Abbruch. Ohne Abfrage auf NODE_ENV: Das
+  // Bündel der Lesefassung setzt es fest auf "production", dort sollen sie trotzdem erscheinen.
+  if (positionen.length < kinder.length) {
+    console.warn(`Berichtsblatt: ${kinder.length - positionen.length} Kind(er) ohne Position verworfen.`);
+  }
+  const doppelt = kapitel.map((k) => k.id).filter((id, i, alle) => alle.indexOf(id) !== i);
+  if (doppelt.length > 0) console.warn(`Berichtsblatt: Sprungziel doppelt vergeben: ${[...new Set(doppelt)].join(", ")}.`);
   const mitLeiste = kapitelleiste ?? positionen.length >= 3;
 
   return (

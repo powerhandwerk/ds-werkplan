@@ -17,11 +17,14 @@ export const klassen = (...teile: (string | false | null | undefined)[]) => teil
 
 /**
  * Lauftext in der Rolle `text`: Absätze, Listen, `strong`, Links und `h3`.
- * `html` wird unverändert eingesetzt; der Inhalt kommt vom Verfasser der Seite,
- * nie von außen.
+ * `vertrauenswuerdigesHtml` wird unverändert eingesetzt und darf nur vom
+ * Verfasser der Seite stammen, nie aus Daten von außen (Scan-Ergebnisse,
+ * Formulare); dafür `children` nehmen.
  */
-export function Fliesstext({ html, children }: { html?: string; children?: React.ReactNode }) {
-  if (html !== undefined) return <div className={css.fliesstext} dangerouslySetInnerHTML={{ __html: html }} />;
+export function Fliesstext({ vertrauenswuerdigesHtml, children }: { vertrauenswuerdigesHtml?: string; children?: React.ReactNode }) {
+  if (vertrauenswuerdigesHtml !== undefined) {
+    return <div className={css.fliesstext} dangerouslySetInnerHTML={{ __html: vertrauenswuerdigesHtml }} />;
+  }
   return <div className={css.fliesstext}>{children}</div>;
 }
 
