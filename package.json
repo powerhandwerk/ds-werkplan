@@ -1,6 +1,6 @@
 {
   "name": "@powerhandwerk/ds-werkplan",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "DS Werkplan 2.0, Design-System von powerhandwerk",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -74,6 +74,9 @@
     "./useSvgPraefix": "./src/useSvgPraefix.ts",
     "./IsoSzene": "./src/IsoSzene.tsx",
     "./explosion": "./src/explosion.ts",
+    "./berichtsblatt.module.css": "./src/berichtsblatt.module.css",
+    "./Berichtsblatt": "./src/Berichtsblatt.tsx",
+    "./Berichtsteile": "./src/Berichtsteile.tsx",
     "./fonts/*": "./fonts/*",
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"

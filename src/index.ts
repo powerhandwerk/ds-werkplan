@@ -405,3 +405,21 @@ export {
   type ExplosionEingabe,
   type ExplosionProfil,
 } from "./explosion";
+export {
+  BERICHTSBLATT_TEXTE,
+  Berichtsblatt,
+  Position,
+  type BerichtsblattProps,
+  type BerichtsblattTexte,
+  type PositionProps,
+} from "./Berichtsblatt";
+export {
+  Fliesstext,
+  Tabelle,
+  Bildbeleg,
+  Kennzahl,
+  Kennzahlen,
+  Merksatz,
+  Spalten,
+  type KennzahlDaten,
+} from "./Berichtsteile";

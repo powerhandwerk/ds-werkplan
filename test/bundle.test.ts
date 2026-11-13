@@ -220,6 +220,25 @@ const PROPS: Record<string, Record<string, unknown>> = {
   LaufzeitSchalter: { wert: 24, onWechsel: nichts },
   LaufzeitBereich: { info: { 24: "Muster für 24 Monate.", 12: "Muster für 12 Monate." }, children: "Karten" },
   Fuss: { variante: "fokus", b2b: true, blatt: "Galerie", stand: "03.11.2026" },
+  Tabelle: { label: "Vergleich", kopf: ["Punkt", "Wert"], zeilen: [["Umfang", "12 Seiten"]], quelle: "Muster" },
+  Bildbeleg: { src: "data:image/gif;base64,R0lGODlhAQABAAAAACw=", alt: "Muster", titel: "Ausschnitt", text: "Text", quelle: "Quelle" },
+  Kennzahl: { kopf: "Funde", wert: "5", text: "mit Beleg" },
+  Kennzahlen: { zahlen: [{ kopf: "Funde", wert: "5" }, { kopf: "Seiten", wert: "12" }] },
+  Merksatz: { label: "Folge", children: "Ein Satz." },
+  Position: { name: "Funde", titel: "Fünf Funde", text: "Lead", children: "Inhalt" },
+  // Kinder als Position-Elemente aus dem Bündel, darum als Getter.
+  get Berichtsblatt() {
+    const { React, DsWerkplan: D } = fenster;
+    const position = (name: string) => React.createElement(D.Position, { key: name, name, titel: name });
+    return {
+      blatt: "Probe",
+      titel: "Titel",
+      stand: "Stand 12.11.2026",
+      felder: [{ label: "Gegenstand", wert: "Muster" }],
+      kennzahlen: [{ kopf: "Funde", wert: "5" }],
+      children: ["Eins", "Zwei", "Drei"].map(position),
+    };
+  },
   // Grafik: Daten aus dem Bündel selbst, darum als Getter (das Bündel lädt erst in beforeAll).
   get Leistungskarten() {
     const D = fenster.DsWerkplan;

@@ -2272,7 +2272,7 @@ export interface FussTexte {
 /** Standardtexte des Fußes, flach wie die übrigen `*_TEXTE`, damit `texte` jeden einzeln ersetzt. */
 export declare const FUSS_TEXTE: FussTexte;
 /** Version des Fußes, gleich der Paketversion; steht als `data-fuss-version` an jedem Fuß. */
-export declare const FUSS_VERSION = "2.7.0";
+export declare const FUSS_VERSION = "2.8.0";
 
 /* ---- iso ---- */
 
@@ -2495,6 +2495,140 @@ export type ExplosionProfil = {
     knoten: Knoten[];
 };
 export declare function explosionProfil({ name, kategorie, wertung, anzahl, idPraefix, rot, }?: ExplosionEingabe): ExplosionProfil;
+
+/* ---- Berichtsblatt ---- */
+
+/**
+ * Seitenhülle für Berichte, Analysen und Entscheidungsvorlagen (Vertrag
+ * „Berichtsblatt“, 12.11.2026). Vorbild ist die Prüfbericht-Leseseite im Admin
+ * (components/pruefbericht/): Titel auf Nacht über die volle Breite, Lesebereich
+ * auf Papier mit Kapitelleiste (am Handy Chips, ab 1024 px links mitlaufend),
+ * Abschluss auf Nacht. Das Blatt nummeriert seine `Position`-Kinder fortlaufend
+ * und baut aus ihnen die Kapitel. Ohne eigenen Zustand; Client ist nur die
+ * Kapitelleiste.
+ */
+export interface BerichtsblattTexte {
+    /** Titel der Kapitelleiste. */
+    kapitel: string;
+    /** Vermerk im schmalen Fuß der Fassung „intern“. */
+    vermerk: string;
+    /** Kürzel vor der Nummer einer Position. */
+    position: string;
+}
+export declare const BERICHTSBLATT_TEXTE: BerichtsblattTexte;
+export interface PositionProps {
+    /** Kurzer Name für Kapitelleiste und Beschriftung. */
+    name: string;
+    /** Überschrift (`h2`). */
+    titel: ReactNode;
+    /** Einleitung unter der Überschrift. */
+    text?: ReactNode;
+    /** Sprungziel; Standard `pos-01`, `pos-02`, … */
+    id?: string;
+    /** Laufende Nummer; setzt das `Berichtsblatt`. */
+    nummer?: number;
+    /** Kürzel vor der Nummer; setzt das `Berichtsblatt` aus seinen Texten. */
+    kuerzel?: string;
+    children?: ReactNode;
+}
+/** Abschnitt im Lesebereich: Maßstrich, Beschriftung „Pos. 01 · Name“, `h2`, Lead, Inhalt. */
+export declare function Position({ name, titel, text, id, nummer, kuerzel, children }: PositionProps): import("react").JSX.Element;
+export interface BerichtsblattProps {
+    /** Blattzeile im Titel, etwa „Berichtsvergleich“; auch Blatt im Fuß der Fassung „betrieb“. */
+    blatt: string;
+    /** Beschriftung über dem Titel. */
+    art?: string;
+    /** Seitentitel (`h1`), darf `Unterstrich` enthalten. */
+    titel: ReactNode;
+    lead?: ReactNode;
+    /** Felder des Schriftfelds im Titel. */
+    felder: readonly PlankopfFeld[];
+    /** Kennzahlen unter dem Titel, auf Nacht. */
+    kennzahlen?: readonly KennzahlDaten[];
+    /** Stand, etwa „Stand 12.11.2026“. */
+    stand: string;
+    /** `intern`: schmaler Fuß mit Vermerk; `betrieb`: der `Fuss` in der Fassung `fokus`, Anrede Sie. */
+    adressat?: "intern" | "betrieb";
+    /** Zeile „Nur für Unternehmer · Alle Preise netto zzgl. USt.“ im `Fuss` der Fassung „betrieb“. */
+    b2b?: boolean;
+    /** Kapitelleiste zeigen; Standard: ab drei Positionen. */
+    kapitelleiste?: boolean;
+    texte?: Partial<BerichtsblattTexte>;
+    /** Nur `Position`-Elemente. */
+    children?: ReactNode;
+}
+export declare function Berichtsblatt({ blatt, art, titel, lead, felder, kennzahlen, stand, adressat, b2b, kapitelleiste, texte, children, }: BerichtsblattProps): import("react").JSX.Element;
+
+/* ---- Berichtsteile ---- */
+
+/**
+ * Teile eines Berichtsblatts (Vertrag „Berichtsblatt“, 12.11.2026): Lauftext,
+ * Tabelle, Bildbeleg, Kennzahlen, Merksatz und Spalten. Vorbild ist die
+ * Prüfbericht-Leseseite im Admin (components/pruefbericht/). Server-Komponenten
+ * ohne Zustand; Farben kommen aus den Rollen der Fläche (`--wp-*`), damit jedes
+ * Teil auf Papier und auf Nacht lesbar bleibt.
+ */
+/** Klassen verbinden, leere Teile fallen weg; auch für das Berichtsblatt. */
+declare const klassen: (...teile: (string | false | null | undefined)[]) => string;
+/**
+ * Lauftext in der Rolle `text`: Absätze, Listen, `strong`, Links und `h3`.
+ * `vertrauenswuerdigesHtml` wird unverändert eingesetzt und darf nur vom
+ * Verfasser der Seite stammen, nie aus Daten von außen (Scan-Ergebnisse,
+ * Formulare); dafür `children` nehmen.
+ */
+export declare function Fliesstext({ vertrauenswuerdigesHtml, children }: {
+    vertrauenswuerdigesHtml?: string;
+    children?: React.ReactNode;
+}): React.JSX.Element;
+/**
+ * Tabelle auf `wp-blatt` mit Haarlinien. Die erste Spalte ist der Zeilenkopf.
+ * Bei Überbreite rollt der Bereich waagrecht; er trägt dafür einen Namen und
+ * den Tastaturfokus.
+ */
+export declare function Tabelle({ label, kopf, zeilen, breiten, quelle, }: {
+    label: string;
+    kopf: readonly string[];
+    zeilen: readonly (readonly React.ReactNode[])[];
+    breiten?: readonly string[];
+    quelle?: string;
+}): React.JSX.Element;
+/** Bild im Rahmen (Haarlinie, Grund `wp-blatt`, eckig, ohne Schatten), darunter Text und Quelle. */
+export declare function Bildbeleg({ src, alt, titel, text, quelle, }: {
+    src: string;
+    alt: string;
+    titel?: string;
+    text?: React.ReactNode;
+    quelle?: string;
+}): React.JSX.Element;
+/** Daten einer Kennzahl: Beschriftung, Wert fertig formatiert, Klartext. */
+export type KennzahlDaten = {
+    kopf?: string;
+    wert: React.ReactNode;
+    text?: React.ReactNode;
+};
+/**
+ * Beschriftung, große leichte Zahl in der Rolle `messwert` und Klartext. Die
+ * Farbe kommt von der Fläche (`wp-stark`), anders als beim `Messwert` mit
+ * festem `ink-950`; so ist sie auch auf Nacht lesbar.
+ */
+export declare function Kennzahl({ kopf, wert, text, groesse }: KennzahlDaten & {
+    groesse?: 32 | 48 | 64;
+}): React.JSX.Element;
+/** Reihe aus Kennzahlen: zwei bis vier nebeneinander, schmal untereinander (über die eigene Breite). */
+export declare function Kennzahlen({ zahlen }: {
+    zahlen: readonly KennzahlDaten[];
+}): React.JSX.Element | null;
+/** Hervorgehobener Satz: Etikett `lead` mit dem Label, daneben der Satz stark. Kein Seitenstreifen. */
+export declare function Merksatz({ label, children }: {
+    label?: string;
+    children: React.ReactNode;
+}): React.JSX.Element;
+/** Spalten für Text neben Bild oder für Bildreihen; schaltet über die eigene Breite, unter 720 px untereinander. */
+export declare function Spalten({ anzahl, verhaeltnis, children, }: {
+    anzahl?: 2 | 3;
+    verhaeltnis?: "1:1" | "2:3" | "3:2";
+    children: React.ReactNode;
+}): React.JSX.Element;
 
 /* ---- nur im Bündel ---- */
 
