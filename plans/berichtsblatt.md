@@ -1,6 +1,6 @@
 # Plan: berichtsblatt
 
-> **Status:** gebaut, Abnahme der Probe-Seite offen
+> **Status:** gebaut, Probe-Seite abgenommen (Flo, 13.11.2026)
 > **Projekt:** ds-werkplan, Branch `feature/berichtsblatt`
 > **Erstellt:** 12.11.2026
 > **Version:** 2.8.0
@@ -40,5 +40,4 @@ Schon vorhanden und in Berichten zu nutzen: `Plankopf`, `Unterstrich`, `Etikett`
 
 ## Offen
 
-- Flos Abnahme der Probe-Seite.
 - Einbau ins Rezept für Artifacts (claude-config).
